@@ -1,0 +1,26 @@
+{
+  "name": "pc-laptop-doctor-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Windows-first PC & Laptop Doctor with live diagnostics, health scoring, and plain-English recommendations.",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "systeminformation": "^5.23.14"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "electron": "^33.2.1",
+    "vite": "^6.0.1",
+    "wait-on": "^8.0.1"
+  }
+}
