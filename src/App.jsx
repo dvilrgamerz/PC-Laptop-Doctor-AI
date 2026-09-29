@@ -7,6 +7,74 @@ import {
 const gb = (bytes) => bytes ? (bytes / 1024 / 1024 / 1024).toFixed(1) : '0.0'
 const pct = (n) => Number.isFinite(Number(n)) ? Math.round(Number(n)) : 0
 
+
+const DEMO_DATA = {
+  timestamp: new Date().toISOString(),
+  platform: 'win32',
+  os: { distro: 'Windows 11 Pro', release: '24H2' },
+  cpu: {
+    manufacturer: 'Intel',
+    brand: 'Intel Core i7-12700H',
+    cores: 20,
+    physicalCores: 14,
+    speed: 2.3,
+    load: 82
+  },
+  memory: {
+    total: 16 * 1024 ** 3,
+    used: 13.7 * 1024 ** 3,
+    available: 2.3 * 1024 ** 3,
+    active: 12.9 * 1024 ** 3
+  },
+  graphics: [
+    {
+      model: 'NVIDIA GeForce RTX 3060 Laptop GPU',
+      vendor: 'NVIDIA',
+      vram: 6144,
+      utilizationGpu: 34,
+      temperatureGpu: 63
+    }
+  ],
+  storage: [
+    {
+      fs: 'C:',
+      type: 'NTFS',
+      size: 476 * 1024 ** 3,
+      used: 438 * 1024 ** 3,
+      available: 38 * 1024 ** 3,
+      use: 92,
+      mount: 'C:'
+    }
+  ],
+  battery: {
+    hasBattery: true,
+    percent: 67,
+    isCharging: false,
+    designedCapacity: 60000,
+    maxCapacity: 43800,
+    currentCapacity: 29346,
+    cycleCount: 381,
+    manufacturer: 'Demo Battery',
+    model: 'PCD-V1'
+  },
+  temperature: {
+    main: 84,
+    max: 87,
+    cores: []
+  },
+  uptimeSeconds: 9 * 86400 + 6 * 3600,
+  startupApps: Array.from({ length: 18 }, (_, i) => ({ name: `Demo Startup App ${i + 1}` })),
+  network: {
+    iface: 'Wi-Fi',
+    type: 'wireless',
+    ip4: '192.168.1.24',
+    speed: 866,
+    ping: 42,
+    rxSec: 4200000,
+    txSec: 950000
+  }
+}
+
 function analyze(data) {
   if (!data) return { score: 0, issues: [], status: 'Not scanned' }
 
@@ -77,13 +145,9 @@ export default function App() {
   const [error, setError] = useState('')
 
   const analysis = useMemo(() => analyze(data), [data])
+  const isDemoMode = !window.doctor?.runDiagnostics
 
   async function runScan() {
-    if (!window.doctor?.runDiagnostics) {
-      setError('Desktop diagnostics are available when this project is running inside Electron.')
-      return
-    }
-
     setScanning(true)
     setError('')
     setProgress(8)
@@ -105,12 +169,19 @@ export default function App() {
       }
     }, 380)
 
-    const result = await window.doctor.runDiagnostics()
+    let result
+    if (isDemoMode) {
+      await new Promise((resolve) => setTimeout(resolve, 2550))
+      result = { ok: true, data: { ...DEMO_DATA, timestamp: new Date().toISOString() } }
+    } else {
+      result = await window.doctor.runDiagnostics()
+    }
+
     clearInterval(timer)
 
     if (result?.ok) {
       setProgress(100)
-      setStep('Diagnosis complete')
+      setStep(isDemoMode ? 'Demo diagnosis complete' : 'Diagnosis complete')
       setData(result.data)
     } else {
       setError(result?.error || 'Scan failed.')
@@ -141,7 +212,7 @@ export default function App() {
 
       <main>
         <header>
-          <div><p className="eyebrow">SYSTEM DIAGNOSTICS</p><h1>PC & Laptop Doctor AI</h1><p>Find what is slowing down your Windows computer and understand what to fix first.</p></div>
+          <div><p className="eyebrow">SYSTEM DIAGNOSTICS {isDemoMode && <span className="demo-badge">LIVE WEB DEMO</span>}</p><h1>PC & Laptop Doctor AI</h1><p>{isDemoMode ? 'Interactive GitHub demo using sample diagnostics. Install the desktop app to scan your real PC.' : 'Find what is slowing down your Windows computer and understand what to fix first.'}</p></div>
           <button className="scan-btn" onClick={runScan} disabled={scanning}>{scanning ? <RefreshCw className="spin" size={18}/> : <Play size={18}/>} {scanning ? 'Scanning…' : data ? 'Scan Again' : 'Run Full Diagnosis'}</button>
         </header>
 
@@ -209,7 +280,7 @@ export default function App() {
           </div>
         </section>
 
-        <footer>PC Doctor AI V1 • Windows-first • Read-only diagnostics</footer>
+        <footer>PC Doctor AI V1 • {isDemoMode ? 'Web demo with sample data' : 'Windows-first • Read-only diagnostics'}</footer>
       </main>
     </div>
   )
