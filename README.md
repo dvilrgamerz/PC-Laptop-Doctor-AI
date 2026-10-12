@@ -1,3 +1,8 @@
+<!-- DVILR PROJECT COVER v1 -->
+<p align="center"><img src="./assets/dvilr-project-banner.svg" width="100%" alt="PC & Laptop Doctor: Local-first diagnostics for Windows hardware." /></p>
+<p align="center"><a href="https://github.com/dvilrgamerz"><strong>Developer profile</strong></a> · <a href="https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI"><strong>Source</strong></a></p>
+<!-- /DVILR PROJECT COVER -->
+
 # 🩺 PC & Laptop Doctor AI
 
 **Your local-first AI mechanic for Windows PCs and laptops.**
