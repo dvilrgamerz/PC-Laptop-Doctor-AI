@@ -1,4 +1,5 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, shell } = require('electron')
+const { secureDoctorWindow } = require('./security.cjs')
 const path = require('path')
 const { execFile } = require('child_process')
 const si = require('systeminformation')
@@ -14,7 +15,7 @@ function run(command, args = []) {
 
 async function getStartupApps() {
   if (process.platform !== 'win32') return []
-  const script = "Get-CimInstance Win32_StartupCommand | Select-Object Name,Command,Location | ConvertTo-Json -Compress"
+  const script = "Get-CimInstance Win32_StartupCommand | Select-Object Name,Location | ConvertTo-Json -Compress"
   const stdout = await run('powershell.exe', ['-NoProfile', '-Command', script])
   if (!stdout) return []
   try {
@@ -166,9 +167,12 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
+      sandbox: true,
       nodeIntegration: false
     }
   })
+
+  secureDoctorWindow(win, shell)
 
   if (app.isPackaged) {
     win.loadFile(path.join(__dirname, '..', 'dist', 'index.html'))
