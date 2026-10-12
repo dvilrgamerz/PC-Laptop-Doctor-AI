@@ -1,0 +1,28 @@
+name: PC Doctor security and web demo checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check electron/main.cjs && node --check electron/preload.cjs && node --check electron/security.cjs
+      - run: node --test tests/*.test.cjs
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - run: test -s dist/index.html
