@@ -111,3 +111,7 @@ Some temperature and battery readings depend on what the hardware/driver exposes
 ---
 
 If this project helps you, consider starring the repo ⭐
+
+## GitHub Pages deployment
+
+The repository has a GitHub Actions workflow (`.github/workflows/pages.yml`) that builds and uploads the static demo. To enable it, open **Settings → Pages → Build and deployment**, choose **GitHub Actions** as the source, save the setting, and rerun the failed Pages workflow. If the job fails at `actions/configure-pages` with `Get Pages site failed: Not Found`, the build has already succeeded; Pages is not yet enabled/configured for this repository. Do not add a token to source code to work around this setting.
