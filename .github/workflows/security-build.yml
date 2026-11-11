@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: '22'
       - run: node --check electron/main.cjs && node --check electron/preload.cjs && node --check electron/security.cjs
-      - run: node --test tests/*.test.cjs
+      - run: npm test
       - run: npm install --no-audit --no-fund
       - run: npm run build
       - run: test -s dist/index.html

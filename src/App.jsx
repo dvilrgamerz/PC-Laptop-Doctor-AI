@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react'
+import { buildSummaryReport, compareScans } from './report.mjs'
 import {
   Activity, Battery, Cpu, Gauge, HardDrive, Laptop, MemoryStick,
-  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap
+  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download
 } from 'lucide-react'
 
 const gb = (bytes) => bytes ? (bytes / 1024 / 1024 / 1024).toFixed(1) : '0.0'
@@ -139,13 +140,34 @@ function MetricCard({ icon: Icon, label, value, sub, warning }) {
 
 export default function App() {
   const [data, setData] = useState(null)
+  const [previousData, setPreviousData] = useState(null)
   const [scanning, setScanning] = useState(false)
   const [progress, setProgress] = useState(0)
   const [step, setStep] = useState('Ready to scan')
   const [error, setError] = useState('')
 
   const analysis = useMemo(() => analyze(data), [data])
+  const previousAnalysis = useMemo(() => previousData ? analyze(previousData) : null, [previousData])
+  const comparison = useMemo(() => previousAnalysis ? compareScans(analysis, previousAnalysis) : null, [analysis, previousAnalysis])
   const isDemoMode = !window.doctor?.runDiagnostics
+
+  function downloadReport() {
+    if (!data) return
+    // Export a summary, not raw scans containing IP addresses or startup entries.
+    const report = buildSummaryReport(data, analysis, {
+      demo: isDemoMode,
+      previous: previousAnalysis
+    })
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'pc-doctor-summary-' + new Date().toISOString().slice(0, 10) + '.json'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
 
   async function runScan() {
     setScanning(true)
@@ -170,6 +192,7 @@ export default function App() {
     }, 380)
 
     let result
+    try {
     if (isDemoMode) {
       await new Promise((resolve) => setTimeout(resolve, 2550))
       result = { ok: true, data: { ...DEMO_DATA, timestamp: new Date().toISOString() } }
@@ -177,11 +200,16 @@ export default function App() {
       result = await window.doctor.runDiagnostics()
     }
 
-    clearInterval(timer)
+    } catch (error) {
+      result = { ok: false, error: error?.message || 'Diagnosis failed' }
+    } finally {
+      clearInterval(timer)
+    }
 
     if (result?.ok) {
       setProgress(100)
       setStep(isDemoMode ? 'Demo diagnosis complete' : 'Diagnosis complete')
+      if (data) setPreviousData(data)
       setData(result.data)
     } else {
       setError(result?.error || 'Scan failed.')
@@ -213,7 +241,10 @@ export default function App() {
       <main>
         <header>
           <div><p className="eyebrow">SYSTEM DIAGNOSTICS {isDemoMode && <span className="demo-badge">LIVE WEB DEMO</span>}</p><h1>PC & Laptop Doctor AI</h1><p>{isDemoMode ? 'Interactive GitHub demo using sample diagnostics. Install the desktop app to scan your real PC.' : 'Find what is slowing down your Windows computer and understand what to fix first.'}</p></div>
-          <button className="scan-btn" onClick={runScan} disabled={scanning}>{scanning ? <RefreshCw className="spin" size={18}/> : <Play size={18}/>} {scanning ? 'Scanning…' : data ? 'Scan Again' : 'Run Full Diagnosis'}</button>
+          <div className="header-actions">
+            {data && <button className="export-btn" onClick={downloadReport} disabled={scanning} title="Export a local summary without IP addresses or startup app names"><Download size={17}/> Export summary</button>}
+            <button className="scan-btn" onClick={runScan} disabled={scanning}>{scanning ? <RefreshCw className="spin" size={18}/> : <Play size={18}/>} {scanning ? 'Scanning…' : data ? 'Scan Again' : 'Run Full Diagnosis'}</button>
+          </div>
         </header>
 
         {error && <div className="error-box"><TriangleAlert size={18}/>{error}</div>}
@@ -242,6 +273,12 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {comparison && <section className="comparison-card" aria-live="polite">
+          <div><p className="eyebrow">BEFORE / AFTER</p><strong>{comparison.delta > 0 ? '+' : ''}{comparison.delta} health-score points</strong><span> Compared with the previous scan in this session. A change in load alone does not prove a repair worked.</span></div>
+          <div><strong>{comparison.resolved.length} warnings cleared</strong><span>{comparison.resolved.slice(0, 3).join(' · ') || 'None yet'}</span></div>
+          <div><strong>{comparison.added.length} new warnings</strong><span>{comparison.added.slice(0, 3).join(' · ') || 'None'}</span></div>
+        </section>}
 
         <section className="metrics">
           <MetricCard icon={Cpu} label="CPU" value={data ? `${data.cpu.load}%` : '--'} sub={data ? data.cpu.brand : 'Current load'} warning={data && data.cpu.load >= 80}/>
@@ -280,7 +317,7 @@ export default function App() {
           </div>
         </section>
 
-        <footer>PC Doctor AI V1 • {isDemoMode ? 'Web demo with sample data' : 'Windows-first • Read-only diagnostics'}</footer>
+        <footer>PC Doctor AI • Scan comparison and privacy-conscious reports • {isDemoMode ? 'Web demo with sample data' : 'Windows-first • Read-only diagnostics'}</footer>
       </main>
     </div>
   )
