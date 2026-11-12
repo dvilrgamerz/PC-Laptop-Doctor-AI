@@ -18,7 +18,16 @@ const SETTING_PAGES = Object.freeze({
   networkStatus: 'ms-settings:network-status',
   networkTroubleshoot: 'ms-settings:troubleshoot',
   systemProtection: 'systempropertiesprotection',
-  recovery: 'ms-settings:recovery'
+  recovery: 'ms-settings:recovery',
+  gameCaptures: 'ms-settings:gaming-gamedvr',
+  gameBar: 'ms-settings:gaming-gamebar',
+  graphicsDefault: 'ms-settings:display-advancedgraphics-default',
+  displayAdvanced: 'ms-settings:display-advanced',
+  visualEffects: 'ms-settings:easeofaccess-visualeffects',
+  notifications: 'ms-settings:notifications',
+  wifi: 'ms-settings:network-wifi',
+  ethernet: 'ms-settings:network-ethernet',
+  energy: 'ms-settings:energyrecommendations'
 })
 const GUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
 const guid = text => (String(text).match(GUID) || [null])[0]?.toLowerCase() || null
