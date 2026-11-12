@@ -24,8 +24,7 @@ test('short ICMP test parses actual packet time, variation and loss without inve
  assert.match(r.caveat,/NOT/)
 })
 test('missing summaries do not fabricate packet loss and less-than-1ms responses remain below 1ms',()=>{
- const r=parseWindowsPing('Reply from 1.1.1.1: bytes=32 time<1ms TTL=64\n'.replace('\\n','
-'))
+ const r=parseWindowsPing('Reply from 1.1.1.1: bytes=32 time<1ms TTL=64')
  assert.equal(r.ok,true)
  assert.equal(r.avgMs,0.5)
  assert.equal(r.packetLossPercent,null)
