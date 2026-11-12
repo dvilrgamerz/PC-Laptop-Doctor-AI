@@ -7,6 +7,7 @@
 - Favorites and selected profile stored in local browser/Electron preferences, without cloud upload.
 - Each card describes expected scope, supported Windows settings, risk, reversibility and links to official Microsoft guidance.
 - Users can open Windows Settings directly or route to existing consented/reversible Game Mode and power-plan controls. No one-click bulk scripting.
+- Added a user-started **8-echo network stability check** against fixed destination 1.1.1.1, requiring external-traffic consent; latency and loss are labeled as ICMP sample diagnostics rather than game-server ping.
 - Added detailed competitor review and experiment methodology in docs/COMPETITIVE_RESEARCH.md and GitHub issues #7 and #8.
 
 ## Safety and scope
