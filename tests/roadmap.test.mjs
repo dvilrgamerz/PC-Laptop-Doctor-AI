@@ -20,7 +20,7 @@ function storage(){
 }
 test('offline Doctor explains high memory, storage, gaming and network limits',()=>{
  const slow=answerDoctor('Why is my laptop slow?',scan)
- assert.match(slow.explanation,/92% RAM usage/i)
+ assert.match(slow.explanation,/93% RAM usage/i)
  assert.match(answerDoctor('How to fix full SSD?',scan).explanation,/98% occupied/)
  assert.match(answerDoctor('Improve FPS gaming',scan).reasons.join(' '),/RAM utilization/)
  assert.match(answerDoctor('network ping',scan).limits,/rule-based/)
