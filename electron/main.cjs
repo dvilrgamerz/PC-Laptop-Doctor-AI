@@ -8,6 +8,8 @@ const { createHardwareInspector } = require('./hardware.cjs')
 const { runDiskCheck } = require('./disk-check.cjs')
 const { createMaintenance } = require('./maintenance.cjs')
 const {runNetworkQuality} = require('./network-quality.cjs')
+const {createOptimizer} = require('./optimizer-v6.cjs')
+const {createGameLibrary} = require('./game-library.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -236,7 +238,13 @@ app.whenReady().then(() => {
     getSession: () => session.defaultSession,
     logFile: path.join(app.getPath('userData'), 'maintenance-audit.json')
   })
+  const optimizer=createOptimizer({stateFile:path.join(app.getPath('userData'),'optimization-v6-journal.json')})
+  const gameLibrary=createGameLibrary()
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v6-catalog', event => guard(event) ? optimizer.listing():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v6-preview', (event,id,mode) => guard(event) ? optimizer.preview(id,mode):{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v6-confirm', (event,id,mode,token) => guard(event) ? optimizer.perform(id,mode,token):{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v6-games', event => guard(event) ? gameLibrary.inspect():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:local-models', event => guard(event)
     ? localDoctor.models() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:local-question', (event, payload) => guard(event)
