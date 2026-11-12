@@ -19,7 +19,7 @@ function parseRow(line){
 function key(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
 const COLUMNS=[
   ['frametimems',1],['frametimeinms',1],['msbetweenpresents',1],
-  ['frametime',1],['frameintervalms',1],['frametimeseconds',1000],
+  ['frameintervalms',1],['frametimeseconds',1000],
   ['frametimes',1000],['fps',-1],['framerate',-1]
 ]
 const median=x=>{const a=[...x].sort((a,b)=>a-b),i=Math.floor(a.length/2);return a.length%2?a[i]:(a[i-1]+a[i])/2}
