@@ -510,3 +510,14 @@ footer a{color:#85e7eb;text-decoration:none}
 @media(max-width:1100px){.v7-home-intro{align-items:flex-start;flex-direction:column}.v7-pair{grid-template-columns:1fr}.v7-mini-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.v7-lead{padding:20px}.v7-lead-visual{display:none}.v7-lead h2{font-size:24px}.v7-boost-controls{grid-template-columns:1fr}.v7-boost-status{align-items:flex-start;flex-direction:column}.v7-mini-stats{grid-template-columns:1fr}.v7-section{padding:18px}.v7-outro{flex-direction:column;align-items:flex-start}.v7-outro button{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.v7-center *{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Simple V7 navigation: essential tools first, advanced controls opt-in */
+.sidebar{gap:14px}
+.sidebar nav{gap:4px}
+.sidebar nav button{cursor:pointer;padding:10px 12px;font-size:12px}
+.sidebar-advanced-toggle{width:100%;display:flex;align-items:center;gap:9px;padding:12px;border:1px solid #284b5f;background:#0d2a3c;color:#a8d2d7;border-radius:10px;text-align:left;font-size:12px;font-weight:750;cursor:pointer}
+.sidebar-advanced-toggle span{margin-left:auto;color:#6cddbf;font-size:17px;line-height:1}
+.sidebar-advanced{border-left:2px solid #286a69;padding-left:9px}
+.sidebar-advanced-toggle:hover{background:#174253}
+.sidebar-advanced-toggle:focus-visible{outline:2px solid #72e9d7;outline-offset:3px}
