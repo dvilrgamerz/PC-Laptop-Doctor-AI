@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react'
 import DiagnosticView from './DiagnosticView.jsx'
 import FixCenter from './FixCenter.jsx'
+import RoadmapHub from './RoadmapHub.jsx'
+import {appendHistory,isHistoryEnabled,makeHistoryEntry} from './history.mjs'
 import { buildSummaryReport, compareScans } from './report.mjs'
 import {
   Activity, Battery, Cpu, Gauge, HardDrive, Laptop, MemoryStick,
-  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3, Wrench
+  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3, Wrench, BookOpen, MonitorUp, History
 } from 'lucide-react'
 
 const gb = (bytes) => bytes ? (bytes / 1024 / 1024 / 1024).toFixed(1) : '0.0'
@@ -147,8 +149,11 @@ const NAV_ITEMS = [
   { id: 'battery', label: 'Battery', Icon: Battery },
   { id: 'network', label: 'Network', Icon: Network },
   { id: 'fixes', label: 'Fix & Gaming', Icon: Wrench },
+  { id: 'assistant', label: 'Ask Doctor', Icon: BookOpen },
+  { id: 'advisor', label: 'Upgrade Advisor', Icon: MonitorUp },
+  { id: 'history', label: 'History & Bench', Icon: History },
 ]
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.2.0'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v2.0.0'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -223,6 +228,11 @@ export default function App() {
       setStep(isDemoMode ? 'Demo diagnosis complete' : 'Diagnosis complete')
       if (data) setPreviousData(data)
       setData(result.data)
+      try {
+        if (isHistoryEnabled(window.localStorage)) {
+          appendHistory(window.localStorage, makeHistoryEntry(result.data, analyze(result.data), {demo:isDemoMode}))
+        }
+      } catch { /* Scans remain usable even if local history storage is blocked. */ }
     } else {
       setError(result?.error || 'Scan failed.')
       setStep('Scan failed')
@@ -251,7 +261,7 @@ export default function App() {
           ))}
         </nav>
         <div className="sidebar-install">
-          <p className="eyebrow">WINDOWS APP · V1.2</p>
+          <p className="eyebrow">WINDOWS APP · V2.0</p>
           <strong>Private diagnostics without subscriptions</strong>
           <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
             Get Windows installer <ArrowUpRight size={15}/>
@@ -263,8 +273,8 @@ export default function App() {
       <main>
         <header>
           <div>
-            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V1.2</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
-            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V2.0</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
           <div className="header-actions">
@@ -363,9 +373,9 @@ export default function App() {
           </div>
         </section>
 
-        </> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
+        </> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V1.2 · Rule-based guidance · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V2.0 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )

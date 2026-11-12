@@ -1,14 +1,16 @@
-# PC Laptop Doctor AI v1.2.0 — Fix & Gaming preview
+# PC Laptop Doctor AI v2.0.0 — Roadmap Suite (preview)
 
-- **Fix & Gaming Center** with scan-prioritized storage, RAM and CPU recommendations.
-- Working shortcuts to native Windows Storage, Installed Apps, Startup, Game Mode, Graphics, Power, Updates, and Task Manager.
-- Explicitly confirmed **one-click Game Mode switch** with a locally saved previous registry value and Restore control.
-- Optional **High performance power-plan switch**, only when a standard plan already exists; AC power required on laptops, with Restore control.
-- No automatic file deletion, process termination, registry cleaning, overclocking or Defender changes.
-- Windows x64 **Setup.exe** and **Portable.exe** generated via GitHub Actions with SHA-256 checksums.
+**Windows x64 Setup and Portable editions**. GitHub Actions builds unsigned executables and provides SHA-256 checksums.
 
-## Limitations and safety
+## New
+- **Offline Doctor:** Local rules answer common troubleshooting questions with specific scan evidence and practical steps. This is **not a trained language model**.
+- **Upgrade Advisor:** Workload-specific RAM, SSD, integrated graphics and battery guidance with clear compatibility cautions.
+- **History & Bench:** Local summary-only history is explicitly opt-in, stores at most 30 entries, supports export and deletion; optional fixed-workload JavaScript CPU microbenchmark stores up to 10 results when enabled.
+- **Safe Repair:** Added native Windows network status/troubleshooters and System Protection restore-point wizard shortcuts, with no implicit changes to OS state.
 
-The optional controls really change the specified Windows settings; the diagnostics scan itself remains read-only. This is an **unsigned preview build**, not a verified Windows performance accelerator or a trained AI diagnosis. Review each confirmation before making a change. Gaming FPS improvements are not guaranteed, and power-mode changes can increase heat and power draw.
-
-Verify SHA256SUMS.txt before distributing the installer. Regression tests run in CI, but physical-device performance is not benchmarked here.
+## Limitations
+- A "Fix" shortcut opens Windows tools; it does not silently clean disk, reset networking or create restore points.
+- The optional Game Mode / High performance changes from V1.2 remain explicit and reversible.
+- No FPS increase, hardware compatibility, real GPU speed or game benchmark has been verified. A CPU microbenchmark is not a standardized performance score.
+- Device-specific tests and external signing are still needed. Windows may warn that this preview is from an unknown publisher.
+- See docs/ROADMAP.md for what is implemented versus not implemented.

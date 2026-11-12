@@ -5,18 +5,18 @@
 
 # PC & Laptop Doctor AI
 
-**Windows hardware diagnostics, guided fix shortcuts, opt-in reversible gaming settings and packaged Windows EXEs.**
+**Local Windows diagnostics, guided repair tools, offline troubleshooting, hardware-upgrade advice and opt-in history. Windows Setup and Portable executables included.**
 
-## Download for Windows (v1.2)
+## Download for Windows (v2.0)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.2.0)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v2.0.0)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-1.2.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-1.2.0-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-2.0.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-2.0.0-x64.exe | Run without installing |
 
 ### Setup steps
 
@@ -122,28 +122,29 @@ V1 is intentionally read-only.
 
 V1.2 Fix & Gaming actions describe each proposed change and require confirmation. Undo data is saved locally. If the power plan or Game Mode changes outside the app, the app declines to overwrite it.
 
-## 🗺️ Roadmap
+## Roadmap — functional V1–V5 coverage in V2.0
 
-### V1 — Diagnose ✅
-Dashboard, live scan, health score, issue detection, hardware snapshot.
+| Original stage | Status | Implemented in this release | Still not implemented |
+| --- | --- | --- | --- |
+| V1 Diagnostics | Available | Real Windows hardware scan, risk scoring, explainable warnings | Full hardware fault certification |
+| V1.1 Distribution | Available | Signedness disclosures, Setup + Portable EXE builds and checksum files | Code signing and broad device certification |
+| V2 Safe repair | Guided / partial | Storage Sense, startup, update, network troubleshooter and restore-point shortcuts; optional reversible Windows Game Mode and High performance plan | Automatic per-file cleanup, network resets, automatic restore points |
+| V3 Offline Doctor | Rule-based version | Questions about slow PCs, gaming FPS, storage, RAM, network, battery, heat and upgrades grounded in scan data | Trained LLM, hardware root-cause verification |
+| V4 Hardware Advisor | Conditional version | Workload-based RAM, SSD, GPU and battery guidance with uncertainty notices | Motherboard/slot compatibility, pricing and OEM device verification |
+| V5 History & Benchmark | Baseline available | Opt-in bounded scan history (30), CSV export, deletion and 3-run synthetic JavaScript CPU checks | Standardized GPU/disk or game FPS testing |
 
-### V1.2 — Safe Fix & Gaming Center ✅
-Scan-aware storage and RAM priorities, Windows Settings shortcuts, and optional reversible Game Mode and High performance power-plan changes.
+See **[the full feature checklist and acceptance criteria](docs/ROADMAP.md)**. "Available" refers to working features, not certified performance gains. Complete implementation of the missing items requires additional engineering and hardware validation.
 
-### V2 — More advanced safe repair (planned)
-Guided cleanup with item-level approval, update checks, restoration guidance and trustworthy before/after metrics. Never remove user files automatically.
+## New V2.0 features
 
-### V3 — AI Doctor
-Ask questions such as “Why is my laptop slow?” and “What should I upgrade first?”
+- **Ask Doctor:** Type questions about common PC problems; get local rule-based answers and reasoned, actionable steps. No cloud AI model or Internet connection is needed.
+- **Upgrade Advisor:** Compare recommendations for everyday work, gaming and creative workloads. Compatibility must be checked against the exact laptop model.
+- **History & Bench:** Explicitly enable local summary-only history, compare snapshots, export a CSV, or permanently clear saved snapshots. Records are limited to 30. The opt-in CPU check performs a bounded, fixed JavaScript workload three times; it is *not* a GPU test or gaming FPS benchmark.
+- **Safe Repair enhancements:** Use Windows' own interface for storage cleanup, network troubleshooting and manual restore points. No file deletion, process killing or network reset is automated.
 
-### V4 — Hardware Advisor
-Upgrade recommendations based on the machine and workload.
+**Privacy:** History is off by default and saves only health score, CPU/RAM/drive percentages, temperature and warning count—no IP address, startup-app names or raw diagnostic scan. The local browser/Electron profile is not encrypted. Demo records are explicitly marked as sample data.
 
-### V1.1 — Installer and diagnostic workspace ✅
-Windows setup and portable EXE builds, interactive diagnostic views, updated Electron runtime and privacy-conscious reports.
-
-### V5 — History and benchmarks
-Future work: reproducible benchmarks and user-approved local long-term history.
+**Safety:** Creating a restore point is a manual Windows operation. Enabling Game Mode or switching to a pre-existing power plan still requires user confirmation and provides a Restore option. Performance improvements are not guaranteed.
 
 ## 🧰 Stack
 
