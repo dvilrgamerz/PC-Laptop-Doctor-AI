@@ -4,6 +4,9 @@ const path = require('path')
 const { execFile } = require('child_process')
 const si = require('systeminformation')
 
+// Windows taskbar identity should match the packaged product.
+if (process.platform === 'win32') app.setAppUserModelId('com.dvilr.pclaptopdoctor')
+
 function run(command, args = []) {
   return new Promise((resolve) => {
     execFile(command, args, { windowsHide: true, timeout: 8000 }, (error, stdout) => {
@@ -163,7 +166,8 @@ function createWindow() {
     minWidth: 980,
     minHeight: 680,
     backgroundColor: '#07111f',
-    title: 'PC Doctor AI',
+    title: 'PC Laptop Doctor AI',
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
