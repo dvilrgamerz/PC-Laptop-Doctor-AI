@@ -1,4 +1,5 @@
 import React from 'react'
+import NetworkQualityPanel from './NetworkQualityPanel.jsx'
 import { Activity, Battery, Cpu, HardDrive, MemoryStick, Network, ShieldCheck, Thermometer, Info, Gauge, TriangleAlert } from 'lucide-react'
 
 const valid = n => n !== undefined && n !== null && n !== '' && Number.isFinite(Number(n))
@@ -63,6 +64,7 @@ export default function DiagnosticView({tab,data,analysis,demo}) {
         <Note>Link speed does not equal internet download speed. Firewalls sometimes block ICMP ping while normal websites still work.</Note>
       </Section>
     </>}
+    {tab==='network'&&<NetworkQualityPanel demo={demo}/>}
     <Section label="DOCTOR FINDINGS" title="Relevant recommendations">
       {warnings.length?warnings.map((issue,i)=><div className="issue" key={i}><div className={'severity '+issue.level}>{i+1}</div><div><strong>{issue.title}</strong><p>{issue.detail}</p></div></div>):<div className="all-good"><ShieldCheck size={20}/> No threshold-based warnings in this category for the latest scan.</div>}
       <Note>This app currently uses explicit rules and thresholds, not a trained AI model. The 0–100 number is a heuristic, not proof of hardware health.</Note>
