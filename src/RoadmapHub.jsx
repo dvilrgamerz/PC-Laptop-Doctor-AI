@@ -60,8 +60,8 @@ function HistoryLab({data,analysis,demo}){
   const [message,setMessage]=useState('')
   const [clearConfirm,setClearConfirm]=useState(false)
   useEffect(()=>setEntries(readHistory(window.localStorage)),[data])
-  const first=entries[0],last=entries[entries.length-1],delta=compareHistory(first,last)
   const matching=entries.filter(x=>x.mode===(demo?'sample':'desktop'))
+  const first=matching[0],last=matching[matching.length-1],delta=compareHistory(first,last)
   function toggle(next){
     try{setHistoryEnabled(window.localStorage,next);setEnabled(next);setMessage(next?'Future scans and CPU checks may be stored locally.':'Recording paused. Previously saved entries remain until you delete them.')}
     catch{setMessage('Local storage is unavailable. No history was recorded.')}
@@ -103,7 +103,7 @@ function HistoryLab({data,analysis,demo}){
         <Button className="subtle" onClick={wipe} disabled={!entries.length&&!benchmarks.length}><Trash2 size={15}/>{clearConfirm?'Confirm delete all':'Delete saved history'}</Button>
         {clearConfirm&&<Button className="subtle" onClick={()=>setClearConfirm(false)}>Cancel</Button>}
       </div>
-      <div className="hub-stat-row"><div><span>Saved snapshots</span><strong>{matching.length}</strong></div><div><span>Health-score change</span><strong>{delta?.score===null?'—':(delta?.score>0?'+':'')+delta?.score}</strong></div><div><span>RAM change</span><strong>{delta?.ramPercent===null?'—':(delta?.ramPercent>0?'+':'')+delta?.ramPercent+' pts'}</strong></div></div>
+      <div className="hub-stat-row"><div><span>Saved snapshots</span><strong>{matching.length}</strong></div><div><span>Health-score change</span><strong>{delta?.score==null?'—':(delta?.score>0?'+':'')+delta?.score}</strong></div><div><span>RAM change</span><strong>{delta?.ramPercent==null?'—':(delta?.ramPercent>0?'+':'')+delta?.ramPercent+' pts'}</strong></div></div>
       <div className="hub-history">{matching.slice(-12).reverse().map((x,i)=><div key={i}><time>{new Date(x.at).toLocaleString()}</time><strong>Health {x.score??'—'}/100</strong><span>RAM {x.ramPercent??'—'}% · Disk {x.maxStoragePercent??'—'}% · CPU {x.cpuPercent??'—'}%</span></div>)}</div>
       {!matching.length&&<p className="hub-empty">Nothing saved yet. Enable recording and run a new scan, or save the current snapshot.</p>}
       <p className="hub-disclaimer">Changes in system load and health score alone do not prove that a repair worked. Snapshots are more useful when recorded under comparable workload conditions.</p>
