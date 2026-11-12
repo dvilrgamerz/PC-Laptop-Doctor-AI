@@ -29,7 +29,8 @@ function fixture({charging=true,highAvailable=true}={}){
     platform:'win32',stateFile,exec,
     battery:async()=>({hasBattery:true,acConnected:charging,isCharging:charging}),
     openExternal:async target=>{opened.push(target)},
-    openTaskManager:async()=>{opened.push('taskmgr')}
+    openTaskManager:async()=>{opened.push('taskmgr')},
+    openSystemProtection:async()=>{opened.push('systempropertiesprotection')}
   })
   return {
     create,root,stateFile,calls,opened,
@@ -106,7 +107,9 @@ test('renderer never supplies executable commands or arbitrary ms-settings desti
     assert.equal((await app.openPage('__proto__')).ok,false)
     assert.equal((await app.openPage('storage')).ok,true)
     assert.equal((await app.openPage('taskManager')).ok,true)
-    assert.deepEqual(f.opened,['ms-settings:storagerecommendations','taskmgr'])
+    assert.equal((await app.openPage('systemProtection')).ok,true)
+    assert.equal((await app.openPage('networkStatus')).ok,true)
+    assert.deepEqual(f.opened,['ms-settings:storagerecommendations','taskmgr','systempropertiesprotection','ms-settings:network-status'])
     assert.equal(Object.hasOwn(SETTING_PAGES,'storage'),true)
   }finally{f.cleanup()}
 })
