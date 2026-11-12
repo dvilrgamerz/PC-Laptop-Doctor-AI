@@ -152,7 +152,7 @@ function createFixService({ stateFile, exec = command, battery = async () => ({h
   }
   async function openPage(id){
     if(platform!=='win32')return {ok:false,error:'Open settings is available in the Windows app.'}
-    const target=SETTING_PAGES[id]
+    const target=Object.prototype.hasOwnProperty.call(SETTING_PAGES,id) ? SETTING_PAGES[id] : null
     if(!target)return {ok:false,error:'Unknown Windows settings shortcut'}
     try{
       if(target==='taskmgr'){
