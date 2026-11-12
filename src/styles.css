@@ -10,3 +10,66 @@
 .comparison-card span{color:#8da5b8;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
 @media(max-width:950px){.comparison-card{grid-template-columns:1fr}}
 @media(max-width:600px){.header-actions{width:100%}.header-actions button{flex:1;justify-content:center}}
+
+
+/* V1.1 — accessible, responsive multi-view workspace */
+.sidebar{gap:22px;background:linear-gradient(180deg,#0b1c2a,#081421);border-right-color:#22415b;position:sticky;top:0;height:100vh}
+.sidebar-section-label{font-size:10px;letter-spacing:1.5px;color:#7598b2;font-weight:800;padding:0 14px;margin:0}
+nav button{cursor:pointer;transition:background .16s ease,border-color .16s ease,color .16s ease;border:1px solid transparent}
+nav button:hover{background:#12344a;color:#d6f4ff}
+nav button:focus-visible,a:focus-visible,.scan-btn:focus-visible,.export-btn:focus-visible{outline:2px solid #71e3ee;outline-offset:3px}
+.sidebar-install{padding:17px;border:1px solid #1f5666;border-radius:14px;background:linear-gradient(150deg,#104250,#102c3b);display:flex;flex-direction:column;gap:10px}
+.sidebar-install strong{font-size:13px;line-height:1.5}
+.sidebar-install a{display:flex;align-items:center;gap:6px;color:#a3f8e6;text-decoration:none;font-size:12px;font-weight:800}
+.sidebar-install a:hover{text-decoration:underline}
+.version-pill{margin-left:7px;display:inline-block;border-radius:6px;border:1px solid #3d8c82;padding:3px 7px;color:#9cf5dd;font-size:9px}
+.welcome-panel{padding:25px 28px;display:flex;justify-content:space-between;gap:25px;align-items:center;border-radius:17px;border:1px solid #236679;background:radial-gradient(circle at right,#11525e,transparent 43%),linear-gradient(110deg,#0a3449,#0c2031);margin-bottom:18px}
+.welcome-panel h2{font-size:23px;margin:7px 0 8px}
+.welcome-panel p:not(.eyebrow){margin:0;color:#9cb9ce;font-size:13px;line-height:1.65}
+.welcome-download{background:#71ebd5;color:#051f27;font-weight:800;font-size:12px;text-decoration:none;display:flex;align-items:center;gap:8px;padding:13px 16px;border-radius:11px;flex:0 0 auto}
+.scan-notice{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;font-size:12px;color:#88a8bc}
+.scan-notice span{display:inline-flex;align-items:center;gap:7px}
+.scan-notice span:first-child{color:#81e4cc}
+.diagnostic-pages{display:flex;flex-direction:column;gap:18px}
+.detail-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.detail-stat{background:linear-gradient(155deg,#12364c,#0c2233);border:1px solid #22536b;border-radius:16px;display:flex;flex-direction:column;gap:8px;padding:22px;min-width:0}
+.detail-stat svg{color:#67efd6}
+.detail-stat span{font-size:12px;color:#a1bfcd}
+.detail-stat strong{font-size:27px;line-height:1.1;overflow-wrap:anywhere}
+.detail-stat small{color:#7d9bae;line-height:1.5;font-size:11px}
+.detail-panel{margin:0}
+.detail-panel h2{font-size:23px;margin:7px 0 19px}
+.detail-lines{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
+.detail-lines>div{display:flex;flex-direction:column;gap:6px;border-bottom:1px solid #21435b;padding:8px 0;min-width:0}
+.detail-lines span{font-size:12px;color:#819eb3}
+.detail-lines strong{font-size:13px;overflow-wrap:anywhere}
+.detail-meter{margin:17px 0}
+.detail-meter-heading{display:flex;justify-content:space-between;gap:10px;color:#a9c8db;font-size:12px;margin-bottom:9px}
+.detail-meter-heading b{color:#e3fbf6}
+.detail-track{height:9px;background:#1d3e52;border-radius:10px;overflow:hidden}
+.detail-track>div{height:100%;background:linear-gradient(90deg,#3bbdf4,#50deb5);border-radius:10px;transition:width .3s ease}
+.detail-meter small{display:block;color:#819eb3;margin-top:8px;font-size:11px;line-height:1.5}
+.detail-note{display:flex;gap:11px;align-items:flex-start;padding:14px;margin-top:20px;background:#0e2b3b;border:1px solid #275269;border-radius:12px;color:#a2c4d2;font-size:12px;line-height:1.55}
+.detail-note svg{flex:0 0 auto;color:#64d3f3}
+.detail-note p{margin:0}
+.drive-item{border-top:1px solid #21445b;padding:15px 0}
+.drive-item h3{color:#e5f8ff;font-size:15px;margin:0 0 6px}
+.drive-item p{color:#8cabbf;font-size:12px;margin:0 0 12px}
+.detail-empty{text-align:center;padding:55px 24px}
+.detail-empty svg{color:#6cddde}
+.detail-empty p{color:#8caac0;max-width:520px;margin:0 auto;line-height:1.6}
+.demo-warning{border:1px solid #756038;background:#3c3021;color:#ecd5a6;border-radius:12px;padding:12px;display:flex;gap:9px;font-size:12px;margin:0}
+.health-card,.scan-card,.metric-card,.detail-stat{transition:border-color .15s ease}
+.metric-card:hover,.detail-stat:hover{border-color:#3b7f8b}
+footer a{color:#85e7eb;text-decoration:none}
+@media(max-width:950px){.sidebar{position:static;height:auto}.welcome-panel{align-items:flex-start}}
+@media(max-width:650px){.welcome-panel{flex-direction:column;align-items:stretch}.detail-lines{grid-template-columns:1fr}.scan-notice{flex-direction:column;align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+@media(max-width:950px){
+  .sidebar{display:flex;position:static;height:auto;flex-direction:column;gap:12px;padding:16px}
+  .sidebar nav{display:flex;flex-direction:row;flex-wrap:wrap;gap:7px}
+  .sidebar nav button{width:auto;padding:9px 10px}
+  .sidebar-install,.sidebar-section-label{display:none}
+  .privacy{margin-top:0}
+}

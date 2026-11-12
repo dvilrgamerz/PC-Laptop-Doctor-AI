@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react'
+import DiagnosticView from './DiagnosticView.jsx'
 import { buildSummaryReport, compareScans } from './report.mjs'
 import {
   Activity, Battery, Cpu, Gauge, HardDrive, Laptop, MemoryStick,
-  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download
+  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3
 } from 'lucide-react'
 
 const gb = (bytes) => bytes ? (bytes / 1024 / 1024 / 1024).toFixed(1) : '0.0'
@@ -138,7 +139,17 @@ function MetricCard({ icon: Icon, label, value, sub, warning }) {
   )
 }
 
+const NAV_ITEMS = [
+  { id: 'dashboard', label: 'Dashboard', Icon: Gauge },
+  { id: 'performance', label: 'Performance', Icon: Cpu },
+  { id: 'storage', label: 'Storage', Icon: HardDrive },
+  { id: 'battery', label: 'Battery', Icon: Battery },
+  { id: 'network', label: 'Network', Icon: Network },
+]
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.1.0'
+
 export default function App() {
+  const [activeTab, setActiveTab] = useState('dashboard')
   const [data, setData] = useState(null)
   const [previousData, setPreviousData] = useState(null)
   const [scanning, setScanning] = useState(false)
@@ -193,13 +204,12 @@ export default function App() {
 
     let result
     try {
-    if (isDemoMode) {
-      await new Promise((resolve) => setTimeout(resolve, 2550))
-      result = { ok: true, data: { ...DEMO_DATA, timestamp: new Date().toISOString() } }
-    } else {
-      result = await window.doctor.runDiagnostics()
-    }
-
+      if (isDemoMode) {
+        await new Promise((resolve) => setTimeout(resolve, 2550))
+        result = { ok: true, data: { ...DEMO_DATA, timestamp: new Date().toISOString() } }
+      } else {
+        result = await window.doctor.runDiagnostics()
+      }
     } catch (error) {
       result = { ok: false, error: error?.message || 'Diagnosis failed' }
     } finally {
@@ -228,19 +238,33 @@ export default function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand"><div className="brand-mark"><Activity size={23}/></div><div><strong>PC Doctor</strong><span>AI</span></div></div>
-        <nav>
-          <button className="nav-active"><Gauge size={18}/> Dashboard</button>
-          <button><Cpu size={18}/> Performance</button>
-          <button><HardDrive size={18}/> Storage</button>
-          <button><Battery size={18}/> Battery</button>
-          <button><Network size={18}/> Network</button>
+        <p className="sidebar-section-label">SYSTEM WORKSPACE</p>
+        <nav aria-label="Diagnostic categories">
+          {NAV_ITEMS.map(({id,label,Icon}) => (
+            <button type="button" key={id} onClick={() => setActiveTab(id)}
+              aria-current={activeTab === id ? 'page' : undefined}
+              className={activeTab === id ? 'nav-active' : ''}>
+              <Icon size={18}/> {label}
+            </button>
+          ))}
         </nav>
+        <div className="sidebar-install">
+          <p className="eyebrow">WINDOWS APP · V1.1</p>
+          <strong>Private diagnostics without subscriptions</strong>
+          <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
+            Get Windows installer <ArrowUpRight size={15}/>
+          </a>
+        </div>
         <div className="privacy"><ShieldCheck size={18}/><div><strong>Local-first</strong><span>Diagnostics stay on your PC.</span></div></div>
       </aside>
 
       <main>
         <header>
-          <div><p className="eyebrow">SYSTEM DIAGNOSTICS {isDemoMode && <span className="demo-badge">LIVE WEB DEMO</span>}</p><h1>PC & Laptop Doctor AI</h1><p>{isDemoMode ? 'Interactive GitHub demo using sample diagnostics. Install the desktop app to scan your real PC.' : 'Find what is slowing down your Windows computer and understand what to fix first.'}</p></div>
+          <div>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V1.1</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
+            <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
+          </div>
           <div className="header-actions">
             {data && <button className="export-btn" onClick={downloadReport} disabled={scanning} title="Export a local summary without IP addresses or startup app names"><Download size={17}/> Export summary</button>}
             <button className="scan-btn" onClick={runScan} disabled={scanning}>{scanning ? <RefreshCw className="spin" size={18}/> : <Play size={18}/>} {scanning ? 'Scanning…' : data ? 'Scan Again' : 'Run Full Diagnosis'}</button>
@@ -249,6 +273,21 @@ export default function App() {
 
         {error && <div className="error-box"><TriangleAlert size={18}/>{error}</div>}
 
+        {!data && <section className="welcome-panel">
+          <div>
+            <p className="eyebrow">THREE SIMPLE STEPS</p>
+            <h2>Understand your computer in minutes.</h2>
+            <p>Run a read-only diagnosis. Review issues by category. Export a private summary.</p>
+          </div>
+          {isDemoMode && <a className="welcome-download" href={INSTALL_URL} target="_blank" rel="noopener noreferrer"><Download size={17}/> Download Windows .exe <ArrowUpRight size={15}/></a>}
+        </section>}
+
+        <div className="scan-notice">
+          <span><ShieldCheck size={16}/> {isDemoMode ? 'Sample measurements — not your computer' : 'Local diagnostics — no automatic system changes'}</span>
+          <span><Clock3 size={15}/> {data?.timestamp ? 'Snapshot: ' + new Date(data.timestamp).toLocaleString() : 'Not yet scanned'}</span>
+        </div>
+
+        {activeTab === 'dashboard' ? <>
         <section className="hero-grid">
           <div className="health-card">
             <div>
@@ -317,7 +356,9 @@ export default function App() {
           </div>
         </section>
 
-        <footer>PC Doctor AI • Scan comparison and privacy-conscious reports • {isDemoMode ? 'Web demo with sample data' : 'Windows-first • Read-only diagnostics'}</footer>
+        </> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
+
+        <footer>PC Doctor AI V1.1 · Rule-based guidance · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )
