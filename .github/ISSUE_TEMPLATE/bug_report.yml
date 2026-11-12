@@ -1,0 +1,74 @@
+name: Bug report — PC Doctor beta
+description: Report a reproducible problem in PC Laptop Doctor AI
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing. Never post passwords, full IP addresses, serial numbers, Windows account names, private paths, or unsanitized diagnostic logs.
+  - type: input
+    id: version
+    attributes:
+      label: PC Doctor version
+      placeholder: v7.0.0-beta.1
+    validations:
+      required: true
+  - type: dropdown
+    id: edition
+    attributes:
+      label: App edition
+      options:
+        - Windows Setup
+        - Windows Portable
+        - Web demo
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Windows edition and version
+      placeholder: Windows 11 24H2 x64
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact menu and button sequence without personal data.
+      placeholder: |
+        1. Run diagnosis
+        2. Open Game Boost & Cleanup
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: recovery
+    attributes:
+      label: If Windows settings changed, did Stop & Restore succeed?
+      options:
+        - No settings changed
+        - Yes
+        - No
+        - Not tested
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed personal data from this report and any attached screenshots.
+          required: true

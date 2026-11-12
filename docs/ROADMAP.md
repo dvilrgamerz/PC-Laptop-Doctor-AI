@@ -1,6 +1,6 @@
-# PC Laptop Doctor AI — V1 to V6 implementation audit
+# PC Laptop Doctor AI — V1 to V7 implementation audit
 
-**Current target: V6.4 preview.** Every main roadmap area has a user-facing workflow, but “complete” does not mean certified autonomous repairs, fully verified upgrades, or hardware-independent benchmark accuracy.
+**Current target: V7.0.0-beta.1 public tester release.** Every main roadmap area has a user-facing workflow, but “complete” does not mean certified autonomous repairs, fully verified upgrades, or hardware-independent benchmark accuracy.
 
 ## V1 — Read-only diagnostics
 
@@ -89,6 +89,21 @@
 - [ ] Physical Windows device matrix, independent benchmark superiority, signed installer
 
 See [V6 implementation and competition audit](V6_IMPLEMENTATION.md). User-facing V6 workflows are present, but competitor feature parity has **not** been established.
+
+## V7 — Game Focus, cleanup and public beta
+
+- [x] Session-based Game Mode and optional AC-only High performance, preview and per-session approval
+- [x] Attempt automatic restoration on normal app exit and next launch; preserve recovery journal if external settings conflict
+- [x] Read-only Steam manifest detection with validated game launch through Steam
+- [x] Old top-level user Temp `.tmp`/`.log` preview with size/age, no default selection, revalidated move to Recycle Bin
+- [x] Easy top-level Game Boost & Cleanup interface, scan shortcuts, explicit limitations
+- [x] Separate beta testing checklist and privacy-aware bug reporting form
+- [ ] No universal one-click FPS gain, no independent device-matrix testing, no code signing
+- [ ] No background service pausing, process killing, automatic GPU optimization, cross-launcher game library, or native frame-time recorder
+- [ ] No comprehensive third-party system/browser/game cache purge; Windows Storage Sense handles broader cleanup
+- [ ] No signed/stable public-release certification until manual QA and security review
+
+See [V7 implementation and competitor audit](V7_RELEASE.md) and [testers' instructions](FRIEND_TESTING.md).
 
 ## Beyond V6
 

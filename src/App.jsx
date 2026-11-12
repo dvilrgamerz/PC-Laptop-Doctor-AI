@@ -1,13 +1,14 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import DiagnosticView from './DiagnosticView.jsx'
 import FixCenter from './FixCenter.jsx'
 import OptimizationStudio from './OptimizationStudio.jsx'
+import QuickControlCenter from './QuickControlCenter.jsx'
 import RoadmapHub from './RoadmapHub.jsx'
 import {appendHistory,isHistoryEnabled,makeHistoryEntry} from './history.mjs'
 import { buildSummaryReport, compareScans } from './report.mjs'
 import {
   Activity, Battery, Cpu, Gauge, HardDrive, Laptop, MemoryStick,
-  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3, Wrench, BookOpen, MonitorUp, History, SlidersHorizontal
+  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3, Wrench, BookOpen, MonitorUp, History, SlidersHorizontal, Rocket
 } from 'lucide-react'
 
 const gb = (bytes) => bytes ? (bytes / 1024 / 1024 / 1024).toFixed(1) : '0.0'
@@ -145,6 +146,7 @@ function MetricCard({ icon: Icon, label, value, sub, warning }) {
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', Icon: Gauge },
+  { id: 'boost', label: 'Game Boost & Cleanup', Icon: Rocket },
   { id: 'performance', label: 'Performance', Icon: Cpu },
   { id: 'storage', label: 'Storage', Icon: HardDrive },
   { id: 'battery', label: 'Battery', Icon: Battery },
@@ -155,10 +157,13 @@ const NAV_ITEMS = [
   { id: 'advisor', label: 'Upgrade Advisor', Icon: MonitorUp },
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v6.4.0'
+const ESSENTIAL_IDS = new Set(['dashboard','boost','performance','storage','battery','network'])
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.0.0-beta.1'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [advancedOpen,setAdvancedOpen] = useState(false)
+  useEffect(()=>{if(!ESSENTIAL_IDS.has(activeTab))setAdvancedOpen(true)},[activeTab])
   const [data, setData] = useState(null)
   const [previousData, setPreviousData] = useState(null)
   const [scanning, setScanning] = useState(false)
@@ -253,8 +258,8 @@ export default function App() {
       <aside className="sidebar">
         <div className="brand"><div className="brand-mark"><Activity size={23}/></div><div><strong>PC Doctor</strong><span>AI</span></div></div>
         <p className="sidebar-section-label">SYSTEM WORKSPACE</p>
-        <nav aria-label="Diagnostic categories">
-          {NAV_ITEMS.map(({id,label,Icon}) => (
+        <nav aria-label="Quick tools">
+          {NAV_ITEMS.filter(item=>ESSENTIAL_IDS.has(item.id)).map(({id,label,Icon}) => (
             <button type="button" key={id} onClick={() => setActiveTab(id)}
               aria-current={activeTab === id ? 'page' : undefined}
               className={activeTab === id ? 'nav-active' : ''}>
@@ -262,8 +267,19 @@ export default function App() {
             </button>
           ))}
         </nav>
+        <button className="sidebar-advanced-toggle" type="button" aria-expanded={advancedOpen}
+          onClick={()=>setAdvancedOpen(v=>!v)}><SlidersHorizontal size={16}/> Advanced tools <span>{advancedOpen?'−':'+'}</span></button>
+        {advancedOpen&&<nav aria-label="Advanced diagnostic tools" className="sidebar-advanced">
+          {NAV_ITEMS.filter(item=>!ESSENTIAL_IDS.has(item.id)).map(({id,label,Icon}) => (
+            <button type="button" key={id} onClick={() => setActiveTab(id)}
+              aria-current={activeTab === id ? 'page' : undefined}
+              className={activeTab === id ? 'nav-active' : ''}>
+              <Icon size={18}/> {label}
+            </button>
+          ))}
+        </nav>}
         <div className="sidebar-install">
-          <p className="eyebrow">WINDOWS APP · V6.4</p>
+          <p className="eyebrow">WINDOWS APP · V7</p>
           <strong>Private diagnostics without subscriptions</strong>
           <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
             Get Windows installer <ArrowUpRight size={15}/>
@@ -275,8 +291,8 @@ export default function App() {
       <main>
         <header>
           <div>
-            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V6.4</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
-            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history','optimize'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V7</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history','optimize','boost'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
           <div className="header-actions">
@@ -302,6 +318,12 @@ export default function App() {
         </div>
 
         {activeTab === 'dashboard' ? <>
+        <section className="v7-home-intro">
+          <div><p className="eyebrow">YOUR PERFORMANCE WORKSPACE</p><h2>Scan. Boost. Clean. Play.</h2>
+            <p>Start with a diagnosis, then choose a safe Game Focus session or review older temporary files. No complicated setup or silent PC tweaks.</p></div>
+          <div className="v7-home-buttons"><button type="button" onClick={()=>setActiveTab('boost')}><Rocket size={17}/> Game Boost & Cleanup <ArrowUpRight size={15}/></button>
+            <button type="button" onClick={()=>setActiveTab('history')}><Activity size={17}/> Compare FPS</button></div>
+        </section>
         <section className="hero-grid">
           <div className="health-card">
             <div>
@@ -376,9 +398,9 @@ export default function App() {
           </div>
         </section>
 
-        </> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : activeTab === 'optimize' ? <OptimizationStudio data={data} demo={isDemoMode} onNavigate={setActiveTab}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
+        </> : activeTab === 'boost' ? <QuickControlCenter demo={isDemoMode} data={data} onNavigate={setActiveTab} onScan={runScan} scanning={scanning}/> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : activeTab === 'optimize' ? <OptimizationStudio data={data} demo={isDemoMode} onNavigate={setActiveTab}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V6.4 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V7 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )

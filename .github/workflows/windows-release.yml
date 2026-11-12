@@ -49,6 +49,8 @@ jobs:
           node --check electron/optimizer-v6.cjs
           node --check electron/game-library.cjs
           node --check electron/network-path.cjs
+          node --check electron/game-focus.cjs
+          node --check electron/temp-cleaner.cjs
       - name: Build Windows Setup and Portable EXEs
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
