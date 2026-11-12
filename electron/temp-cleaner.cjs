@@ -14,7 +14,11 @@ const makeToken=()=>randomBytes(24).toString('hex')
 const miB=bytes=>Math.round(bytes/1048576*10)/10
 function safeRoot(root,platform='win32',allowTestRoot=false){
  if(platform!=='win32')return false
- if(!path.isAbsolute(root)||path.parse(root).root===path.resolve(root))return false
+ const windowsPath=path.win32.isAbsolute(root)
+ const absolute=windowsPath||path.isAbsolute(root)
+ const volumeRoot=windowsPath?path.win32.parse(root).root:path.parse(root).root
+ const normalized=windowsPath?path.win32.normalize(root):path.resolve(root)
+ if(!absolute||volumeRoot.toLowerCase()===normalized.toLowerCase())return false
  if(allowTestRoot)return true
  // A non-standard TEMP override could point to documents, so decline and use Windows Storage.
  return /[\\/]appdata[\\/]local[\\/]temp[\\/]?$/i.test(root)
