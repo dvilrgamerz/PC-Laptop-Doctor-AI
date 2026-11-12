@@ -9,7 +9,11 @@ const GUIDED = [
   { id:'gameMode', icon:Gamepad2, title:'Windows Game Mode settings', subtitle:'Inspect the built-in gaming preferences in Windows.' },
   { id:'graphics', icon:MonitorCog, title:'Per-game graphics settings', subtitle:'Choose GPU preferences for individual games when available.' },
   { id:'power', icon:BatteryCharging, title:'Power settings', subtitle:'Review energy or power mode options available on this device.' },
-  { id:'windowsUpdate', icon:SlidersHorizontal, title:'Windows Update', subtitle:'Review supported Windows, security and driver updates.' }
+  { id:'windowsUpdate', icon:SlidersHorizontal, title:'Windows Update', subtitle:'Review supported Windows, security and driver updates.' },
+  { id:'networkStatus', icon:MonitorCog, title:'Network status', subtitle:'Inspect connection details and troubleshoot Windows network adapters.' },
+  { id:'networkTroubleshoot', icon:Wrench, title:'Windows troubleshooters', subtitle:'Launch built-in repair guidance; no automatic network reset by PC Doctor.' },
+  { id:'systemProtection', icon:ShieldCheck, title:'Create a restore point', subtitle:'Open System Protection. You choose whether to enable it and create a restore point.' },
+  { id:'storageSense', icon:HardDrive, title:'Storage Sense settings', subtitle:'Review temporary-file cleanup choices before allowing Windows to remove files.' }
 ]
 const AUTO = [
   {id:'enableGameMode',undo:'restoreGameMode',title:'Enable Windows Game Mode',icon:Gamepad2,
@@ -106,7 +110,7 @@ export default function FixCenter({data,demo}) {
       })}</div>
     </section>
     <section className="panel fix-section"><p className="eyebrow">GUIDED WINDOWS FIXES</p><h2>Open the right setting in one click</h2>
-      <p className="fix-section-intro">These shortcuts never edit anything. Windows remains in control of software removal, startup programs and graphics preferences.</p>
+      <p className="fix-section-intro">These shortcuts only open Windows tools; they do not perform cleanup, network resets, or create restore points automatically. Review the Windows prompts and select the actions yourself.</p>
       <div className="fix-guided-grid">{GUIDED.map(item=>{const Icon=item.icon;return <button type="button" className="fix-guided" key={item.id} disabled={!!waiting||!available} onClick={()=>openPage(item.id)}>
         <Icon size={19}/><span><strong>{item.title}</strong><small>{item.subtitle}</small></span><ArrowUpRight size={18}/>
       </button>})}</div>
