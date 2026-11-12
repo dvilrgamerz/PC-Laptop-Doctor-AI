@@ -151,7 +151,8 @@ async function collectDiagnostics() {
   }
 }
 
-ipcMain.handle('doctor:run-diagnostics', async () => {
+ipcMain.handle('doctor:run-diagnostics', async event => {
+  if (!trustedDoctorFrame(event)) return {ok:false,error:'Untrusted renderer'}
   try {
     const data = await collectDiagnostics()
     return { ok: true, data }
