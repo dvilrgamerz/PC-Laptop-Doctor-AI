@@ -5,18 +5,18 @@
 
 # PC & Laptop Doctor AI
 
-**Windows PC diagnostics, safe opt-in maintenance, offline troubleshooting, optional local Ollama integration, hardware inspection, and measured frame-time analysis.**
+**Windows PC and gaming diagnostics, recoverable Windows preferences, Steam discovery, session monitoring and evidence-based performance comparisons. Local-first and open source.**
 
-## Download for Windows (v5.0 preview)
+## Download for Windows (v6.4 preview)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v5.1.0)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v6.4.0)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-5.1.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-5.1.0-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-6.4.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-6.4.0-x64.exe | Run without installing |
 
 ### Setup steps
 
@@ -31,7 +31,7 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 
 **The first builds are unsigned preview programs.** Windows may display an unknown-publisher SmartScreen warning. Download only from this repository's own release assets, optionally compare the executable's SHA-256 to the release's **SHA256SUMS.txt**, and independently review the source. Never disable security protections for unfamiliar files.
 
-The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The scan is read-only. Optional Fix & Gaming controls can change Windows Game Mode, the active power plan, flush the Windows DNS resolver cache, or clear only PC Doctor's own Electron HTTP cache after a separate explicit confirmation. Previous Game Mode and power-plan values are saved locally and can be restored. Cache clearing has no undo and is described separately. The application never deletes personal files, kills processes, scans other devices, downloads AI models automatically, or applies hidden optimizations.
+The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The scan is read-only. Optional Fix & Gaming controls can change Windows Game Mode, the active power plan, flush the Windows DNS resolver cache, or clear only PC Doctor's own Electron HTTP cache after a separate explicit confirmation. Previous Game Mode and power-plan values are saved locally and can be restored. Cache clearing has no undo and is described separately. The application never deletes personal files, kills processes, downloads AI models automatically, alters third-party game/anti-cheat files, or applies hidden optimizations. Optional read-only Steam detection inspects application manifests from known library locations.
 
 The built-in diagnostics engine uses **explicit thresholds**. The optional LLM panel can query a separately installed Ollama model on localhost after approval; the app does not train or ship an AI model. Temperature readings, capacity estimates and hardware information may be unavailable on some devices. The health score is a guide, not a guarantee that a computer is fault-free.
 
@@ -121,6 +121,22 @@ V1 is intentionally read-only.
 - No telemetry included
 
 V1.2 Fix & Gaming actions describe each proposed change and require confirmation. Undo data is saved locally. If the power plan or Game Mode changes outside the app, the app declines to overwrite it.
+
+## Version 6.4 — Gaming Optimization & Evidence Studio (preview)
+
+**V6.0:** Four additional actual user-approved Windows preference changes: background captures, Game DVR, desktop transparency, and taskbar animation. Each includes current-value inspection, before/after preview, 60-second one-time confirmation, durable previous-value recovery journal, verification and Restore. The previous Game Mode and power plan controls are retained. Cosmetic adjustments are **not** claimed to raise FPS.
+
+**V6.1:** Real Windows setting status, per-setting risk/measure/official docs, and four conservative advisory profiles. Retains V5.1's 23 guidance options and five earlier manual presets. Neither profile automatically changes settings.
+
+**V6.2:** Read-only Steam game library discovery and manually started game-session resource monitoring. Detects local Steam app manifests; it does not edit game configurations, launch games, kill processes, bypass anti-cheat or promise game-specific FPS boosts.
+
+**V6.3:** A user-approved local gateway vs upstream ping comparison; plus a repeated benchmark lab accepting 3–8 real external frame-time CSV captures per condition. Calculates average FPS, 1% lows, P95 frame times, variability and approximate within-run bootstrap intervals. Captures must be comparable. PC Doctor does **not** record FPS itself.
+
+**V6.4:** Responsive interface enhancements, tests, Windows Setup/Portable builds, unsigned prerelease and SHA-256 checksum file.
+
+**[Detailed implementation/competitor comparison](docs/V6_IMPLEMENTATION.md)** · **[Testing instructions](docs/TESTING.md)** · **[V6 tracking task #10](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/10)**
+
+**Honest limitations:** This is not yet full Hone feature parity. The app does not contain per-game executable optimizers, secure auto-updaters, code signing, native GPU benchmarking, direct frame capture, or independent cross-PC FPS improvements. Real Windows performance/rollback verification is still required. Do not download this release to "guarantee FPS": benchmark before and after every change.
 
 ## Version 5.1 — Optimization Studio
 
