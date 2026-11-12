@@ -1,6 +1,7 @@
 import React,{useMemo,useState} from 'react'
 import {Activity,ArrowUpRight,Bookmark,BookOpen,CheckCircle2,ChevronRight,Cpu,Gamepad2,HardDrive,Info,Layers,Network,Search,ShieldCheck,SlidersHorizontal,TriangleAlert,Undo2} from 'lucide-react'
 import {OPTIMIZATIONS,PROFILES,getBottlenecks,sortOptimizations} from './optimizationCatalog.mjs'
+import NetworkQualityPanel from './NetworkQualityPanel.jsx'
 
 const CATEGORIES=['All','Gaming','Windows','Storage','Network']
 const FILTERS={Gaming:Gamepad2,Windows:Cpu,Storage:HardDrive,Network:Network}
@@ -120,6 +121,7 @@ export default function OptimizationStudio({data,demo,onNavigate}){
       :<div className="opt-empty"><Search size={23}/><strong>No options match those filters.</strong><button type="button" onClick={()=>{setFilter('All');setSearch('');setFavoritesOnly(false);setProfileOnly(false)}}>Clear filters</button></div>}
       {notice&&<p className="opt-feedback" role="status">{notice}</p>}
     </section>
+    {filter==='Network'&&<NetworkQualityPanel demo={demo}/>}
     <section className="panel opt-section opt-safety"><BookOpen size={22}/><div><h3>What this optimizer will not do</h3>
       <p>No automatic disabling of Microsoft Defender, memory-integrity/VBS protections, anti-cheat services or Windows updates. No speculative HPET/timer registry patches, forced process termination, deletion of user files, or claims of guaranteed performance improvement. A risky "optimization" is not a feature simply because a competitor offers it.</p>
       <button type="button" onClick={()=>onNavigate('history')}>Compare CPU and game frame-time measurements <ArrowUpRight size={15}/></button>
