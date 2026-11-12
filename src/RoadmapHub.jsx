@@ -62,7 +62,7 @@ function HistoryLab({data,analysis,demo}){
   const [clearConfirm,setClearConfirm]=useState(false)
   useEffect(()=>setEntries(readHistory(safeStorage())),[data])
   const matching=entries.filter(x=>x.mode===(demo?'sample':'desktop'))
-  const first=matching[0],last=matching[matching.length-1],delta=compareHistory(first,last)
+  const first=matching[0],last=matching[matching.length-1],delta=matching.length>=2?compareHistory(first,last):null
   function toggle(next){
     try{setHistoryEnabled(safeStorage(),next);setEnabled(next);setMessage(next?'Future scans and CPU checks may be stored locally.':'Recording paused. Previously saved entries remain until you delete them.')}
     catch{setMessage('Local storage is unavailable. No history was recorded.')}
