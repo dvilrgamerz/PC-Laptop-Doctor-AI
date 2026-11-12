@@ -14,7 +14,11 @@ const SETTING_PAGES = Object.freeze({
   graphics: 'ms-settings:display-advancedgraphics',
   power: 'ms-settings:powersleep',
   windowsUpdate: 'ms-settings:windowsupdate',
-  taskManager: 'taskmgr'
+  taskManager: 'taskmgr',
+  networkStatus: 'ms-settings:network-status',
+  networkTroubleshoot: 'ms-settings:troubleshoot',
+  systemProtection: 'systempropertiesprotection',
+  recovery: 'ms-settings:recovery'
 })
 const GUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
 const guid = text => (String(text).match(GUID) || [null])[0]?.toLowerCase() || null
@@ -54,7 +58,7 @@ function saveStore(file, data) {
   }
 }
 
-function createFixService({ stateFile, exec = command, battery = async () => ({hasBattery:false}), openExternal, openTaskManager, platform = process.platform }){
+function createFixService({ stateFile, exec = command, battery = async () => ({hasBattery:false}), openExternal, openTaskManager, openSystemProtection, platform = process.platform }){
   if (!stateFile) throw new Error('Missing state file')
   let busy = false
   const run = (exe, args) => exec(exe, args)
@@ -157,7 +161,9 @@ function createFixService({ stateFile, exec = command, battery = async () => ({h
     try{
       if(target==='taskmgr'){
         await openTaskManager()
-      }else await openExternal(target)
+      } else if(target==='systempropertiesprotection') {
+        await openSystemProtection()
+      } else await openExternal(target)
       return {ok:true}
     }catch{return {ok:false,error:'Windows could not open this settings page.'}}
   }
