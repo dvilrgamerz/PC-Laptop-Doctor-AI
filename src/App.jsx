@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import DiagnosticView from './DiagnosticView.jsx'
+import FixCenter from './FixCenter.jsx'
 import { buildSummaryReport, compareScans } from './report.mjs'
 import {
   Activity, Battery, Cpu, Gauge, HardDrive, Laptop, MemoryStick,
-  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3
+  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3, Wrench
 } from 'lucide-react'
 
 const gb = (bytes) => bytes ? (bytes / 1024 / 1024 / 1024).toFixed(1) : '0.0'
@@ -145,8 +146,9 @@ const NAV_ITEMS = [
   { id: 'storage', label: 'Storage', Icon: HardDrive },
   { id: 'battery', label: 'Battery', Icon: Battery },
   { id: 'network', label: 'Network', Icon: Network },
+  { id: 'fixes', label: 'Fix & Gaming', Icon: Wrench },
 ]
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.1.0'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.2.0'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -249,7 +251,7 @@ export default function App() {
           ))}
         </nav>
         <div className="sidebar-install">
-          <p className="eyebrow">WINDOWS APP · V1.1</p>
+          <p className="eyebrow">WINDOWS APP · V1.2</p>
           <strong>Private diagnostics without subscriptions</strong>
           <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
             Get Windows installer <ArrowUpRight size={15}/>
@@ -261,8 +263,8 @@ export default function App() {
       <main>
         <header>
           <div>
-            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V1.1</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
-            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V1.2</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
           <div className="header-actions">
@@ -319,6 +321,11 @@ export default function App() {
           <div><strong>{comparison.added.length} new warnings</strong><span>{comparison.added.slice(0, 3).join(' · ') || 'None'}</span></div>
         </section>}
 
+        {data && <section className="repair-entry">
+          <div><p className="eyebrow">YOUR NEXT STEP</p><h3>Fix the problems behind your score</h3>
+          <p>Prioritized storage, memory and gaming adjustments—with guided Windows settings and reversible one-click changes.</p></div>
+          <button type="button" onClick={() => setActiveTab('fixes')}><Wrench size={17}/> Fix & Gaming <ArrowUpRight size={16}/></button>
+        </section>}
         <section className="metrics">
           <MetricCard icon={Cpu} label="CPU" value={data ? `${data.cpu.load}%` : '--'} sub={data ? data.cpu.brand : 'Current load'} warning={data && data.cpu.load >= 80}/>
           <MetricCard icon={MemoryStick} label="RAM" value={data ? `${pct(ram)}%` : '--'} sub={data ? `${gb(data.memory.used)} / ${gb(data.memory.total)} GB` : 'Memory usage'} warning={data && ram >= 80}/>
@@ -356,9 +363,9 @@ export default function App() {
           </div>
         </section>
 
-        </> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
+        </> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V1.1 · Rule-based guidance · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V1.2 · Rule-based guidance · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )
