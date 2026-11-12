@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check electron/main.cjs && node --check electron/preload.cjs && node --check electron/security.cjs
+      - run: node --check electron/main.cjs && node --check electron/preload.cjs && node --check electron/security.cjs && node --check electron/fixes.cjs
       - run: npm test
       - run: npm install --no-audit --no-fund
       - run: npm run build
