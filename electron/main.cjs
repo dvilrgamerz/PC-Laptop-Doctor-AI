@@ -1,8 +1,12 @@
-const { app, BrowserWindow, ipcMain, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, session } = require('electron')
 const { secureDoctorWindow } = require('./security.cjs')
 const path = require('path')
 const { execFile, spawn } = require('child_process')
 const { createFixService } = require('./fixes.cjs')
+const { createLocalDoctor } = require('./local-llm.cjs')
+const { createHardwareInspector } = require('./hardware.cjs')
+const { runDiskCheck } = require('./disk-check.cjs')
+const { createMaintenance } = require('./maintenance.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -224,6 +228,32 @@ app.whenReady().then(() => {
     openTaskManager,
     openSystemProtection
   })
+  const localDoctor = createLocalDoctor()
+  const inspector = createHardwareInspector({si})
+  const maintenance = createMaintenance({
+    platform: process.platform,
+    getSession: () => session.defaultSession,
+    logFile: path.join(app.getPath('userData'), 'maintenance-audit.json')
+  })
+  const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:local-models', event => guard(event)
+    ? localDoctor.models() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:local-question', (event, payload) => guard(event)
+    ? localDoctor.ask(payload || {}) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:hardware-inventory', event => guard(event)
+    ? inspector.getInventory() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:top-processes', event => guard(event)
+    ? inspector.getProcesses() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:disk-check', event => guard(event)
+    ? runDiskCheck() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:maintenance-preview', (event, action) => guard(event)
+    ? maintenance.preview(action) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:maintenance-apply', (event, action,token) => guard(event)
+    ? maintenance.apply(action,token) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:maintenance-history', event => guard(event)
+    ? maintenance.history() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:maintenance-clear-log', event => guard(event)
+    ? maintenance.clearLog() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:fix-status', event => {
     if (!trustedDoctorFrame(event)) return { supported: false, reason: 'Untrusted renderer' }
     return fixes.status()
