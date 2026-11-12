@@ -20,7 +20,7 @@ export default function FpsLab(){
   async function load(file,set){
     if(!file)return
     setError('')
-    if(file.size>5*1024*1024){setError('Maximum file size is 5 MB.');return}
+    if(file.size>5*1024*1024){set(null);setError('Maximum file size is 5 MB.');return}
     try{set(analyzeFpsCsv(await file.text()))}
     catch(err){set(null);setError(err?.message||'Could not parse the CSV.')}
   }
