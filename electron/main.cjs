@@ -199,6 +199,14 @@ function trustedDoctorFrame(event) {
   return page === 'http://localhost:5173/' || page === 'http://localhost:5173/index.html'
 }
 
+function openSystemProtection() {
+  return new Promise((resolve, reject) => {
+    const child = spawn('SystemPropertiesProtection.exe', [], {detached:true, windowsHide:false, stdio:'ignore'})
+    child.once('error',reject)
+    child.once('spawn',()=>{child.unref();resolve()})
+  })
+}
+
 function openTaskManager() {
   return new Promise((resolve, reject) => {
     const task = spawn('taskmgr.exe', [], { detached: true, windowsHide: false, stdio: 'ignore' })
@@ -212,7 +220,8 @@ app.whenReady().then(() => {
     stateFile: path.join(app.getPath('userData'), 'safe-fix-backups.json'),
     battery: () => si.battery(),
     openExternal: target => shell.openExternal(target),
-    openTaskManager
+    openTaskManager,
+    openSystemProtection
   })
   ipcMain.handle('doctor:fix-status', event => {
     if (!trustedDoctorFrame(event)) return { supported: false, reason: 'Untrusted renderer' }
