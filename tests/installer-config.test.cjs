@@ -29,7 +29,7 @@ test('branded ICO includes multiple correctly sized images', () => {
 })
 test('app has explicit real and demo modes and release download destination', () => {
   const source = fs.readFileSync(path.join(root,'src','App.jsx'),'utf8')
-  assert.ok(source.includes('releases/tag/v6.0.0'))
+  assert.ok(source.includes('releases/tag/v6.4.0'))
   assert.ok(source.includes('WEB PREVIEW'))
   assert.ok(source.includes('DiagnosticView'))
 })
