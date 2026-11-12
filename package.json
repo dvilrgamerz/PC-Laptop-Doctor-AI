@@ -1,8 +1,8 @@
 {
   "name": "pc-laptop-doctor-ai",
-  "version": "6.0.0",
+  "version": "6.4.0",
   "private": true,
-  "description": "Open-source Windows gaming and PC diagnostics with consent-based optimizations, recovery, Steam discovery and benchmark evidence",
+  "description": "Open-source Windows gaming and PC diagnostics with previewed reversible optimizations, game sessions and performance experiments",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
