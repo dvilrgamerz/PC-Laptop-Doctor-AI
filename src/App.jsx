@@ -276,7 +276,7 @@ export default function App() {
         <header>
           <div>
             <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V5.1</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
-            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
+            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history','optimize'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
           <div className="header-actions">
@@ -336,7 +336,8 @@ export default function App() {
         {data && <section className="repair-entry">
           <div><p className="eyebrow">YOUR NEXT STEP</p><h3>Fix the problems behind your score</h3>
           <p>Prioritized storage, memory and gaming adjustments—with guided Windows settings and reversible one-click changes.</p></div>
-          <button type="button" onClick={() => setActiveTab('fixes')}><Wrench size={17}/> Fix & Gaming <ArrowUpRight size={16}/></button>
+          <div className="repair-actions"><button type="button" onClick={() => setActiveTab('optimize')}><SlidersHorizontal size={17}/> Optimization Studio <ArrowUpRight size={16}/></button>
+          <button type="button" onClick={() => setActiveTab('fixes')}><Wrench size={17}/> Fix & Gaming <ArrowUpRight size={16}/></button></div>
         </section>}
         <section className="metrics">
           <MetricCard icon={Cpu} label="CPU" value={data ? `${data.cpu.load}%` : '--'} sub={data ? data.cpu.brand : 'Current load'} warning={data && data.cpu.load >= 80}/>
