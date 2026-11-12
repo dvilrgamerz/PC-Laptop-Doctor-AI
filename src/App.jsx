@@ -126,7 +126,7 @@ function analyze(data) {
   else if (ping !== null && ping !== undefined && ping > 80) { score -= 4; issues.push({ level:'low', title:'Network latency could be better', detail:`Internet latency measured about ${ping} ms.` }) }
 
   score = Math.max(0, Math.min(100, Math.round(score)))
-  const status = score >= 90 ? 'Excellent' : score >= 75 ? 'Good' : score >= 55 ? 'Needs attention' : 'Poor'
+  const status = score >= 90 ? 'Few warnings' : score >= 75 ? 'Mostly stable' : score >= 55 ? 'Several warnings' : 'High diagnostic priority'
   return { score, issues, status, ram, batteryHealth }
 }
 
@@ -305,10 +305,10 @@ export default function App() {
         <section className="hero-grid">
           <div className="health-card">
             <div>
-              <p className="eyebrow">OVERALL HEALTH</p>
+              <p className="eyebrow">HEURISTIC DIAGNOSTIC SCORE</p>
               <div className="score-row"><div className="score">{data ? analysis.score : '--'}</div><span>/100</span></div>
               <h2>{data ? analysis.status : 'Not scanned yet'}</h2>
-              <p>{data ? (analysis.issues.length ? `${analysis.issues.length} item${analysis.issues.length === 1 ? '' : 's'} need attention.` : 'No major problems detected.') : 'Run a diagnosis to inspect this computer.'}</p>
+              <p>{data ? (analysis.issues.length ? `${analysis.issues.length} item${analysis.issues.length === 1 ? '' : 's'} flagged in this snapshot. High load may be expected while gaming.` : 'No threshold warnings in this snapshot.') : 'Run a diagnosis to inspect this computer.'}</p>
             </div>
             <div className="ring" style={{'--score': data ? analysis.score : 0}}><Laptop size={34}/></div>
           </div>
