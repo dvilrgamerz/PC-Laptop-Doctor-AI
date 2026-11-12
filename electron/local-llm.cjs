@@ -5,7 +5,7 @@ const http = require('node:http')
 
 const HOST = '127.0.0.1'
 const PORT = 11434
-const MODEL_NAME = /^[A-Za-z0-9_.:/+-]{1,120}$/
+const MODEL_NAME = /^(?=.{1,120}$)[A-Za-z0-9][A-Za-z0-9_.+-]*(?:\/[A-Za-z0-9][A-Za-z0-9_.+-]*)*(?::[A-Za-z0-9][A-Za-z0-9_.+-]*)?$/
 function asNumber(value) {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? Math.round(value * 10) / 10 : null
 }
