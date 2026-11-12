@@ -34,4 +34,5 @@ test('export excludes sensitive raw fields and marks demo samples', () => {
   assert.equal(result.system.batteryHealthPercent, 75)
   assert.equal(result.system.networkRttMs, null)
   assert.equal(result.system.memoryTotalGiB, 8)
+  assert.equal(result.system.cpuTemperatureC, null)
 })
