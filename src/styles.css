@@ -319,3 +319,7 @@ footer a{color:#85e7eb;text-decoration:none}
 .opt-safety button{color:#88e6d5;background:none;border:0;padding:0;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;font-weight:700}
 .optimization-studio button:focus-visible,.optimization-studio summary:focus-visible{outline:2px solid #74f5d4;outline-offset:3px}
 @media(max-width:600px){.opt-hero{padding:19px;align-items:flex-start}.opt-hero-number{display:none}.opt-presets{grid-template-columns:repeat(2,minmax(0,1fr))}.opt-grid{grid-template-columns:1fr}.opt-section{padding:17px}}
+
+.repair-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.repair-actions button{white-space:nowrap}
+@media(max-width:700px){.repair-actions{align-items:stretch}.repair-actions button{flex:1;justify-content:center}}
