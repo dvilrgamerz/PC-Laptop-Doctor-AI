@@ -57,7 +57,7 @@ export function buildSummaryReport(data, analysis, { demo = false, previous = nu
         freeGiB: gib(d.available),
         usedPercent: round(d.use)
       })),
-      cpuTemperatureC: mainTemp ?? fallbackTemp,
+      cpuTemperatureC: mainTemp !== null && mainTemp > 0 ? mainTemp : fallbackTemp !== null && fallbackTemp > 0 ? fallbackTemp : null,
       batteryHealthPercent: batteryHealth,
       networkRttMs: round(data.network?.ping)
     }
