@@ -1,12 +1,14 @@
-# PC Laptop Doctor AI v1.1.0 — Windows preview
+# PC Laptop Doctor AI v1.2.0 — Fix & Gaming preview
 
-Windows x64 downloads:
-- **Setup EXE**: assisted NSIS installer with install location choice, desktop/Start shortcuts, and an uninstaller.
-- **Portable EXE**: run without installation.
+- **Fix & Gaming Center** with scan-prioritized storage, RAM and CPU recommendations.
+- Working shortcuts to native Windows Storage, Installed Apps, Startup, Game Mode, Graphics, Power, Updates, and Task Manager.
+- Explicitly confirmed **one-click Game Mode switch** with a locally saved previous registry value and Restore control.
+- Optional **High performance power-plan switch**, only when a standard plan already exists; AC power required on laptops, with Restore control.
+- No automatic file deletion, process termination, registry cleaning, overclocking or Defender changes.
+- Windows x64 **Setup.exe** and **Portable.exe** generated via GitHub Actions with SHA-256 checksums.
 
-V1.1 adds a more useful diagnostics workspace, privacy-conscious summary export, and updated Electron security patches.
+## Limitations and safety
 
-## Important
-These Windows programs are **unsigned preview builds**, with no external code-signing certificate. Windows SmartScreen may warn about an unknown publisher. Download only from this repository, verify SHA-256 against SHA256SUMS.txt if desired, and inspect the source. Do not bypass warnings for unfamiliar downloads.
+The optional controls really change the specified Windows settings; the diagnostics scan itself remains read-only. This is an **unsigned preview build**, not a verified Windows performance accelerator or a trained AI diagnosis. Review each confirmation before making a change. Gaming FPS improvements are not guaranteed, and power-mode changes can increase heat and power draw.
 
-The tool is **read-only** and provides deterministic threshold-based advice, not trained AI diagnoses. Driver and firmware sensor availability varies. No repairs, file cleanup, or registry edits are performed.
+Verify SHA256SUMS.txt before distributing the installer. Regression tests run in CI, but physical-device performance is not benchmarked here.
