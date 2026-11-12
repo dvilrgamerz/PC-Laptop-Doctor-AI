@@ -1,6 +1,6 @@
 # PC Laptop Doctor AI — V1 to V5 implementation audit
 
-**Current target: V5 preview.** Every main roadmap area has a user-facing workflow, but “complete” does not mean certified autonomous repairs, fully verified upgrades, or hardware-independent benchmark accuracy.
+**Current target: V5.1 preview.** Every main roadmap area has a user-facing workflow, but “complete” does not mean certified autonomous repairs, fully verified upgrades, or hardware-independent benchmark accuracy.
 
 ## V1 — Read-only diagnostics
 
@@ -58,6 +58,19 @@
 - [ ] Native GPU shader/compute test with thermal/power baselines
 - [ ] Hardware-normalized CPU/GPU/SSD benchmark standards and uncertainty bounds
 - [ ] Field-trial evidence for performance claims
+
+## V5.1 — Optimization Studio and competitive feature coverage
+
+- [x] 23 reviewed options with official links, risk and rollback descriptions
+- [x] Searchable categories for Gaming, Windows, Storage and Network
+- [x] 5 locally saved, non-automatic gaming and PC presets; favorite options
+- [x] Prioritize storage, RAM, CPU and thermals using last scan
+- [x] Route Windows settings through existing Electron IPC allowlist
+- [x] Route real setting changes through the existing Fix & Gaming approval flow
+- [x] Vendor research and performance-evaluation protocol in docs/COMPETITIVE_RESEARCH.md
+- [ ] Measured comparison against Hone.gg; no independent head-to-head results yet
+- [ ] Verified per-game configuration presets or automatic game process management
+- [ ] Windows device-matrix validation and signed installers
 
 ## Beyond V5
 

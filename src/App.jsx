@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import DiagnosticView from './DiagnosticView.jsx'
 import FixCenter from './FixCenter.jsx'
+import OptimizationStudio from './OptimizationStudio.jsx'
 import RoadmapHub from './RoadmapHub.jsx'
 import {appendHistory,isHistoryEnabled,makeHistoryEntry} from './history.mjs'
 import { buildSummaryReport, compareScans } from './report.mjs'
 import {
   Activity, Battery, Cpu, Gauge, HardDrive, Laptop, MemoryStick,
-  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3, Wrench, BookOpen, MonitorUp, History
+  Network, Play, RefreshCw, ShieldCheck, Thermometer, TriangleAlert, Zap, Download, ArrowUpRight, Clock3, Wrench, BookOpen, MonitorUp, History, SlidersHorizontal
 } from 'lucide-react'
 
 const gb = (bytes) => bytes ? (bytes / 1024 / 1024 / 1024).toFixed(1) : '0.0'
@@ -125,7 +126,7 @@ function analyze(data) {
   else if (ping !== null && ping !== undefined && ping > 80) { score -= 4; issues.push({ level:'low', title:'Network latency could be better', detail:`Internet latency measured about ${ping} ms.` }) }
 
   score = Math.max(0, Math.min(100, Math.round(score)))
-  const status = score >= 90 ? 'Excellent' : score >= 75 ? 'Good' : score >= 55 ? 'Needs attention' : 'Poor'
+  const status = score >= 90 ? 'Few warnings' : score >= 75 ? 'Mostly stable' : score >= 55 ? 'Several warnings' : 'High diagnostic priority'
   return { score, issues, status, ram, batteryHealth }
 }
 
@@ -149,11 +150,12 @@ const NAV_ITEMS = [
   { id: 'battery', label: 'Battery', Icon: Battery },
   { id: 'network', label: 'Network', Icon: Network },
   { id: 'fixes', label: 'Fix & Gaming', Icon: Wrench },
+  { id: 'optimize', label: 'Optimization Studio', Icon: SlidersHorizontal },
   { id: 'assistant', label: 'Ask Doctor', Icon: BookOpen },
   { id: 'advisor', label: 'Upgrade Advisor', Icon: MonitorUp },
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v5.0.0'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v5.1.0'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -261,7 +263,7 @@ export default function App() {
           ))}
         </nav>
         <div className="sidebar-install">
-          <p className="eyebrow">WINDOWS APP · V5.0</p>
+          <p className="eyebrow">WINDOWS APP · V5.1</p>
           <strong>Private diagnostics without subscriptions</strong>
           <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
             Get Windows installer <ArrowUpRight size={15}/>
@@ -273,8 +275,8 @@ export default function App() {
       <main>
         <header>
           <div>
-            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V5.0</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
-            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V5.1</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history','optimize'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
           <div className="header-actions">
@@ -303,10 +305,10 @@ export default function App() {
         <section className="hero-grid">
           <div className="health-card">
             <div>
-              <p className="eyebrow">OVERALL HEALTH</p>
+              <p className="eyebrow">HEURISTIC DIAGNOSTIC SCORE</p>
               <div className="score-row"><div className="score">{data ? analysis.score : '--'}</div><span>/100</span></div>
               <h2>{data ? analysis.status : 'Not scanned yet'}</h2>
-              <p>{data ? (analysis.issues.length ? `${analysis.issues.length} item${analysis.issues.length === 1 ? '' : 's'} need attention.` : 'No major problems detected.') : 'Run a diagnosis to inspect this computer.'}</p>
+              <p>{data ? (analysis.issues.length ? `${analysis.issues.length} item${analysis.issues.length === 1 ? '' : 's'} flagged in this snapshot. High load may be expected while gaming.` : 'No threshold warnings in this snapshot.') : 'Run a diagnosis to inspect this computer.'}</p>
             </div>
             <div className="ring" style={{'--score': data ? analysis.score : 0}}><Laptop size={34}/></div>
           </div>
@@ -334,7 +336,8 @@ export default function App() {
         {data && <section className="repair-entry">
           <div><p className="eyebrow">YOUR NEXT STEP</p><h3>Fix the problems behind your score</h3>
           <p>Prioritized storage, memory and gaming adjustments—with guided Windows settings and reversible one-click changes.</p></div>
-          <button type="button" onClick={() => setActiveTab('fixes')}><Wrench size={17}/> Fix & Gaming <ArrowUpRight size={16}/></button>
+          <div className="repair-actions"><button type="button" onClick={() => setActiveTab('optimize')}><SlidersHorizontal size={17}/> Optimization Studio <ArrowUpRight size={16}/></button>
+          <button type="button" onClick={() => setActiveTab('fixes')}><Wrench size={17}/> Fix & Gaming <ArrowUpRight size={16}/></button></div>
         </section>}
         <section className="metrics">
           <MetricCard icon={Cpu} label="CPU" value={data ? `${data.cpu.load}%` : '--'} sub={data ? data.cpu.brand : 'Current load'} warning={data && data.cpu.load >= 80}/>
@@ -373,9 +376,9 @@ export default function App() {
           </div>
         </section>
 
-        </> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
+        </> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : activeTab === 'optimize' ? <OptimizationStudio data={data} demo={isDemoMode} onNavigate={setActiveTab}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V5.0 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V5.1 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )

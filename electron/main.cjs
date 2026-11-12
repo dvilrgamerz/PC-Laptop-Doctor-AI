@@ -7,6 +7,7 @@ const { createLocalDoctor } = require('./local-llm.cjs')
 const { createHardwareInspector } = require('./hardware.cjs')
 const { runDiskCheck } = require('./disk-check.cjs')
 const { createMaintenance } = require('./maintenance.cjs')
+const {runNetworkQuality} = require('./network-quality.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -246,6 +247,8 @@ app.whenReady().then(() => {
     ? inspector.getProcesses() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:disk-check', event => guard(event)
     ? runDiskCheck() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:network-quality', event => guard(event)
+    ? runNetworkQuality() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:maintenance-preview', (event, action) => guard(event)
     ? maintenance.preview(action) : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:maintenance-apply', (event, action,token) => guard(event)

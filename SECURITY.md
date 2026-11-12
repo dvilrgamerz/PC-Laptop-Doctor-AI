@@ -29,3 +29,5 @@ Use **Security → Report a vulnerability** on this repository if GitHub private
 - Hardware inventory excludes serial numbers and UUIDs but manufacturer/model details and local process names can still be sensitive. They stay in the active app, not in routine summary exports.
 - Temporary-file disk tests create a bounded file in the OS temporary directory and delete it when finished; interruptions such as power loss can leave files until OS cleanup. Do not treat results as verified physical SSD speed.
 - The FPS CSV analyzer reads user-selected files locally; no file content is uploaded by PC Doctor.
+
+- The optional 8-echo network stability check sends ICMP echo to fixed public IP 1.1.1.1 only after a separate on-screen consent box and button. It does not continuously monitor traffic, run a speed test or access custom addresses. Network routes and ping observations are not saved. ICMP may be blocked and output parsing may be limited by Windows language/locale.

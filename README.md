@@ -9,14 +9,14 @@
 
 ## Download for Windows (v5.0 preview)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v5.0.0)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v5.1.0)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-5.0.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-5.0.0-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-5.1.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-5.1.0-x64.exe | Run without installing |
 
 ### Setup steps
 
@@ -121,6 +121,22 @@ V1 is intentionally read-only.
 - No telemetry included
 
 V1.2 Fix & Gaming actions describe each proposed change and require confirmation. Undo data is saved locally. If the power plan or Game Mode changes outside the app, the app declines to overwrite it.
+
+## Version 5.1 — Optimization Studio
+
+Added a new **Optimization Studio** tab inspired by studying the scope of Windows gaming optimizers such as Hone.gg, but with an evidence-first workflow:
+
+- **23 curated options**, grouped into Gaming, Windows, Storage and Network categories, with search and saved favorites.
+- **5 user-selectable guidance profiles** (Balanced gaming, Competitive FPS, Low-memory PC, Visual quality and Gaming + streaming). Presets **do not silently change settings**.
+- Scan-aware recommendations put full drives and high RAM/CPU use ahead of speculative FPS tweaks.
+- Each option explains **what it changes, risk, undo path, and links to vendor documentation**. Supported native Windows settings open directly.
+- Existing actual Game Mode/power settings remain opt-in and reversible. DNS and app-cache maintenance remain explicitly confirmed and are not claimed to improve FPS.
+- No paywall or artificial limit on the number of reviewed options in the open-source UI.
+- **User-approved network quality check:** sends 8 ICMP packets to fixed public address 1.1.1.1 and reports average/min/max response and packet loss when Windows output provides trustworthy values. Requires explicit approval and Windows desktop app. This is not your in-game server ping, an internet speed test, or a true jitter benchmark.
+
+**Competitive feature and safety research:** [docs/COMPETITIVE_RESEARCH.md](docs/COMPETITIVE_RESEARCH.md). **Development tasks:** [Issue #7](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/7) (research and benchmarks), [Issue #8](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/8) (Windows validation and signing).
+
+**Not implemented:** automatic optimization of every game, service-killing game boost modes, frame-time proof of superiority, code-signed binaries, OEM-certified upgrades. See the roadmap for honest status.
 
 ## Version 5.0 — Advanced PC Doctor Suite
 
