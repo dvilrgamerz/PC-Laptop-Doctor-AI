@@ -1,19 +1,15 @@
-# PC Laptop Doctor AI v5.1.0 — Optimization Studio (unsigned preview)
+# PC Laptop Doctor AI v6.4.0 — Gaming Optimization & Evidence Suite (unsigned preview)
 
-## New
-- **23 reviewed optimization options** in a searchable, categorized Windows performance catalog.
-- **5 gaming and system profiles:** Balanced, Competitive FPS, Low-memory PC, Visual quality and Gaming + streaming.
-- **Scan-first recommendations** for disk, RAM, CPU and thermal concerns; do not assume the PC needs registry tweaks.
-- Favorites and selected profile stored in local browser/Electron preferences, without cloud upload.
-- Each card describes expected scope, supported Windows settings, risk, reversibility and links to official Microsoft guidance.
-- Users can open Windows Settings directly or route to existing consented/reversible Game Mode and power-plan controls. No one-click bulk scripting.
-- Added a user-started **8-echo network stability check** against fixed destination 1.1.1.1, requiring external-traffic consent; latency and loss are labeled as ICMP sample diagnostics rather than game-server ping.
-- Added detailed competitor review and experiment methodology in docs/COMPETITIVE_RESEARCH.md and GitHub issues #7 and #8.
+## New features shipped
+- **V6.0 Safe Windows Optimizer:** Four additional real, per-user, read-before-write Windows preferences with typed allowlist, before/after preview, one-time 60-second confirmation, persistent crash-recovery journal, verification and Restore. Existing Game Mode and power-plan options remain separate.
+- **V6.1 Status-aware profiles:** Safe, Balanced, Gaming and Battery recommendations; availability/unsupported/changed/restorable states, effects and official references. Existing 23 guided options and five V5.1 advisory presets are preserved.
+- **V6.2 Game library & session:** Read-only Steam game-manifest discovery and manually started process/resource snapshots. No game-file writes, services shutdown or game injection.
+- **V6.3 Network & FPS experiments:** A short, user-approved gateway-vs-1.1.1.1 comparison and 3–8 externally captured matched game FPS CSV runs per condition, with variation and approximate bootstrap difference intervals. Experimental results can be exported as aggregate JSON.
+- **V6.4 UI, tests & Windows packaging:** Responsive panels, error handling, tests, Setup and Portable x64 executables and SHA-256 manifest.
 
-## Safety and scope
-No automatic file deletion, process killing, Defender disablement, risky anti-cheat tweaks or fabricated FPS increases. No specific game configs are modified. The existing V5 offline AI, hardware inspection, History & Bench and Windows Setup/Portable builds are preserved.
+## Not a certified Hone replacement
+This software does not promise an FPS boost. Settings that disable captures can impair recording/streaming. Desktop visual options are appearance choices, not gaming throughput claims. Steam discovery does not install or modify game presets. FPS CSVs must be captured elsewhere. Game, Windows and security protection settings are not bypassed.
 
-## Release notes
-Unsigned preview executables. Windows may display unknown publisher warnings. Test settings URIs on your own Windows version; availability varies. A passing CI build does not establish FPS improvement. Review the source and SHA256SUMS.txt before distributing.
+A local diagnostic score is not proof of performance improvement. No real Windows hardware field tests, head-to-head Hone FPS studies, code-signing or device compatibility certification were performed for this release. Unsigned preview downloads may produce SmartScreen warnings.
 
-See docs/ROADMAP.md and docs/TESTING.md for limitations and manual Windows QA checklist.
+Sources/acceptance matrix: docs/V6_IMPLEMENTATION.md, docs/COMPETITIVE_RESEARCH.md, docs/ROADMAP.md and docs/TESTING.md.
