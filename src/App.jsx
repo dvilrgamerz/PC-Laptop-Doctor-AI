@@ -146,7 +146,7 @@ const NAV_ITEMS = [
   { id: 'battery', label: 'Battery', Icon: Battery },
   { id: 'network', label: 'Network', Icon: Network },
 ]
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/latest'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.1.0'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
