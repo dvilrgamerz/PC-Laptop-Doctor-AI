@@ -117,7 +117,7 @@ export default function FixCenter({data,demo}) {
       </button>})}</div>
     </section>
     <MaintenancePanel demo={demo}/>
-    <div className="fix-footer"><CheckCircle2 size={17}/><span>No setting changes occur until you confirm. Use Restore or Windows Settings to return to your preferred configuration.</span></div>
+    <div className="fix-footer"><CheckCircle2 size={17}/><span>Changes require your confirmation. Game Mode and power-plan changes have Restore; DNS or HTTP cache clearing cannot be undone.</span></div>
     {notice && <div className="fix-toast" role="status" aria-live="polite">{notice}</div>}
   </div>
 }
