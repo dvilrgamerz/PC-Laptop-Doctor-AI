@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import DiagnosticView from './DiagnosticView.jsx'
 import FixCenter from './FixCenter.jsx'
 import OptimizationStudio from './OptimizationStudio.jsx'
@@ -157,10 +157,13 @@ const NAV_ITEMS = [
   { id: 'advisor', label: 'Upgrade Advisor', Icon: MonitorUp },
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
+const ESSENTIAL_IDS = new Set(['dashboard','boost','performance','storage','battery','network'])
 const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.0.0-beta.1'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [advancedOpen,setAdvancedOpen] = useState(false)
+  useEffect(()=>{if(!ESSENTIAL_IDS.has(activeTab))setAdvancedOpen(true)},[activeTab])
   const [data, setData] = useState(null)
   const [previousData, setPreviousData] = useState(null)
   const [scanning, setScanning] = useState(false)
@@ -255,8 +258,8 @@ export default function App() {
       <aside className="sidebar">
         <div className="brand"><div className="brand-mark"><Activity size={23}/></div><div><strong>PC Doctor</strong><span>AI</span></div></div>
         <p className="sidebar-section-label">SYSTEM WORKSPACE</p>
-        <nav aria-label="Diagnostic categories">
-          {NAV_ITEMS.map(({id,label,Icon}) => (
+        <nav aria-label="Quick tools">
+          {NAV_ITEMS.filter(item=>ESSENTIAL_IDS.has(item.id)).map(({id,label,Icon}) => (
             <button type="button" key={id} onClick={() => setActiveTab(id)}
               aria-current={activeTab === id ? 'page' : undefined}
               className={activeTab === id ? 'nav-active' : ''}>
@@ -264,6 +267,17 @@ export default function App() {
             </button>
           ))}
         </nav>
+        <button className="sidebar-advanced-toggle" type="button" aria-expanded={advancedOpen}
+          onClick={()=>setAdvancedOpen(v=>!v)}><SlidersHorizontal size={16}/> Advanced tools <span>{advancedOpen?'−':'+'}</span></button>
+        {advancedOpen&&<nav aria-label="Advanced diagnostic tools" className="sidebar-advanced">
+          {NAV_ITEMS.filter(item=>!ESSENTIAL_IDS.has(item.id)).map(({id,label,Icon}) => (
+            <button type="button" key={id} onClick={() => setActiveTab(id)}
+              aria-current={activeTab === id ? 'page' : undefined}
+              className={activeTab === id ? 'nav-active' : ''}>
+              <Icon size={18}/> {label}
+            </button>
+          ))}
+        </nav>}
         <div className="sidebar-install">
           <p className="eyebrow">WINDOWS APP · V7</p>
           <strong>Private diagnostics without subscriptions</strong>
