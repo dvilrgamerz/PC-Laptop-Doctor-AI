@@ -1,8 +1,8 @@
 {
   "name": "pc-laptop-doctor-ai",
-  "version": "2.0.0",
+  "version": "5.0.0",
   "private": true,
-  "description": "Local Windows PC diagnostics, guided fixes, offline troubleshooting, conditional upgrade advice, and opt-in history",
+  "description": "Windows PC diagnostics, optional local AI, safe maintenance, hardware inventory, history and game FPS CSV analysis",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",

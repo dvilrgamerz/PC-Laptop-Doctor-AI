@@ -3,6 +3,10 @@ import { Activity, BookOpen, CheckCircle2, CircleHelp, Cpu, Download, HardDrive,
 import {answerDoctor,hardwareAdvice} from './doctorEngine.mjs'
 import {makeHistoryEntry,readHistory,isHistoryEnabled,setHistoryEnabled,appendHistory,clearHistory,compareHistory} from './history.mjs'
 import {runQuickBenchmark,readBenchmarks,addBenchmark,clearBenchmarks} from './benchmark.mjs'
+import LocalModelPanel from './LocalModelPanel.jsx'
+import HardwareInspector from './HardwareInspector.jsx'
+import DiskPanel from './DiskPanel.jsx'
+import FpsLab from './FpsLab.jsx'
 
 const safeStorage=()=>{try{return window.localStorage}catch{return null}}
 const prompts=[
@@ -40,6 +44,7 @@ function Assistant({data,demo}) {
       <h3>Practical next steps</h3><ol>{response.steps.map((x,i)=><li key={i}>{x}</li>)}</ol>
       <p className="hub-disclaimer">{response.limits}</p>
     </section>}
+    <LocalModelPanel scan={data} demo={demo}/>
   </div>
 }
 function Advisor({data,demo}) {
@@ -50,6 +55,7 @@ function Advisor({data,demo}) {
       <div className="hub-advice">{advice.map((x,i)=><article className="hub-advice-card" key={i}><div className="hub-between"><h3>{x.title}</h3><span className={'hub-priority '+x.priority}>{x.priority==='high'?'Address first':x.priority==='medium'?'Consider':'Check first'}</span></div><p><strong>Evidence:</strong> {x.reason}</p><p><strong>Next action:</strong> {x.action}</p><small>{x.caution}</small></article>)}</div>
       <p className="hub-disclaimer">{demo?'Example scan data, not recommendations for your actual hardware. ':' '}No compatibility, price, model-specific service manual or FPS result is verified. Check manufacturer documentation before purchasing.</p>
     </section>
+    <HardwareInspector demo={demo}/>
   </div>
 }
 function HistoryLab({data,analysis,demo}){
@@ -114,6 +120,8 @@ function HistoryLab({data,analysis,demo}){
       {latest&&<div className="hub-benchmark"><strong>{(latest.operationsPerSecond/1000000).toFixed(1)} Mops/s</strong><span>Median {latest.medianMs} ms · Algorithm {latest.version}</span></div>}
       {benchmarks.length>1&&<p className="hub-disclaimer">Earlier saved check: {(benchmarks[0].operationsPerSecond/1e6).toFixed(1)} Mops/s · Latest saved check: {(benchmarks[benchmarks.length-1].operationsPerSecond/1e6).toFixed(1)} Mops/s. Interpret differences cautiously.</p>}
     </section>
+    <DiskPanel demo={demo}/>
+    <FpsLab/>
     {message&&<p className="hub-message" role="status">{message}</p>}
   </div>
 }

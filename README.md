@@ -5,18 +5,18 @@
 
 # PC & Laptop Doctor AI
 
-**Local Windows diagnostics, guided repair tools, offline troubleshooting, hardware-upgrade advice and opt-in history. Windows Setup and Portable executables included.**
+**Windows PC diagnostics, safe opt-in maintenance, offline troubleshooting, optional local Ollama integration, hardware inspection, and measured frame-time analysis.**
 
-## Download for Windows (v2.0)
+## Download for Windows (v5.0 preview)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v2.0.0)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v5.0.0)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-2.0.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-2.0.0-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-5.0.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-5.0.0-x64.exe | Run without installing |
 
 ### Setup steps
 
@@ -31,9 +31,9 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 
 **The first builds are unsigned preview programs.** Windows may display an unknown-publisher SmartScreen warning. Download only from this repository's own release assets, optionally compare the executable's SHA-256 to the release's **SHA256SUMS.txt**, and independently review the source. Never disable security protections for unfamiliar files.
 
-The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The scan is read-only. Only the clearly labeled optional Fix & Gaming controls can change Windows Game Mode (one current-user registry value) or the active power plan after confirmation. The previous values are saved locally and can be restored. The application never deletes files, kills processes, scans other devices, or applies hidden optimizations.
+The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The scan is read-only. Optional Fix & Gaming controls can change Windows Game Mode, the active power plan, flush the Windows DNS resolver cache, or clear only PC Doctor's own Electron HTTP cache after a separate explicit confirmation. Previous Game Mode and power-plan values are saved locally and can be restored. Cache clearing has no undo and is described separately. The application never deletes personal files, kills processes, scans other devices, downloads AI models automatically, or applies hidden optimizations.
 
-The diagnostics engine uses **explicit thresholds, not a trained AI model**. Temperature readings, capacity estimates and hardware information may be unavailable on some devices. The health score is a guide, not a guarantee that a computer is fault-free.
+The built-in diagnostics engine uses **explicit thresholds**. The optional LLM panel can query a separately installed Ollama model on localhost after approval; the app does not train or ship an AI model. Temperature readings, capacity estimates and hardware information may be unavailable on some devices. The health score is a guide, not a guarantee that a computer is fault-free.
 
 ### Build locally
 
@@ -122,29 +122,35 @@ V1 is intentionally read-only.
 
 V1.2 Fix & Gaming actions describe each proposed change and require confirmation. Undo data is saved locally. If the power plan or Game Mode changes outside the app, the app declines to overwrite it.
 
-## Roadmap — functional V1–V5 coverage in V2.0
+## Version 5.0 — Advanced PC Doctor Suite
 
-| Original stage | Status | Implemented in this release | Still not implemented |
-| --- | --- | --- | --- |
-| V1 Diagnostics | Available | Real Windows hardware scan, risk scoring, explainable warnings | Full hardware fault certification |
-| V1.1 Distribution | Available | Signedness disclosures, Setup + Portable EXE builds and checksum files | Code signing and broad device certification |
-| V2 Safe repair | Guided / partial | Storage Sense, startup, update, network troubleshooter and restore-point shortcuts; optional reversible Windows Game Mode and High performance plan | Automatic per-file cleanup, network resets, automatic restore points |
-| V3 Offline Doctor | Rule-based version | Questions about slow PCs, gaming FPS, storage, RAM, network, battery, heat and upgrades grounded in scan data | Trained LLM, hardware root-cause verification |
-| V4 Hardware Advisor | Conditional version | Workload-based RAM, SSD, GPU and battery guidance with uncertainty notices | Motherboard/slot compatibility, pricing and OEM device verification |
-| V5 History & Benchmark | Baseline available | Opt-in bounded scan history (30), CSV export, deletion and 3-run synthetic JavaScript CPU checks | Standardized GPU/disk or game FPS testing |
+**Roadmap summary:** User-facing V1–V5 capabilities exist, but **some are partial or experimental**. The code is not an independently verified hardware repair product. See [full roadmap and acceptance criteria](docs/ROADMAP.md).
 
-See **[the full feature checklist and acceptance criteria](docs/ROADMAP.md)**. "Available" refers to working features, not certified performance gains. Complete implementation of the missing items requires additional engineering and hardware validation.
+| Stage | Working features | Not yet verified or fully automated |
+| --- | --- | --- |
+| V1 Diagnose | Read-only machine scan, health-score heuristics, system summary, battery/network/storage | Diagnosis of every possible hardware fault |
+| V2 Safe Repair | Windows cleanup/settings guides, explicit Game Mode/power changes and Restore, approval-gated DNS flush and PC Doctor HTTP-cache clearing, local audit | Arbitrary file cleanup, guaranteed network repair, automatic restore points |
+| V3 AI Doctor | Rule-based offline explanation; **optional** installed local Ollama model with limited, redacted metrics and explicit question approval | Bundled or user-trained model, certified root-cause diagnosis |
+| V4 Hardware Advisor | Workload-based upgrade advice and on-device system/model, memory-module and drive inspection without serials | Guaranteed free RAM slots, maximum RAM, pricing and OEM-certified compatibility |
+| V5 Performance | Opt-in local history, fixed JS CPU check, short temporary-file disk check, game FPS CSV analysis, 1% low and frame-time comparisons | Direct game capture, validated GPU stress test, scientifically controlled performance certification |
 
-## New V2.0 features
+### New in V5
 
-- **Ask Doctor:** Type questions about common PC problems; get local rule-based answers and reasoned, actionable steps. No cloud AI model or Internet connection is needed.
-- **Upgrade Advisor:** Compare recommendations for everyday work, gaming and creative workloads. Compatibility must be checked against the exact laptop model.
-- **History & Bench:** Explicitly enable local summary-only history, compare snapshots, export a CSV, or permanently clear saved snapshots. Records are limited to 30. The opt-in CPU check performs a bounded, fixed JavaScript workload three times; it is *not* a GPU test or gaming FPS benchmark.
-- **Safe Repair enhancements:** Use Windows' own interface for storage cleanup, network troubleshooting and manual restore points. No file deletion, process killing or network reset is automated.
+**Ask Doctor → Optional local model.** The built-in rules keep working with no model. To enable open-ended text generation, install [Ollama](https://ollama.com/) yourself on Windows, download a model suitable for your hardware and start its local service. Select **Check installed models**, enter a question, and approve sharing the question plus **numeric-only diagnostic metrics** to `127.0.0.1:11434`. No account, external AI API, automatic model download, shell command execution, or telemetry is added by PC Doctor. Model output may be wrong.
 
-**Privacy:** History is off by default and saves only health score, CPU/RAM/drive percentages, temperature and warning count—no IP address, startup-app names or raw diagnostic scan. The local browser/Electron profile is not encrypted. Demo records are explicitly marked as sample data.
+**Upgrade Advisor → Inspect hardware.** Reports machine manufacturer/model, board, BIOS version, detected memory modules (capacity/type/speed), physical drives, and optionally the top memory-consuming processes. Omits serials and UUIDs. The detected module count is **not** an authoritative count of physical slots, and compatibility requires the manufacturer's service manual.
 
-**Safety:** Creating a restore point is a manual Windows operation. Enabling Game Mode or switching to a pre-existing power plan still requires user confirmation and provides a Restore option. Performance improvements are not guaranteed.
+**Fix & Gaming → Safe maintenance.** Two approved tasks: flush Windows DNS resolver cache using `ipconfig /flushdns`; clear this app's own HTTP cache using Electron's session API. Both are previewed before they can run, require a single-use confirmation token, and log only action type/date/success locally. Windows may deny DNS flush without permissions. Neither operation guarantees a faster PC or games. They cannot be undone; Game Mode/power plan changes from V1.2 retain their Restore buttons.
+
+**History & Bench → Disk check and FPS CSV lab.** Temporary-file check uses a small bounded file and removes it afterward. Disk reads may come from RAM cache; speed is **not** an SSD specification. To compare actual gaming results, import two CSV recordings collected **by another tool** using an FPS, frame-time-ms or `msBetweenPresents` column. The analysis computes average FPS, a slowest-frame-time **1% low** definition and 95th-percentile frame time. Files are processed locally in the page. It does not capture FPS or inject into games. Compare only equivalent settings and scenes.
+
+### Privacy and limitations
+
+- Opt-in history remains **off by default**; saved snapshots contain only summary percentages/counts and are stored locally, without encryption.
+- Do not share raw process names, downloaded executables, or local history from a shared computer.
+- AI responses are untrusted advice, not verified diagnoses. Never run unknown commands suggested by an AI model.
+- Graphics/temperature/firmware support varies; an unavailable sensor does not prove the component is healthy.
+- Code signing, Windows SmartScreen reputation, physical-device testing, automatic repair proof, and OEM-compatible upgrade certification remain open work.
 
 ## 🧰 Stack
 

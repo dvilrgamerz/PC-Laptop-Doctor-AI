@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import MaintenancePanel from './MaintenancePanel.jsx'
 import { AlertTriangle, ArrowUpRight, BatteryCharging, CheckCircle2, Cpu, Gamepad2, HardDrive, MemoryStick, MonitorCog, RotateCcw, ShieldCheck, SlidersHorizontal, Wrench } from 'lucide-react'
 
 const GUIDED = [
@@ -115,7 +116,8 @@ export default function FixCenter({data,demo}) {
         <Icon size={19}/><span><strong>{item.title}</strong><small>{item.subtitle}</small></span><ArrowUpRight size={18}/>
       </button>})}</div>
     </section>
-    <div className="fix-footer"><CheckCircle2 size={17}/><span>No setting changes occur until you confirm. Use Restore or Windows Settings to return to your preferred configuration.</span></div>
+    <MaintenancePanel demo={demo}/>
+    <div className="fix-footer"><CheckCircle2 size={17}/><span>Changes require your confirmation. Game Mode and power-plan changes have Restore; DNS or HTTP cache clearing cannot be undone.</span></div>
     {notice && <div className="fix-toast" role="status" aria-live="polite">{notice}</div>}
   </div>
 }

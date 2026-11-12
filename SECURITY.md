@@ -17,3 +17,15 @@ Use **Security → Report a vulnerability** on this repository if GitHub private
 - Configure least-privilege access and validate authentication/authorization on the server for any service that stores user data.
 
 `.gitignore` helps prevent accidental new commits, but cannot protect secrets already tracked by Git or published in history.
+
+
+## V5 desktop threat model and privacy
+
+- The Electron renderer uses sandboxing and context isolation. IPC actions must validate the trusted window frame; user content is not a shell command or file path.
+- The optional AI interface only connects to local 127.0.0.1 port 11434 and the two approved Ollama endpoints. There is **no** automatic model installation, Internet model upload or remote server fallback. Another local process could impersonate Ollama; only use a trusted machine.
+- Only the user's question and numeric-only, redacted diagnostic fields are passed to the local model after explicit approval. Do not enter secrets in AI questions. The model may return dangerous or inaccurate suggestions; PC Doctor never executes model output.
+- The maintenance preview creates a short-lived, single-use confirmation token. DNS-cache flushing and PC Doctor's HTTP-cache clearing do not change user files, installed apps or Windows security options. These cache actions are not reversible.
+- History and benchmark summaries are **locally stored, unencrypted** in the browser/Electron profile after opt-in. Do not share your profile or disk without protecting it. The maintenance audit has only action identifiers, timestamps and success/failure.
+- Hardware inventory excludes serial numbers and UUIDs but manufacturer/model details and local process names can still be sensitive. They stay in the active app, not in routine summary exports.
+- Temporary-file disk tests create a bounded file in the OS temporary directory and delete it when finished; interruptions such as power loss can leave files until OS cleanup. Do not treat results as verified physical SSD speed.
+- The FPS CSV analyzer reads user-selected files locally; no file content is uploaded by PC Doctor.
