@@ -155,7 +155,7 @@ const NAV_ITEMS = [
   { id: 'advisor', label: 'Upgrade Advisor', Icon: MonitorUp },
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v5.1.0'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v6.4.0'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -263,7 +263,7 @@ export default function App() {
           ))}
         </nav>
         <div className="sidebar-install">
-          <p className="eyebrow">WINDOWS APP · V5.1</p>
+          <p className="eyebrow">WINDOWS APP · V6.4</p>
           <strong>Private diagnostics without subscriptions</strong>
           <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
             Get Windows installer <ArrowUpRight size={15}/>
@@ -275,7 +275,7 @@ export default function App() {
       <main>
         <header>
           <div>
-            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V5.1</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V6.4</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
             <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history','optimize'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
@@ -378,7 +378,7 @@ export default function App() {
 
         </> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : activeTab === 'optimize' ? <OptimizationStudio data={data} demo={isDemoMode} onNavigate={setActiveTab}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V5.1 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V6.4 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )

@@ -31,3 +31,14 @@ Use **Security → Report a vulnerability** on this repository if GitHub private
 - The FPS CSV analyzer reads user-selected files locally; no file content is uploaded by PC Doctor.
 
 - The optional 8-echo network stability check sends ICMP echo to fixed public IP 1.1.1.1 only after a separate on-screen consent box and button. It does not continuously monitor traffic, run a speed test or access custom addresses. Network routes and ping observations are not saved. ICMP may be blocked and output parsing may be limited by Windows language/locale.
+
+
+## V6 optimization trust boundaries
+
+V6 native optimization IDs are hard-coded, limited to a short set of HKCU DWORD values and require an explicit read-and-dry-run preview, 60-second one-time token and matching confirmation. No renderer-controlled registry paths, executables, arbitrary URLs or shell commands are accepted. The saved previous Windows preference is persisted locally before applying the change, with verification and a recovery journal for crashes or failed writes. **Restoration is manually triggered**, and Windows changes made outside the app are never overwritten automatically. The journal is stored locally without encryption, so Windows account security still matters.
+
+Steam game discovery reads bounded appmanifest files under detected libraryfolders. It does not modify game files, disable anti-cheat or enumerate arbitrary home directories. Session monitoring samples a limited process listing only when the user explicitly starts the session and stops when the panel unmounts. Visible process names may be sensitive and are not saved by this feature.
+
+The optional network path test contacts the OS-reported IPv4 gateway and fixed public address 1.1.1.1 only after consent. It is an ICMP check, not a speed test or authoritative ISP fault detector. The experiment lab processes user-selected CSV files locally and exports only aggregate results and user-entered experiment descriptions. No capture files are automatically stored.
+
+The changes are audited in automated tests, **not independently security-certified** or proven on multiple physical Windows devices. Users must not treat optimizer settings, FPS intervals or local AI answers as certified repair instructions.

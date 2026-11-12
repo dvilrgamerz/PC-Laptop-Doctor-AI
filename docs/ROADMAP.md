@@ -1,6 +1,6 @@
-# PC Laptop Doctor AI — V1 to V5 implementation audit
+# PC Laptop Doctor AI — V1 to V6 implementation audit
 
-**Current target: V5.1 preview.** Every main roadmap area has a user-facing workflow, but “complete” does not mean certified autonomous repairs, fully verified upgrades, or hardware-independent benchmark accuracy.
+**Current target: V6.4 preview.** Every main roadmap area has a user-facing workflow, but “complete” does not mean certified autonomous repairs, fully verified upgrades, or hardware-independent benchmark accuracy.
 
 ## V1 — Read-only diagnostics
 
@@ -72,7 +72,25 @@
 - [ ] Verified per-game configuration presets or automatic game process management
 - [ ] Windows device-matrix validation and signed installers
 
-## Beyond V5
+## V6.0–V6.4 — Actual Windows controls, Steam and experiments
+
+- [x] Four typed, allowlisted Windows HKCU preference controls with exact value preview and one-time approval
+- [x] Persistent per-setting original values, verify-after-apply and manual recovery after interrupted transactions
+- [x] Reject unknown current values, unsupported platforms and unexpected out-of-app modifications
+- [x] Four advisory profiles with on-screen recommendations only; retain 23 reviewed V5.1 options
+- [x] Read-only Steam app manifests with bounded game inventory; no game launching or files modified
+- [x] User-started session process snapshots without auto-killing apps
+- [x] User-approved six-packet gateway vs external ICMP comparison with uncertainty
+- [x] 3–8 matched game frame-time captures per condition, variability, aggregate FPS/1% low and bootstrap interval
+- [x] Regression tests and Windows prerelease packaging with checksum manifest
+- [ ] Ten **distinct new** Windows optimizations: only four added in V6 (six total including legacy)
+- [ ] Per-game verified configuration edits with backup/restore and anti-cheat compatibility review
+- [ ] First-party FPS capture, automated background process management, controlled bufferbloat testing
+- [ ] Physical Windows device matrix, independent benchmark superiority, signed installer
+
+See [V6 implementation and competition audit](V6_IMPLEMENTATION.md). User-facing V6 workflows are present, but competitor feature parity has **not** been established.
+
+## Beyond V6
 
 - Windows code signing, vetted update service and installer trust reputation
 - Portable app profile/data lifecycle and improved local encryption

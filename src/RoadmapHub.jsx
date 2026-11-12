@@ -7,6 +7,7 @@ import LocalModelPanel from './LocalModelPanel.jsx'
 import HardwareInspector from './HardwareInspector.jsx'
 import DiskPanel from './DiskPanel.jsx'
 import FpsLab from './FpsLab.jsx'
+import V6ExperimentPanel from './V6ExperimentPanel.jsx'
 
 const safeStorage=()=>{try{return window.localStorage}catch{return null}}
 const prompts=[
@@ -122,6 +123,7 @@ function HistoryLab({data,analysis,demo}){
     </section>
     <DiskPanel demo={demo}/>
     <FpsLab/>
+    <V6ExperimentPanel/>
     {message&&<p className="hub-message" role="status">{message}</p>}
   </div>
 }
