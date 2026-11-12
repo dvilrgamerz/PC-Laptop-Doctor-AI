@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('doctor', {
   getHardwareInventory: () => ipcRenderer.invoke('doctor:hardware-inventory'),
   getTopProcesses: () => ipcRenderer.invoke('doctor:top-processes'),
   runDiskCheck: () => ipcRenderer.invoke('doctor:disk-check'),
+  runNetworkQuality: () => ipcRenderer.invoke('doctor:network-quality'),
   previewMaintenance: action => ipcRenderer.invoke('doctor:maintenance-preview', action),
   applyMaintenance: (action, token) => ipcRenderer.invoke('doctor:maintenance-apply', action, token),
   getMaintenanceHistory: () => ipcRenderer.invoke('doctor:maintenance-history'),
