@@ -3,13 +3,57 @@
 <p align="center"><a href="https://github.com/dvilrgamerz"><strong>Developer profile</strong></a> · <a href="https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI"><strong>Source</strong></a></p>
 <!-- /DVILR PROJECT COVER -->
 
-# 🩺 PC & Laptop Doctor AI
+# PC & Laptop Doctor AI
+
+**Read-only Windows hardware diagnostics with a guided installer, portable EXE, and web preview.**
+
+## Download for Windows (v1.1)
+
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/latest)
+
+Two 64-bit Windows editions are produced by the verified build pipeline:
+
+| Edition | File | What it does |
+| --- | --- | --- |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-1.1.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-1.1.0-x64.exe | Run without installing |
+
+### Setup steps
+
+1. Open **Releases** in the GitHub repository and select the latest release.
+2. Under **Assets**, download the Setup.exe (recommended) or Portable.exe.
+3. Start the installer, select the installation scope and location, and complete the wizard.
+4. Launch the application from Start, the desktop, or directly via the portable file.
+5. Press **Run Full Diagnosis** to inspect your computer. Use the new sidebar to review hardware details.
+6. Export a privacy-conscious JSON report, if needed. Redacted summaries can still contain identifiable hardware characteristics.
+
+### Safety and publisher verification
+
+**The first builds are unsigned preview programs.** Windows may display an unknown-publisher SmartScreen warning. Download only from this repository's own release assets, optionally compare the executable's SHA-256 to the release's **SHA256SUMS.txt**, and independently review the source. Never disable security protections for unfamiliar files.
+
+The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The application does not delete files, kill processes, modify the registry, scan other devices, or perform hidden optimizations.
+
+The diagnostics engine uses **explicit thresholds, not a trained AI model**. Temperature readings, capacity estimates and hardware information may be unavailable on some devices. The health score is a guide, not a guarantee that a computer is fault-free.
+
+### Build locally
+
+Requires Node.js 22+ and npm. On Windows x64:
+
+~~~powershell
+npm install
+npm test
+npm run dist:win
+~~~
+
+The generated setup and portable executables are written to **release/**. For development, run **npm run dev**. GitHub Actions also builds the two executables on Windows and publishes a versioned prerelease when merged code passes the pipeline.
+
+## Project overview
 
 **Your local-first AI mechanic for Windows PCs and laptops.**
 
 PC Doctor AI scans your computer, turns confusing system data into a simple health score, and explains the problems that deserve attention first.
 
-## ✨ V1 features
+## Diagnostic features
 
 - Live CPU load and processor details
 - RAM usage and memory-pressure detection
@@ -36,7 +80,7 @@ This is designed to make PC troubleshooting understandable even if you do not kn
 Requirements:
 
 - Windows 10/11 recommended
-- Node.js 20+ recommended
+- Node.js 22+ recommended
 - npm
 
 ```bash
@@ -92,8 +136,11 @@ Ask questions such as “Why is my laptop slow?” and “What should I upgrade 
 ### V4 — Hardware Advisor
 Upgrade recommendations based on the machine and workload.
 
-### V5 — Before/After
-Benchmarks, optimization history, shareable PC Doctor report cards, and packaged Windows installer.
+### V1.1 — Installer and diagnostic workspace ✅
+Windows setup and portable EXE builds, interactive diagnostic views, updated Electron runtime and privacy-conscious reports.
+
+### V5 — History and benchmarks
+Future work: reproducible benchmarks and user-approved local long-term history.
 
 ## 🧰 Stack
 
