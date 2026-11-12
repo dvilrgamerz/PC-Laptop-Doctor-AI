@@ -9,7 +9,7 @@
 
 ## Download for Windows (v1.1)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/latest)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.1.0)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
