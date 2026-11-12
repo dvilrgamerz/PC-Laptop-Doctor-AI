@@ -1,8 +1,8 @@
 {
   "name": "pc-laptop-doctor-ai",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
-  "description": "Private read-only Windows diagnostics with explainable health checks and packaged installers.",
+  "description": "Local Windows PC diagnostics with guided repairs and user-approved reversible gaming settings",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",

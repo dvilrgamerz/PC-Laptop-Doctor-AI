@@ -1,7 +1,8 @@
 const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const { secureDoctorWindow } = require('./security.cjs')
 const path = require('path')
-const { execFile } = require('child_process')
+const { execFile, spawn } = require('child_process')
+const { createFixService } = require('./fixes.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -185,7 +186,48 @@ function createWindow() {
   }
 }
 
-app.whenReady().then(createWindow)
+function trustedDoctorFrame(event) {
+  const frame = event.senderFrame
+  if (!frame || frame !== event.sender.mainFrame) return false
+  const page = String(frame.url || '')
+  if (app.isPackaged) {
+    try {
+      return new URL(page).protocol === 'file:' &&
+        decodeURIComponent(new URL(page).pathname).toLowerCase().endsWith('/dist/index.html')
+    } catch { return false }
+  }
+  return page === 'http://localhost:5173/' || page === 'http://localhost:5173/index.html'
+}
+
+function openTaskManager() {
+  return new Promise((resolve, reject) => {
+    const task = spawn('taskmgr.exe', [], { detached: true, windowsHide: false, stdio: 'ignore' })
+    task.once('error', reject)
+    task.once('spawn', () => { task.unref(); resolve() })
+  })
+}
+
+app.whenReady().then(() => {
+  const fixes = createFixService({
+    stateFile: path.join(app.getPath('userData'), 'safe-fix-backups.json'),
+    battery: () => si.battery(),
+    openExternal: target => shell.openExternal(target),
+    openTaskManager
+  })
+  ipcMain.handle('doctor:fix-status', event => {
+    if (!trustedDoctorFrame(event)) return { supported: false, reason: 'Untrusted renderer' }
+    return fixes.status()
+  })
+  ipcMain.handle('doctor:apply-fix', (event, action) => {
+    if (!trustedDoctorFrame(event)) return { ok: false, error: 'Untrusted renderer' }
+    return fixes.perform(action)
+  })
+  ipcMain.handle('doctor:open-settings', (event, pageId) => {
+    if (!trustedDoctorFrame(event)) return { ok: false, error: 'Untrusted renderer' }
+    return fixes.openPage(pageId)
+  })
+  createWindow()
+})
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })

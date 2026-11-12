@@ -39,6 +39,7 @@ jobs:
         run: |
           node --check electron/main.cjs
           node --check electron/security.cjs
+          node --check electron/fixes.cjs && node --check electron/fixes.cjs
           node --check electron/preload.cjs
       - name: Build Windows Setup and Portable EXEs
         env:

@@ -5,18 +5,18 @@
 
 # PC & Laptop Doctor AI
 
-**Read-only Windows hardware diagnostics with a guided installer, portable EXE, and web preview.**
+**Windows hardware diagnostics, guided fix shortcuts, opt-in reversible gaming settings and packaged Windows EXEs.**
 
-## Download for Windows (v1.1)
+## Download for Windows (v1.2)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.1.0)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v1.2.0)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-1.1.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-1.1.0-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-1.2.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-1.2.0-x64.exe | Run without installing |
 
 ### Setup steps
 
@@ -31,7 +31,7 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 
 **The first builds are unsigned preview programs.** Windows may display an unknown-publisher SmartScreen warning. Download only from this repository's own release assets, optionally compare the executable's SHA-256 to the release's **SHA256SUMS.txt**, and independently review the source. Never disable security protections for unfamiliar files.
 
-The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The application does not delete files, kill processes, modify the registry, scan other devices, or perform hidden optimizations.
+The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The scan is read-only. Only the clearly labeled optional Fix & Gaming controls can change Windows Game Mode (one current-user registry value) or the active power plan after confirmation. The previous values are saved locally and can be restored. The application never deletes files, kills processes, scans other devices, or applies hidden optimizations.
 
 The diagnostics engine uses **explicit thresholds, not a trained AI model**. Temperature readings, capacity estimates and hardware information may be unavailable on some devices. The health score is a guide, not a guarantee that a computer is fault-free.
 
@@ -67,7 +67,7 @@ PC Doctor AI scans your computer, turns confusing system data into a simple heal
 - 0–100 health score
 - Prioritized diagnostic report with plain-English recommendations
 - Local-first architecture: diagnostic data stays on the computer
-- Read-only V1: it does **not** delete files or change Windows settings
+- Read-only diagnosis; optional explicitly approved gaming adjustments are separate from the scan
 
 ## 🎬 The demo
 
@@ -113,22 +113,25 @@ Those signals are converted into the health score and prioritized Doctor Report.
 
 V1 is intentionally read-only.
 
-- No registry edits
+- No registry edits during diagnostics (opt-in Game Mode changes one documented HKCU value)
 - No automatic process killing
 - No automatic file deletion
-- No hidden system changes
+- No hidden system changes; explicit consent and Restore controls for optional adjustments
 - No cloud account required
 - No telemetry included
 
-Future repair actions should always show the exact proposed change and require user approval.
+V1.2 Fix & Gaming actions describe each proposed change and require confirmation. Undo data is saved locally. If the power plan or Game Mode changes outside the app, the app declines to overwrite it.
 
 ## 🗺️ Roadmap
 
 ### V1 — Diagnose ✅
 Dashboard, live scan, health score, issue detection, hardware snapshot.
 
-### V2 — Safe Repair
-Guided startup cleanup, temporary-file cleanup, network repair, update checks, and restore points.
+### V1.2 — Safe Fix & Gaming Center ✅
+Scan-aware storage and RAM priorities, Windows Settings shortcuts, and optional reversible Game Mode and High performance power-plan changes.
+
+### V2 — More advanced safe repair (planned)
+Guided cleanup with item-level approval, update checks, restoration guidance and trustworthy before/after metrics. Never remove user files automatically.
 
 ### V3 — AI Doctor
 Ask questions such as “Why is my laptop slow?” and “What should I upgrade first?”
@@ -162,6 +165,19 @@ If this project helps you, consider starring the repo ⭐
 ## GitHub Pages deployment
 
 The repository has a GitHub Actions workflow (`.github/workflows/pages.yml`) that builds and uploads the static demo. To enable it, open **Settings → Pages → Build and deployment**, choose **GitHub Actions** as the source, save the setting, and rerun the failed Pages workflow. If the job fails at `actions/configure-pages` with `Get Pages site failed: Not Found`, the build has already succeeded; Pages is not yet enabled/configured for this repository. Do not add a token to source code to work around this setting.
+
+
+## Fix & Gaming Center (v1.2)
+
+Use the new **Fix & Gaming** sidebar tab after a diagnosis. The priority list identifies low storage (90%+), high RAM pressure (85%+) and heavy CPU use (90%+) without promising fake speed gains. Open Microsoft Windows Settings in one click to review **Storage recommendations, Startup apps, Installed apps, Game Mode, Graphics preferences, Power and Windows Update**. Task Manager is also available.
+
+**Two optional one-click actions (each requires a separate confirmation):**
+- **Enable Windows Game Mode:** changes only `HKCU\\Software\\Microsoft\\GameBar\\AutoGameModeEnabled`, a documented current-user setting. PC Doctor preserves the previous value and offers **Restore original**.
+- **High performance power plan:** switches only to an **already installed** standard High performance plan using `powercfg`. It requires AC power on a laptop and offers **Restore original**. If the plan is unavailable, the app refuses and points to Windows settings instead.
+
+These actions save rollback state locally under the application user-data directory; they work in the Windows executable, **not** in the browser sample demo. PC Doctor never uses registry cleaner scripts, deletes files, silently stops services, forces a GPU overclock, or automatically disables Windows Security/Defender. The buttons do not guarantee more FPS. In some workloads, high performance increases fan noise, heat and electricity use. Restore the prior plan when finished gaming.
+
+The measurements shown on the dashboard are point-in-time samples. Re-run diagnostics after manually clearing space or closing applications to observe changes, but a score difference alone does not establish the cause.
 
 ## Diagnostic scan comparison and safe export
 
