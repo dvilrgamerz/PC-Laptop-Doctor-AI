@@ -58,7 +58,7 @@ export function answerDoctor(question, scan, workload='general') {
   const reasons=[]
   const steps=[]
   let title='Check the diagnostic evidence',explanation='This question is not recognized precisely. The suggestions below cover the available hardware snapshot.'
-  const upgrade=/upgrade|new ram|ssd|hardware|replace|buy/.test(q)
+  const upgrade=/upgrade|new ram|new ssd|new drive|hardware upgrade|replace|buy/.test(q)
   const storageQuery=/space|disk|ssd|storage|drive|full/.test(q)
   const memQuery=/memory|ram|freeze|lag|slow|stutter|multitask/.test(q)
   const gaming=/game|fps|gaming|frame|valorant|fortnite|roblox/.test(q)
