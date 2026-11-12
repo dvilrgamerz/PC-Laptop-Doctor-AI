@@ -20,6 +20,23 @@ Official references:
 
 These are **vendor claims / product descriptions**, not independent measured FPS results. The number of tools offered is not a performance benchmark.
 
+## Additional competitors and differentiators
+
+**Microsoft PC Manager** emphasizes cleanup, storage management, Windows utilities and security health checks. It is the relevant comparison for non-gamers and low-storage laptops—not only Hone's gaming workflow. Official source: https://pcmanager.microsoft.com/en-us
+
+**Chris Titus Tech WinUtil** is an established open-source Windows utility with install, tweak, fix and update features. Its documented Standard/Minimal/Advanced presets and Undo functions set a high bar for transparent, auditable system changes. Some operations require Administrator privileges and can affect Windows behavior; the PC Doctor approach deliberately avoids running arbitrary external scripts. Official sources:
+- https://github.com/ChrisTitusTech/winutil
+- https://github.com/ChrisTitusTech/winutil/blob/main/docs/src/content/docs/guides/tweaks.mdx
+
+| Product | Strongest current described feature | PC Doctor differentiator to develop |
+| --- | --- | --- |
+| Hone.gg | Broad game-oriented presets and automated background management | Scan-driven, evidence-linked actions with measured game frame-time comparison |
+| Microsoft PC Manager | Storage cleanup, security and general-purpose Windows tools | Gaming-specific priorities, optional offline advice, portable edition and open-source code |
+| WinUtil | Transparent open-source Windows tweaks, package installs, undo, presets | Low-permission diagnostics first and per-action explanations rather than whole-system tweak bundles |
+| PC Laptop Doctor AI V5.1 | Hardware snapshot, 23 reviewed guided options, 5 advisory presets, opt-in network test | Must still validate hardware coverage, native game FPS measurement and credible measured wins |
+
+No claim of being faster, safer or feature-complete relative to these products has been independently tested. "Reviewed option" is not synonymous with an optimization that has been applied.
+
 ## Opportunity matrix
 
 | User value | Hone.gg described behavior | PC Doctor V5.1 implementation | Further work |
