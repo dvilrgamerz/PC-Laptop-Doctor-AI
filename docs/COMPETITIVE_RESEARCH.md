@@ -30,8 +30,20 @@ These are **vendor claims / product descriptions**, not independent measured FPS
 | Actually applying a setting | Selected optimizations applied by vendor app | Two existing consented/reversible Windows settings; additional Windows UI links; two maintenance actions separately approved | More safe reversible changes after security review |
 | Background process control | Vendor says game mode can limit selected tasks/services | Show which processes use RAM; no auto-kill or service disruption | Optional explicit per-app startup UI without protected process termination |
 | Gaming results | Vendor markets FPS/latency improvements (may vary) | Imported frame-time CSV comparison; clear slowest-1% definition, no unsupported boost percentage | Repeated identical-scene tests and confidence intervals |
+| Network diagnosis | PC/network delay optimizations described | User-approved 8-echo ICMP latency/loss check to a single fixed public destination | Game-server route analysis and larger statistically meaningful sample sets |
 | Privacy and undo | Restorable supported settings | Explicit risk disclosure; restore current Game Mode/power plan; no hidden automatic changes | Independent security audit and Windows code signing |
 | Pricing | Free tier with optimization allowance; Premium removes limit | Open-source repository; no in-app paid gating at V5.1 | Sustainable support, documentation and maintainer policies |
+
+## Community feedback as unverified qualitative context
+
+Community discussions report mixed or inconsistent results from PC tuning products, with demands for transparent source code, benchmarking before/after changes and the ability to restore settings. These discussions contain anecdotal claims that **must not** be interpreted as established proof of specific harms or improvements.
+
+Examples (anecdotal, not scientific):
+- https://www.reddit.com/r/OptimizedGaming/comments/1kye9u0/warning_avoid_any_tweak_or_optimization_tools/
+- https://www.reddit.com/r/OptimizedGaming/comments/1xao425/what_would_make_you_actually_trust_a_pc/
+- https://www.reddit.com/r/pcmasterrace/comments/1ovf2mi/dont_use_hone_optimizer/
+
+The practical response is source transparency and reproducible controlled tests, **not** claiming another developer's app is malware or that our app is categorically faster.
 
 ## Evidence-based choices
 
