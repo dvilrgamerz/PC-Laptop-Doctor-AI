@@ -54,7 +54,7 @@ function saveStore(file, data) {
   }
 }
 
-function createFixService({ stateFile, exec = command, battery = async () => ({hasBattery:false}), openExternal, openTaskManager }){
+function createFixService({ stateFile, exec = command, battery = async () => ({hasBattery:false}), openExternal, openTaskManager, platform = process.platform }){
   if (!stateFile) throw new Error('Missing state file')
   let busy = false
   const run = (exe, args) => exec(exe, args)
@@ -80,7 +80,7 @@ function createFixService({ stateFile, exec = command, battery = async () => ({h
     }
   }
   async function status() {
-    if(process.platform!=='win32')return {supported:false,reason:'Windows desktop features only'}
+    if(platform!=='win32')return {supported:false,reason:'Windows desktop features only'}
     const saved=readStore(stateFile)
     const result={supported:true,canRestore:{performance:!!saved.performance,gameMode:!!saved.gameMode}}
     try {result.activePower=await currentPower();result.highPerformanceAvailable=(await plans()).includes(HIGH_PERFORMANCE)}
@@ -89,7 +89,7 @@ function createFixService({ stateFile, exec = command, battery = async () => ({h
     return result
   }
   async function perform(action) {
-    if(process.platform!=='win32')return {ok:false,error:'This action requires the installed Windows app.'}
+    if(platform!=='win32')return {ok:false,error:'This action requires the installed Windows app.'}
     if(!['enableGameMode','restoreGameMode','enablePerformance','restorePerformance'].includes(action))
       return {ok:false,error:'Unknown fix action'}
     if(busy)return {ok:false,error:'Another fix is in progress.'}
@@ -100,6 +100,7 @@ function createFixService({ stateFile, exec = command, battery = async () => ({h
         if(saved.gameMode)return {ok:false,error:'Game Mode was already changed by PC Doctor. Restore it first.'}
         const gm=await gameMode()
         if(!gm.available)return {ok:false,error:'Game Mode could not be read safely. Open Windows Game Mode settings instead.'}
+        if(![null,0,1].includes(gm.value)) return {ok:false,error:'Windows reported an unexpected Game Mode value; use Settings instead.'}
         if(gm.value===1)return {ok:true,changed:false,message:'Windows Game Mode is already enabled.'}
         const backup={...saved,gameMode:{before:gm.value,applied:1}}
         saveStore(stateFile,backup) // Persist previous value before changing Windows.
@@ -150,7 +151,7 @@ function createFixService({ stateFile, exec = command, battery = async () => ({h
     } finally {busy=false}
   }
   async function openPage(id){
-    if(process.platform!=='win32')return {ok:false,error:'Open settings is available in the Windows app.'}
+    if(platform!=='win32')return {ok:false,error:'Open settings is available in the Windows app.'}
     const target=SETTING_PAGES[id]
     if(!target)return {ok:false,error:'Unknown Windows settings shortcut'}
     try{
