@@ -41,6 +41,10 @@ jobs:
           node --check electron/security.cjs
           node --check electron/fixes.cjs && node --check electron/fixes.cjs
           node --check electron/preload.cjs
+          node --check electron/local-llm.cjs
+          node --check electron/hardware.cjs
+          node --check electron/disk-check.cjs
+          node --check electron/maintenance.cjs
       - name: Build Windows Setup and Portable EXEs
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
