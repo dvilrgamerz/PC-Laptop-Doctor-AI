@@ -323,3 +323,25 @@ footer a{color:#85e7eb;text-decoration:none}
 .repair-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .repair-actions button{white-space:nowrap}
 @media(max-width:700px){.repair-actions{align-items:stretch}.repair-actions button{flex:1;justify-content:center}}
+
+
+/* User-started eight-sample ICMP check — no background network probing */
+.network-check{display:flex;flex-direction:column;gap:13px;margin:0}
+.network-check-header{display:flex;align-items:flex-start;gap:12px}
+.network-check-header svg{color:#7ae4d9;flex:0 0 auto}
+.network-check h2{font-size:20px;margin:5px 0 0}
+.network-check>p{font-size:12px;line-height:1.65;color:#a2c2d0;margin:0}
+.network-check-consent{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:#c4e2e7;line-height:1.6;cursor:pointer}
+.network-check-consent input{width:17px;height:17px;accent-color:#4fdfca;flex:0 0 auto}
+.network-check-go{align-self:flex-start;background:#64e0ca;color:#022f34;border:0;border-radius:10px;padding:12px 15px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:7px}
+.network-check-go:disabled{cursor:not-allowed;opacity:.45}
+.network-check-go:focus-visible,.network-check-consent input:focus-visible{outline:2px solid #8afce3;outline-offset:3px}
+.network-check-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.network-check-stats>div{padding:14px;background:#103244;border:1px solid #2f6373;border-radius:10px;display:flex;flex-direction:column;gap:8px}
+.network-check-stats small{font-size:10px;color:#91b4c5}
+.network-check-stats strong{font-size:20px}
+.network-check-stats p{grid-column:1/-1;margin:0;color:#a2b9c6;font-size:11px;line-height:1.6}
+.network-check-note{padding:11px;border:1px solid #386e77;background:#123741;border-radius:10px;display:flex;gap:9px;align-items:flex-start;color:#bce9e1;font-size:12px}
+.network-check-caution{display:flex;gap:9px;align-items:flex-start;color:#8db6c3;font-size:11px!important}
+.network-check-caution svg{color:#63cfb6;flex:0 0 auto}
+@media(max-width:500px){.network-check-stats{grid-template-columns:1fr}}
