@@ -4,6 +4,7 @@ import {answerDoctor,hardwareAdvice} from './doctorEngine.mjs'
 import {makeHistoryEntry,readHistory,isHistoryEnabled,setHistoryEnabled,appendHistory,clearHistory,compareHistory} from './history.mjs'
 import {runQuickBenchmark,readBenchmarks,addBenchmark,clearBenchmarks} from './benchmark.mjs'
 
+const safeStorage=()=>{try{return window.localStorage}catch{return null}}
 const prompts=[
   'Why is my laptop slow?',
   'How can I improve gaming FPS?',
@@ -52,28 +53,28 @@ function Advisor({data,demo}) {
   </div>
 }
 function HistoryLab({data,analysis,demo}){
-  const [enabled,setEnabled]=useState(()=>isHistoryEnabled(window.localStorage))
-  const [entries,setEntries]=useState(()=>readHistory(window.localStorage))
-  const [benchmarks,setBenchmarks]=useState(()=>readBenchmarks(window.localStorage))
+  const [enabled,setEnabled]=useState(()=>isHistoryEnabled(safeStorage()))
+  const [entries,setEntries]=useState(()=>readHistory(safeStorage()))
+  const [benchmarks,setBenchmarks]=useState(()=>readBenchmarks(safeStorage()))
   const [latest,setLatest]=useState(null)
   const [running,setRunning]=useState(false)
   const [message,setMessage]=useState('')
   const [clearConfirm,setClearConfirm]=useState(false)
-  useEffect(()=>setEntries(readHistory(window.localStorage)),[data])
+  useEffect(()=>setEntries(readHistory(safeStorage())),[data])
   const matching=entries.filter(x=>x.mode===(demo?'sample':'desktop'))
   const first=matching[0],last=matching[matching.length-1],delta=compareHistory(first,last)
   function toggle(next){
-    try{setHistoryEnabled(window.localStorage,next);setEnabled(next);setMessage(next?'Future scans and CPU checks may be stored locally.':'Recording paused. Previously saved entries remain until you delete them.')}
+    try{setHistoryEnabled(safeStorage(),next);setEnabled(next);setMessage(next?'Future scans and CPU checks may be stored locally.':'Recording paused. Previously saved entries remain until you delete them.')}
     catch{setMessage('Local storage is unavailable. No history was recorded.')}
   }
   function saveCurrent(){
     if(!enabled||!data)return
-    try{const next=appendHistory(window.localStorage,makeHistoryEntry(data,analysis,{demo}));setEntries(next);setMessage('Summary saved locally. No IP addresses, serials or startup app names were stored.')}
+    try{const next=appendHistory(safeStorage(),makeHistoryEntry(data,analysis,{demo}));setEntries(next);setMessage('Summary saved locally. No IP addresses, serials or startup app names were stored.')}
     catch{setMessage('Could not save summary. The scan remains available on screen.')}
   }
   function wipe(){
     if(!clearConfirm){setClearConfirm(true);return}
-    try{clearHistory(window.localStorage);clearBenchmarks(window.localStorage);setEntries([]);setBenchmarks([]);setLatest(null);setMessage('Saved scan summaries and benchmark history deleted from this profile.')}
+    try{clearHistory(safeStorage());clearBenchmarks(safeStorage());setEntries([]);setBenchmarks([]);setLatest(null);setMessage('Saved scan summaries and benchmark history deleted from this profile.')}
     catch{setMessage('Could not clear this profile storage.')}
     setClearConfirm(false)
   }
@@ -83,7 +84,7 @@ function HistoryLab({data,analysis,demo}){
     try{
       const result=await runQuickBenchmark()
       setLatest(result)
-      if(enabled){setBenchmarks(addBenchmark(window.localStorage,result,true))}
+      if(enabled){setBenchmarks(addBenchmark(safeStorage(),result,true))}
       setMessage('CPU check complete. This is a synthetic JS measurement, not game FPS or a standardized CPU score.')
     } catch(error){setMessage('CPU check failed: '+(error?.message||'Unknown error'))}
     finally{setRunning(false)}
