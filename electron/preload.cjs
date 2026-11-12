@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld('doctor', {
   previewV6: (id,mode) => ipcRenderer.invoke('doctor:v6-preview',id,mode),
   confirmV6: (id,mode,token) => ipcRenderer.invoke('doctor:v6-confirm',id,mode,token),
   scanSteamLibrary: () => ipcRenderer.invoke('doctor:v6-games'),
+  runV6NetworkPath: () => ipcRenderer.invoke('doctor:v6-network-path'),
   previewMaintenance: action => ipcRenderer.invoke('doctor:maintenance-preview', action),
   applyMaintenance: (action, token) => ipcRenderer.invoke('doctor:maintenance-apply', action, token),
   getMaintenanceHistory: () => ipcRenderer.invoke('doctor:maintenance-history'),
