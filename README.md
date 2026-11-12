@@ -132,6 +132,7 @@ Added a new **Optimization Studio** tab inspired by studying the scope of Window
 - Each option explains **what it changes, risk, undo path, and links to vendor documentation**. Supported native Windows settings open directly.
 - Existing actual Game Mode/power settings remain opt-in and reversible. DNS and app-cache maintenance remain explicitly confirmed and are not claimed to improve FPS.
 - No paywall or artificial limit on the number of reviewed options in the open-source UI.
+- **User-approved network quality check:** sends 8 ICMP packets to fixed public address 1.1.1.1 and reports average/min/max response and packet loss when Windows output provides trustworthy values. Requires explicit approval and Windows desktop app. This is not your in-game server ping, an internet speed test, or a true jitter benchmark.
 
 **Competitive feature and safety research:** [docs/COMPETITIVE_RESEARCH.md](docs/COMPETITIVE_RESEARCH.md). **Development tasks:** [Issue #7](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/7) (research and benchmarks), [Issue #8](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/8) (Windows validation and signing).
 
