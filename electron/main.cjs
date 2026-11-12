@@ -11,6 +11,8 @@ const {runNetworkQuality} = require('./network-quality.cjs')
 const {createOptimizer} = require('./optimizer-v6.cjs')
 const {createGameLibrary} = require('./game-library.cjs')
 const {createNetworkPath} = require('./network-path.cjs')
+const {createGameFocus} = require('./game-focus.cjs')
+const {createTempCleaner} = require('./temp-cleaner.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -224,13 +226,21 @@ function openTaskManager() {
   })
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   const fixes = createFixService({
     stateFile: path.join(app.getPath('userData'), 'safe-fix-backups.json'),
     battery: () => si.battery(),
     openExternal: target => shell.openExternal(target),
     openTaskManager,
     openSystemProtection
+  })
+  const gameFocus=createGameFocus({
+    fixes,
+    stateFile:path.join(app.getPath('userData'),'game-focus-session-v1.json'),
+    readBattery:()=>si.battery()
+  })
+  const tempCleaner=createTempCleaner({
+    trashItem:(target)=>shell.trashItem(target)
   })
   const localDoctor = createLocalDoctor()
   const inspector = createHardwareInspector({si})
@@ -243,6 +253,26 @@ app.whenReady().then(() => {
   const gameLibrary=createGameLibrary()
   const networkPath=createNetworkPath({si})
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v7-boost-status', event=>guard(event)
+    ? gameFocus.state() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-boost-preview', (event,profile)=>guard(event)
+    ? gameFocus.preview(profile) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-boost-start', (event,profile,token)=>guard(event)
+    ? gameFocus.start(profile,token) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-boost-stop', event=>guard(event)
+    ? gameFocus.stop() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-temp-scan', event=>guard(event)
+    ? tempCleaner.scan() : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-temp-recycle', (event,token,ids)=>guard(event)
+    ? tempCleaner.recycle(token,ids) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-launch-steam', async (event,appid)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    if(typeof appid!=='string'||!/^\d{1,15}$/.test(appid))return {ok:false,error:'Invalid game ID'}
+    const games=await gameLibrary.inspect()
+    if(!games.ok||!games.games?.some(g=>g.appid===appid))return {ok:false,error:'Selected game is not in the detected Steam library.'}
+    try{await shell.openExternal('steam://rungameid/'+appid);return {ok:true,message:'Passed the selected Steam game to its registered launcher. Windows/Steam may ask for confirmation.'}}
+    catch{return {ok:false,error:'Steam did not accept the launch request. No game files were modified.'}}
+  })
   ipcMain.handle('doctor:v6-catalog', event => guard(event) ? optimizer.listing():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v6-preview', (event,id,mode) => guard(event) ? optimizer.preview(id,mode):{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v6-confirm', (event,id,mode,token) => guard(event) ? optimizer.perform(id,mode,token):{ok:false,error:'Untrusted renderer'})
@@ -279,6 +309,16 @@ app.whenReady().then(() => {
   ipcMain.handle('doctor:open-settings', (event, pageId) => {
     if (!trustedDoctorFrame(event)) return { ok: false, error: 'Untrusted renderer' }
     return fixes.openPage(pageId)
+  })
+  // A prior crash could leave app-managed Windows preferences in effect.
+  // Never overwrite external changes: the existing fix service verifies state before restoring.
+  try { await gameFocus.stop() } catch { /* Recovery remains visible in the app. */ }
+  let quitting=false
+  app.on('before-quit',event=>{
+    if(quitting)return
+    event.preventDefault()
+    quitting=true
+    Promise.resolve(gameFocus.stop()).catch(()=>{}).finally(()=>app.quit())
   })
   createWindow()
 })
