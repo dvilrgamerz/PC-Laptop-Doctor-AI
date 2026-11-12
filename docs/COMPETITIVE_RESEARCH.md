@@ -102,3 +102,14 @@ This protocol is **not yet run**; no benchmark results, superior FPS claim, user
 
 - [Research and competitor safety matrix](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/7)
 - [Physical validation, signing and performance measurements](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/8)
+
+
+## V7 comparison update (12 November 2026): Razer Cortex and Hone
+
+Razer Cortex publicly describes its Game Booster as managing non-essential background applications during gaming and restoring behavior when finished. Its System Booster scans and removes junk files, and Booster Prime offers game-specific optimized settings for a limited set of supported games. Official: https://www.razer.com/cortex/booster and https://www.razer.com/cortex/booster-prime
+
+Hone describes one-click Game Mode profiles that can lower priority, suspend or terminate chosen background processes. It also cautions that performance varies by PC/game, and recommends testing the same scene. Official: https://support.hone.gg/hc/en-gb/articles/6031122574367-Game-Mode-What-It-Is-How-to-Use-It and https://hone.gg/blog/game-mode
+
+V7 implements a narrower, safer initial Game Focus using Windows Game Mode and AC-supported power profiles, plus selective Recycle Bin cleanup of old user Temp files. It **does not** claim the full process-management, game preset, auto-launcher or junk-cleaning feature breadth of either competitor. No measured head-to-head benchmark exists. The differentiator is visible review, reversible sessions and explicit refusal of unsupported operations.
+
+Before marketing V7 as faster or safer than a competitor, test actual games in controlled repeated scenes, evaluate failed recovery paths on real Windows devices and obtain code signing / independent security review.
