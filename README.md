@@ -5,18 +5,28 @@
 
 # PC & Laptop Doctor AI
 
-**Windows PC and gaming diagnostics, recoverable Windows preferences, Steam discovery, session monitoring and evidence-based performance comparisons. Local-first and open source.**
+**Simple, local-first Windows PC diagnostics with a real Game Focus session, selected temporary-file cleanup, Steam launching and measurable game performance experiments. Free and open source.**
 
-## Download for Windows (v6.4 preview)
+## Download V7 Game Focus — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v6.4.0)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.0.0-beta.1)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-6.4.0-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-6.4.0-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-7.0.0-beta.1-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-7.0.0-beta.1-x64.exe | Run without installing |
+
+### Three steps to start
+
+1. Install the Windows Setup edition or run Portable. Keep Windows security protections enabled.
+2. Click **Run Full Diagnosis**, then open **Game Boost & Cleanup** from the sidebar.
+3. Preview Game Focus settings or old temporary files, confirm exactly what should change, and use **Stop & Restore** after gaming.
+
+Game Focus uses supported Windows Game Mode and optional standard High performance on AC power. It does **not** close background apps, edit game files, or guarantee FPS gains. The cleaner only moves selected stale top-level user Temp `.tmp`/`.log` files to Recycle Bin; space is not reclaimed until you empty the bin.
+
+**[Testing guide for friends](docs/FRIEND_TESTING.md)** · **[Submit a bug report](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/new?template=bug_report.yml)** · **[V7 feature/status details](docs/V7_RELEASE.md)**
 
 ### Setup steps
 
@@ -29,7 +39,7 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 
 ### Safety and publisher verification
 
-**The first builds are unsigned preview programs.** Windows may display an unknown-publisher SmartScreen warning. Download only from this repository's own release assets, optionally compare the executable's SHA-256 to the release's **SHA256SUMS.txt**, and independently review the source. Never disable security protections for unfamiliar files.
+**V7 is an unsigned public beta, not yet a verified stable release.** Windows may display an unknown-publisher SmartScreen warning. Download only from this repository's own release assets, optionally compare the executable's SHA-256 to the release's **SHA256SUMS.txt**, and independently review the source. Never disable security protections for unfamiliar files.
 
 The installer may request Windows elevation if you select a system-wide installation. Routine diagnostics do not need admin permissions. The scan is read-only. Optional Fix & Gaming controls can change Windows Game Mode, the active power plan, flush the Windows DNS resolver cache, or clear only PC Doctor's own Electron HTTP cache after a separate explicit confirmation. Previous Game Mode and power-plan values are saved locally and can be restored. Cache clearing has no undo and is described separately. The application never deletes personal files, kills processes, downloads AI models automatically, alters third-party game/anti-cheat files, or applies hidden optimizations. Optional read-only Steam detection inspects application manifests from known library locations.
 
@@ -121,6 +131,16 @@ V1 is intentionally read-only.
 - No telemetry included
 
 V1.2 Fix & Gaming actions describe each proposed change and require confirmation. Undo data is saved locally. If the power plan or Game Mode changes outside the app, the app declines to overwrite it.
+
+## V7 — Simpler Game Boost & Cleanup
+
+- **Beginner-first dashboard:** clear shortcuts to Scan, Game Boost & Cleanup, and FPS comparisons, with a new prominent sidebar entry.
+- **Session-based Game Focus:** Standard and Plugged-in profiles preview current Windows preference eligibility, require a one-time confirmation, and apply Game Mode and optionally High performance when supported. Existing saved preferences are never overwritten. Normal app exit and subsequent startup attempt guarded restoration.
+- **Steam launcher:** detect installed Steam games from local manifests and launch only a verified app ID through Steam. Other launchers not yet supported.
+- **Safe storage cleanup:** inspect only old *top-level* user Temp `.tmp` / `.log` files, show name/age/size and let the user select individual files. Revalidate each file before moving it to Recycle Bin; no permanent deletion, system-folder traversal or automatic cleanup. Recycle Bin uses disk space until emptied.
+- **Public test guide:** detailed beta checklist, privacy-oriented bug report template and feature/limitation comparison with Razer Cortex and Hone.
+
+**Release status:** Public Windows beta for testers, **not** proven superior to Razer Cortex or Hone; lacks signed executables, real-device compatibility matrix, native game FPS capture, automatic supported-game configuration packs, and independent security audit. [Full V7 release audit](docs/V7_RELEASE.md).
 
 ## Version 6.4 — Gaming Optimization & Evidence Studio (preview)
 
