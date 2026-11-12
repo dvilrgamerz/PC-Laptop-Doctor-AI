@@ -9,7 +9,7 @@ export default function DiskPanel({demo}){
   const supported=!demo&&!!window.doctor?.runDiskCheck
   async function run(){
     if(!approved||busy||!supported)return
-    setBusy(true);setNote('Writing and reading a short temporary file. The app deletes it afterward.')
+    setBusy(true);setResult(null);setNote('Writing and reading a short temporary file. The app deletes it afterward.')
     try{
       const reply=await window.doctor.runDiskCheck()
       if(reply.ok){setResult(reply.result);setNote('Temporary-file check complete. This is NOT a standardized SSD benchmark.')}
