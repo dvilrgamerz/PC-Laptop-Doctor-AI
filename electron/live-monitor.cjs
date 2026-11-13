@@ -6,7 +6,7 @@ const GIB=1024**3
 const finite=n=>typeof n==='number'&&Number.isFinite(n)?n:null
 const clampPercent=n=>finite(n)===null?null:Math.round(Math.max(0,Math.min(100,n))*10)/10
 const decimals=n=>finite(n)===null?null:Math.round(n*10)/10
-function summarize({load,mem,disks,temperature,network}={}){
+function summarize({load,mem,disks,temperature,network,graphics}={}){
  const total=finite(mem?.total),used=finite(mem?.used)
  const ram=total>0&&used!==null ? clampPercent(100*used/total) : null
  const allDisks=(Array.isArray(disks)?disks:[]).filter(d=>finite(d?.size)>0)
@@ -19,11 +19,15 @@ function summarize({load,mem,disks,temperature,network}={}){
  const mainTemp=finite(temperature?.main)
  const maxTemp=finite(temperature?.max)
  const t=[mainTemp,maxTemp].find(v=>v!==null&&v>=0&&v<=125)||null
+ const controllers=Array.isArray(graphics?.controllers)?graphics.controllers:[]
+ const gpuReadings=controllers.map(g=>finite(g?.utilizationGpu)).filter(v=>v!==null&&v>=0&&v<=100)
+ const gpuPercent=gpuReadings.length?clampPercent(Math.max(...gpuReadings)):null
  const net=Array.isArray(network)?network[0]:network
  const down=finite(net?.rx_sec),up=finite(net?.tx_sec)
  return {
   at:new Date().toISOString(),
   cpuPercent:clampPercent(load?.currentLoad),
+  gpuPercent,
   ramPercent:ram,
   ramTotalGiB:total>0?decimals(total/GIB):null,
   ramAvailableGiB:finite(mem?.available)!==null?decimals(mem.available/GIB):null,
@@ -65,12 +69,13 @@ function createLiveMonitor({si,now=()=>Date.now(),intervalMs=MIN_INTERVAL_MS}={}
   if(last&&now()-at<intervalMs)return {ok:true,cached:true,...last}
   if(inFlight)return inFlight
   inFlight=(async()=>{
-   const [load,mem,disks,temperature,network] = await Promise.all([
+   const [load,mem,disks,temperature,network,graphics] = await Promise.all([
     readSafe(()=>si.currentLoad()),readSafe(()=>si.mem()),readSafe(()=>si.fsSize()),
     typeof si.cpuTemperature==='function'?readSafe(()=>si.cpuTemperature()):null,
-    typeof si.networkStats==='function'?readSafe(()=>si.networkStats()):null
+    typeof si.networkStats==='function'?readSafe(()=>si.networkStats()):null,
+    typeof si.graphics==='function'?readSafe(()=>si.graphics()):null
    ])
-   const metrics=summarize({load,mem,disks,temperature,network})
+   const metrics=summarize({load,mem,disks,temperature,network,graphics})
    const result={metrics,findings:classify(metrics)}
    last=result;at=now()
    return {ok:true,cached:false,...result}
