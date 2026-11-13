@@ -76,3 +76,64 @@ test('unsupported platforms reject activation, preview and disable',async()=>{
  assert.equal((await s.activate('x')).ok,false)
  assert.equal((await s.disable()).ok,false)
 })
+
+test('Windows startup is separate, opt-in, preview-bound and reversible',async()=>{
+ const f=fixture(),calls=[]
+ let openAtLogin=false
+ const loginStartup={
+  get:()=>openAtLogin,
+  set:enabled=>{calls.push(enabled);openAtLogin=enabled}
+ }
+ const s=createMonsterMode({autopilot:f.autopilot,tempCleaner:{
+  scan:async()=>({ok:true,token:'scan-token',files:[]}),
+  recycle:async()=>({ok:true,movedCount:0})
+ },gameFocus:{state:async()=>({session:null})},loginStartup,platform:'win32'})
+ const first=await s.preview({startWithWindows:true})
+ assert.equal(first.ok,true)
+ assert.equal(first.startWithWindows,true)
+ assert.ok(first.actions.some(a=>a.includes('automatically')))
+ assert.deepEqual(calls,[]) // preview cannot register login startup
+ assert.equal((await s.activate('forged-token')).ok,false)
+ assert.deepEqual(calls,[])
+ assert.equal((await s.activate(first.token)).ok,true)
+ assert.deepEqual(calls,[true])
+ assert.equal((await s.status()).startWithWindows,true)
+ assert.equal((await s.activate(first.token)).ok,false) // replay rejected
+ const stopped=await s.disable()
+ assert.equal(stopped.ok,true)
+ assert.deepEqual(calls,[true,false])
+ assert.equal((await s.status()).startWithWindows,false)
+})
+test('cannot silently enable login startup without a supported adapter',async()=>{
+ const f=fixture(),s=f.make()
+ assert.equal((await s.preview({startWithWindows:true})).ok,false)
+ assert.equal((await s.preview({startWithWindows:'true'})).ok,false)
+ assert.equal(f.configurations.length,0)
+ assert.equal((await s.preview({startWithWindows:false})).ok,true)
+})
+test('login registration failure is disclosed without misreporting care activation',async()=>{
+ const f=fixture()
+ let getCount=0
+ const s=createMonsterMode({autopilot:f.autopilot,tempCleaner:{
+  scan:async()=>({ok:true,token:'scan-token',files:[]}),
+  recycle:async()=>({ok:true,movedCount:0})
+ },gameFocus:{state:async()=>({session:null})},platform:'win32',
+ loginStartup:{get:()=>{getCount++;return false},set:()=>{throw Error('Blocked by Windows')}}})
+ const p=await s.preview({startWithWindows:true})
+ const started=await s.activate(p.token)
+ assert.equal(started.ok,true)
+ assert.match(started.warning,/startup/i)
+ assert.equal((await s.status()).startWithWindows,false)
+ const stopped=await s.disable()
+ assert.equal(stopped.ok,true)
+ assert.match(stopped.warning,/startup/i)
+ assert.ok(getCount>0)
+})
+test('Monster Mode appears exactly once on dashboard',()=>{
+ const fs=require('node:fs')
+ const path=require('node:path')
+ const app=fs.readFileSync(path.join(__dirname,'../src/App.jsx'),'utf8')
+ const daily=fs.readFileSync(path.join(__dirname,'../src/DailyMonsterPanel.jsx'),'utf8')
+ assert.match(app,/<MonsterModePanel demo=/)
+ assert.doesNotMatch(daily,/<MonsterModePanel/)
+})
