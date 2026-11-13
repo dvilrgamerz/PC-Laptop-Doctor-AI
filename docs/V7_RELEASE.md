@@ -67,3 +67,5 @@ Before moving from beta to a stable release, complete [the Windows tester checkl
 - [ ] Code signing, independent device tests, head-to-head performance proof and stable certification.
 
 Recycle Bin moves are recoverable but do not reclaim space. The permanent option reclaims some space but has no undo.
+
+- [x] Native Add Game picker for trusted installed executable files outside protected Windows locations, supporting other launchers without pretending every game can be automatically identified. Paths remain local in the user's PC Doctor profile. Users can remove entries without removing game files.
