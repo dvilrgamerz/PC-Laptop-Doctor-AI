@@ -1,4 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react'
+import AutopilotPanel from './AutopilotPanel.jsx'
 import {Activity,CheckCircle2,ChevronRight,Download,ExternalLink,Gamepad2,HardDrive,Info,Play,RefreshCcw,RotateCcw,Rocket,ShieldCheck,Trash2,TriangleAlert,Wifi,Zap} from 'lucide-react'
 
 const size=bytes=>bytes>=1073741824?(bytes/1073741824).toFixed(2)+' GiB':
@@ -11,6 +12,10 @@ function Section({id,icon:Icon,eyebrow,title,description,children}){
 }
 export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data}){
  const desktop=!demo && !!window.doctor?.getGameFocusStatus
+ const disk=data?.storage?.find(x=>typeof x?.mount==='string'&&/^[A-Za-z]:/.test(x.mount))||data?.storage?.[0]
+ const diskUsed=Number.isFinite(disk?.use)?disk.use:null
+ const memoryUsed=Number.isFinite(data?.memory?.total)&&data.memory.total>0&&Number.isFinite(data.memory.used)
+   ?100*data.memory.used/data.memory.total:null
  const [boost,setBoost]=useState(null)
  const [profile,setProfile]=useState('standard')
  const [autoStopMinutes,setAutoStopMinutes]=useState(120)
@@ -142,8 +147,8 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
  return <div className="v7-center">
    <section className="v7-lead">
     <div className="v7-lead-content"><span className="v7-kicker"><Rocket size={15}/> DVILR PERFORMANCE CENTER</span>
-      <h2>Play smarter. Keep your PC in control.</h2>
-      <p>Find your installed games automatically, boost and launch them with one approval, and clean eligible old temporary files. Every Windows change is explained and reversible where possible.</p>
+      <h2>Your PC, tuned without the guesswork.</h2>
+      <p>Detect Steam and Epic games, add any trusted installed Windows game, and enable optional Autopilot for hands-off Game Focus and weekly recoverable cleanup. Your real bottlenecks come first.</p>
       <div className="v7-lead-actions">
        <button className="v7-main-button" type="button" disabled={scanning} onClick={onScan}><Activity size={18}/>{scanning?'Scanning…':'Diagnose my PC'}</button>
        <button className="v7-ghost-button" type="button" onClick={()=>onNavigate('history')}><Zap size={17}/> Compare FPS</button>
@@ -157,6 +162,17 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
     <div><small>Drive space free</small><strong>{Number.isFinite(data.storage?.[0]?.available)?size(data.storage[0].available):'Unknown'}</strong></div>
     <div><small>CPU load</small><strong>{Number.isFinite(data.cpu?.load)?Math.round(data.cpu.load)+'%':'Unknown'}</strong></div>
    </div>}
+   {(diskUsed>=90||memoryUsed>=85)&&<div className="v8-diagnostic-priority" role="note">
+     <div><TriangleAlert size={23}/><div><strong>Fix what is actually slowing down your PC</strong>
+       <p>{diskUsed>=90?'Your main drive is '+Math.round(diskUsed)+'% used. Free space for Windows updates, apps and games. ':''}
+         {memoryUsed>=85?'RAM is '+Math.round(memoryUsed)+'% occupied in this scan. Check demanding applications before expecting FPS gains.':''}
+       </p></div></div>
+     <div className="v8-priority-actions">
+      {diskUsed>=90&&<button type="button" onClick={()=>document.getElementById('v7-cleanup')?.scrollIntoView({behavior:'smooth',block:'start'})}>Review cleanup</button>}
+      {memoryUsed>=85&&<button type="button" onClick={()=>onNavigate('performance')}>Inspect RAM & CPU</button>}
+     </div>
+   </div>}
+   <AutopilotPanel demo={demo} onNavigate={onNavigate}/>
    <Section id="v7-game-focus" icon={Rocket} eyebrow="01 · GAME FOCUS" title="Start a gaming session" description="Temporarily enable supported Windows Game Mode and, on AC power only, the standard High performance plan. No apps are killed or suspended.">
     <div className="v7-boost-status">
      <span className={'v7-state '+(boost?.session?'in-session':'')}>{boost?.session?'Active or awaiting recovery':'Not running'}</span>
@@ -212,7 +228,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
      {gameNotice&&<p className="v7-notice" role="status">{gameNotice}</p>}
      <p className="v7-caption">For session CPU/RAM monitoring, use <button className="v7-text-link" type="button" onClick={()=>onNavigate('optimize')}>Optimization Studio</button>.</p>
     </Section>
-    <Section icon={HardDrive} eyebrow="03 · STORAGE" title="Automatic safe cleanup" description="Scan your user Temp folder, review the scope, and approve cleanup in one step. No personal documents, game saves or downloads are targeted.">
+    <Section id="v7-cleanup" icon={HardDrive} eyebrow="03 · STORAGE" title="Automatic safe cleanup" description="Scan your user Temp folder, review the scope, and approve cleanup in one step. No personal documents, game saves or downloads are targeted.">
       <div className="v7-actions"><button type="button" className="v7-secondary" disabled={!desktop||cleanupBusy} onClick={scanTemp}><HardDrive size={16}/>{cleanupBusy?'Checking…':'Find old temporary files'}</button>
         <button type="button" className="v7-secondary" onClick={()=>onNavigate('fixes')}><ExternalLink size={15}/> Windows Storage tools</button></div>
       {!!temp&&<div className="v7-clean-preview">
