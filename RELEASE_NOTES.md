@@ -7,6 +7,7 @@
 - Windows-native, fixed-command **C++ EcoQoS helper** replaces per-process PowerShell. It is compiled locally with MSVC during Windows builds and shipped alongside the packaged Electron app. This is a normal-user process, not an elevated driver or service.
 - The helper validates exact PID, executable path and start time, and independently rejects Windows service-owned and cross-logon-session processes. Known anti-cheat, Windows, game-launcher and security processes are blocked by both layers.
 - Auto-Boost game reconciliation checks every **5 seconds** with two sightings to confirm the game. This reduces delay but is still polling, not yet event-driven.
+- Added an explicitly preview-approved, default-off AC-only High Performance plan option for recognized automatic game sessions. Battery and unsupported configurations skip power changes; original setting uses the existing Game Focus restoration journal.
 - Write-ahead journal **fsyncs** before each action, records a UUID, and distinguishes intent, confirmed and uncertain results. Failed operations aren't counted as successful. Revoking an approved app immediately attempts to restore current background adjustments.
 - The UI displays a read-only sample of protected processes with explanations and confirmed vs attempted QoS counts. The README fixes the obsolete V8.2 installer filename references and links to beta.2 assets.
 
