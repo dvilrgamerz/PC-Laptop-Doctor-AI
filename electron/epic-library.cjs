@@ -5,7 +5,8 @@ const fs=require('node:fs/promises')
 const path=require('node:path')
 const MAX_ITEMS=300, MAX_BYTES=256*1024
 const SAFE_ID=/^[A-Za-z0-9][A-Za-z0-9_.-]{0,119}$/
-const SAFE_GUID=/^[a-fA-F0-9]{32}$/
+const SAFE_NAMESPACE=/^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$/
+const SAFE_CATALOG=/^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$/
 function defaultDir(){
   const program=process.env.ProgramData||'C:\\ProgramData'
   // Refuse redirecting the scanner to a random path via an unusual environment override.
@@ -22,14 +23,14 @@ function parseEpicManifest(raw){
   const sandbox=String(m.CatalogNamespace||'')
   const catalog=String(m.CatalogItemId||'')
   // The official Epic activation format uses namespace:item:artifact (all validated).
-  if(!SAFE_GUID.test(sandbox)||!SAFE_GUID.test(catalog))return null
+  if(!SAFE_NAMESPACE.test(sandbox)||!SAFE_CATALOG.test(catalog))return null
   return {id:sandbox+':'+catalog+':'+artifact,name:m.DisplayName.trim().slice(0,120),platform:'Epic Games',launchable:true}
  }catch{return null}
 }
 function epicUri(id){
  if(typeof id!=='string'||id.length>240)return null
  const parts=id.split(':')
- if(parts.length!==3||!SAFE_GUID.test(parts[0])||!SAFE_GUID.test(parts[1])||!SAFE_ID.test(parts[2]))return null
+ if(parts.length!==3||!SAFE_NAMESPACE.test(parts[0])||!SAFE_CATALOG.test(parts[1])||!SAFE_ID.test(parts[2]))return null
  return 'com.epicgames.launcher://apps/'+parts.map(encodeURIComponent).join('%3A')+'?action=launch&silent=true'
 }
 function createEpicLibrary({platform=process.platform,dir=defaultDir(),read=fs}={}){
