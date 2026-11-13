@@ -234,7 +234,20 @@ function openTaskManager() {
   })
 }
 
-app.whenReady().then(async () => {
+// Prevent two startup/manual instances from competing over the same
+// temporary Windows preferences and local cleanup journals.
+const hasSingleInstanceLock=app.requestSingleInstanceLock()
+if(!hasSingleInstanceLock){
+  app.quit()
+}else{
+  app.on('second-instance',()=>{
+    const win=BrowserWindow.getAllWindows()[0]
+    if(!win)return
+    if(win.isMinimized())win.restore()
+    win.show()
+    win.focus()
+  })
+  app.whenReady().then(async () => {
   const fixes = createFixService({
     stateFile: path.join(app.getPath('userData'), 'safe-fix-backups.json'),
     battery: () => si.battery(),
@@ -436,3 +449,4 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
+}
