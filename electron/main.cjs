@@ -290,12 +290,19 @@ app.whenReady().then(async () => {
     tempCleaner:autoTempCleaner
   })
   const monsterCareCleaner=createTempCleaner({trashItem:target=>shell.trashItem(target)})
-  const monsterMode=createMonsterMode({autopilot,tempCleaner:monsterCareCleaner,gameFocus})
+  const monsterMode=createMonsterMode({
+    autopilot,tempCleaner:monsterCareCleaner,gameFocus,
+    // Only packaged Windows builds may register themselves on login.
+    loginStartup:process.platform==='win32'&&app.isPackaged?{
+      get:()=>app.getLoginItemSettings().openAtLogin===true,
+      set:enabled=>app.setLoginItemSettings({openAtLogin:enabled===true})
+    }:null
+  })
   const guard = (event) => trustedDoctorFrame(event)
   ipcMain.handle('doctor:v8-monster-status', event=>guard(event)
     ? monsterMode.status():{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-monster-preview', event=>guard(event)
-    ? monsterMode.preview():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-monster-preview', (event,options)=>guard(event)
+    ? monsterMode.preview(options):{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-monster-activate', (event,token)=>guard(event)
     ? monsterMode.activate(token):{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-monster-disable', event=>guard(event)
