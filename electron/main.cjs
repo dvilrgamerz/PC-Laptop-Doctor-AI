@@ -10,6 +10,7 @@ const { createMaintenance } = require('./maintenance.cjs')
 const {runNetworkQuality} = require('./network-quality.cjs')
 const {createOptimizer} = require('./optimizer-v6.cjs')
 const {createGameLibrary} = require('./game-library.cjs')
+const {createEpicLibrary,epicUri} = require('./epic-library.cjs')
 const {createNetworkPath} = require('./network-path.cjs')
 const {createGameFocus} = require('./game-focus.cjs')
 const {createTempCleaner} = require('./temp-cleaner.cjs')
@@ -251,6 +252,7 @@ app.whenReady().then(async () => {
   })
   const optimizer=createOptimizer({stateFile:path.join(app.getPath('userData'),'optimization-v6-journal.json')})
   const gameLibrary=createGameLibrary()
+  const epicLibrary=createEpicLibrary()
   const networkPath=createNetworkPath({si})
   const guard = (event) => trustedDoctorFrame(event)
   ipcMain.handle('doctor:v7-boost-status', event=>guard(event)
@@ -265,6 +267,34 @@ app.whenReady().then(async () => {
     ? tempCleaner.scan() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v7-temp-recycle', (event,token,ids)=>guard(event)
     ? tempCleaner.recycle(token,ids) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-temp-auto-recycle', (event,token)=>guard(event)
+    ? tempCleaner.autoRecycle(token) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-temp-free-now', (event,token)=>guard(event)
+    ? tempCleaner.freeOldTmp(token) : {ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v7-all-games', async event=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    const [steam,epic]=await Promise.all([gameLibrary.inspect(),epicLibrary.inspect()])
+    return {ok:steam.ok||epic.ok,games:[
+      ...(steam.games||[]).map(g=>({id:'steam:'+g.appid,name:g.name,platform:'Steam'})),
+      ...(epic.games||[]).map(g=>({id:'epic:'+g.id,name:g.name,platform:'Epic Games'}))
+    ].sort((a,b)=>a.name.localeCompare(b.name)).slice(0,240),
+    note:'Steam and Epic Games Launcher manifest detection only; no game files or anti-cheat are modified.'}
+  })
+  ipcMain.handle('doctor:v7-launch-detected', async (event,id)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    if(typeof id!=='string'||id.length>260)return {ok:false,error:'Invalid game choice.'}
+    let url=null
+    if(/^steam:\d{1,15}$/.test(id)){
+      const appid=id.slice(6),found=await gameLibrary.inspect()
+      if(found.ok&&found.games?.some(g=>g.appid===appid))url='steam://rungameid/'+appid
+    }else if(id.startsWith('epic:')){
+      const gameId=id.slice(5),found=await epicLibrary.inspect()
+      if(found.ok&&found.games?.some(g=>g.id===gameId))url=epicUri(gameId)
+    }
+    if(!url)return {ok:false,error:'Game is not in the freshly detected Steam or Epic library, or its launch ID is invalid.'}
+    try{await shell.openExternal(url);return {ok:true,message:'Sent game to its official launcher. It may ask for sign-in or updates.'}}
+    catch{return {ok:false,error:'Windows could not open the game launcher. No game settings were changed.'}}
+  })
   ipcMain.handle('doctor:v7-launch-steam', async (event,appid)=>{
     if(!guard(event))return {ok:false,error:'Untrusted renderer'}
     if(typeof appid!=='string'||!/^\d{1,15}$/.test(appid))return {ok:false,error:'Invalid game ID'}
