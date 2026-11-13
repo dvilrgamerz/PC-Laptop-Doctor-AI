@@ -84,7 +84,7 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
     const background=backgroundBoost?await backgroundBoost.restore():{ok:true}
     const r=await gameFocus.stop()
     if(r.ok&&background.ok){owner=null;misses=0;message='Autopilot disabled and its game preferences/background QoS restored.'}
-    else{restoreWarning='Autopilot disabled but '+current.name+' could not be fully restored. Use Restore in Game Boost and Boost & Play.';message=restoreWarning}
+    else{restoreWarning='Autopilot disabled but '+current.name+' could not be fully restored. Use Restore in Game Boost and Stop & Restore in Boost & Play.';message=restoreWarning}
    } else if(backgroundBoost){
     const background=await backgroundBoost.restore()
     if(!background.ok){restoreWarning='Background QoS could not be fully restored. Use Restore in Game Boost.';message=restoreWarning}
