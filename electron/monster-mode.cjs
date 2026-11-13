@@ -69,11 +69,16 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
    if(p.ids.length){
     cleanup=await tempCleaner.recycle(p.scanToken,p.ids)
    }
+   let cleanupRecordWarning=null
+   if(cleanup.ok&&typeof autopilot.recordApprovedCleanup==='function'){
+    const recorded=await autopilot.recordApprovedCleanup(cleanup.movedCount||0)
+    if(!recorded?.ok)cleanupRecordWarning='Cleanup ran, but its time could not be saved; automatic care may check again soon.'
+   }
    return {ok:true,enabled:true,autoBoost:true,weeklyCleanup:true,
     recycledFiles:cleanup.movedCount||0,failedFiles:cleanup.failedCount||0,
     bytesMoved:cleanup.movedBytes||0,
     startWithWindows:startupState(),
-    warning:[startupWarning,!cleanup.ok?'Automatic care enabled, but some old Temp files could not be moved. No further removal was attempted.':null].filter(Boolean).join(' ')||null,
+    warning:[startupWarning,cleanupRecordWarning,!cleanup.ok?'Automatic care enabled, but some old Temp files could not be moved. No further removal was attempted.':null].filter(Boolean).join(' ')||null,
     message:'Monster Mode enabled. Safe gaming and weekly Temp care run whenever PC Doctor is open. '+(p.startWithWindows?'Windows startup requested. ':'Windows startup not requested. ')+(cleanup.movedCount||0)+' temporary files moved to Recycle Bin; disk space was not freed.'}
   }catch(e){return {ok:false,error:'Monster Mode failed during activation. Review Autopilot status before trying again: '+String(e?.message||e).slice(0,150)}}
   finally{busy=false}
