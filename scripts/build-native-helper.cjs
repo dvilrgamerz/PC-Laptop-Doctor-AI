@@ -18,13 +18,17 @@ if(!fs.existsSync(vcvars))throw Error('Visual Studio vcvars64.bat is missing.')
 const out=path.join(root,'native','build')
 fs.mkdirSync(out,{recursive:true})
 // No user-controlled arguments or shell interpolation; all paths are project-derived.
-const command='call "'+vcvars+'" >nul && cl.exe /nologo /std:c++17 /O2 /W4 /WX /MT /EHsc '+
+const command='cl.exe /nologo /std:c++17 /O2 /W4 /WX /MT /EHsc '+
  '/D_UNICODE /DUNICODE /D_WIN32_WINNT=0x0A00 '+
  '/Fo"'+path.join(out,'boost-helper.obj')+'" '+
  '/Fe"'+path.join(out,'boost-helper.exe')+'" '+
  '"'+path.join(root,'native','boost-helper','main.cpp')+'"'
+const batch=path.join(out,'compile-native-helper.cmd')
+fs.writeFileSync(batch,['@echo off','call "'+vcvars+'" >nul','if errorlevel 1 exit /b 1',
+ command,'exit /b %ERRORLEVEL%',''].join('\r\n'),{encoding:'utf8'})
 console.log('Building local native PC Doctor EcoQoS helper with MSVC...')
-execFileSync('cmd.exe',['/d','/c',command],{stdio:'inherit',windowsHide:true,timeout:120000})
+execFileSync('cmd.exe',['/d','/c',path.join('native','build','compile-native-helper.cmd')],
+ {cwd:root,stdio:'inherit',windowsHide:true,timeout:120000})
 const exe=path.join(out,'boost-helper.exe')
 if(!fs.existsSync(exe)||fs.statSync(exe).size<20000)throw Error('Native boost helper build failed.')
 console.log('Win32 helper built:',exe)
