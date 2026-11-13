@@ -122,3 +122,15 @@ V7.4 remains an unsigned public beta pending real-device/security validation.
 - [ ] Log crashes, hardware sensor inaccuracies, incorrect warnings, untrusted prompts, or failed cleanup. Report negative benchmark outcomes.
 
 **Status:** Public beta, not signed/stable certification. Test on noncritical PCs before using irreversible advanced cleanup.
+
+## V8.1 in-app Safe Care and UI evaluation
+
+- [ ] Open the app on Windows; verify PC Monster Dashboard is the default page and the artwork renders without covering metrics.
+- [ ] Click **Inspect & prepare Safe Care**. Verify the number and size of eligible user-Temp files matches a manual inspection of disposable test files.
+- [ ] Choose recoverable mode and approve once. Confirm PC Doctor performs both its app HTTP-cache cleanup and eligible Temp recycling without opening Windows Settings.
+- [ ] Verify files moved to Recycle Bin can be restored and are **not** reported as disk-space freed.
+- [ ] Use disposable old .tmp samples to test the *separately approved* permanent mode; 30+ day files may be removed, but newer files, logs, folders, Downloads and documents must remain.
+- [ ] Force an unavailable cache service or locked Temp file; the app should report partial failures, not falsely claim success.
+- [ ] Verify hardware snapshots update after cleanup; no fabricated improvement in benchmark or FPS data.
+- [ ] Test a 1366×768 laptop, keyboard navigation, reduced motion preferences and the image alt text.
+- [ ] Check version V8.1 in the app and README, along with actual Setup/Portable filenames on the published GitHub release.
