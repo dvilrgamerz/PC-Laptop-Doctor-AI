@@ -311,7 +311,7 @@ if(!hasSingleInstanceLock){
       // the persistent original launcher, not the short-lived extracted child.
       const portableLauncher=process.env.PORTABLE_EXECUTABLE_FILE
       const startupExecutable=typeof portableLauncher==='string'&&
-        path.win32.isAbsolute(portableLauncher)&&/\\.exe$/i.test(portableLauncher)
+        path.win32.isAbsolute(portableLauncher)&&/\.exe$/i.test(portableLauncher)
         ?portableLauncher:process.execPath
       return {
         get:()=>{
