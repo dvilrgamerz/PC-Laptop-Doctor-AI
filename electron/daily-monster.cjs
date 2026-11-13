@@ -119,7 +119,7 @@ function createDailyMonster({file,monitor,now=()=>Date.now(),schedule=fn=>setInt
     }
     if(alerted)try{notifier({title:'PC Doctor: low disk space',body:'Your Windows drive is nearly full. Open PC Doctor to review safe cleanup options.'})}catch{}
    }
-   return {ok:true,metrics:m,alerts,recorded,days:prefs.days}
+   return {ok:true,metrics:m,storageGoal:storageGoal(result.metrics),alerts,recorded,days:prefs.days}
   })()
   try{return await inFlight}finally{inFlight=null}
  }
