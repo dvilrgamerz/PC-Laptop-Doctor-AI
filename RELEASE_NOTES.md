@@ -1,17 +1,21 @@
-# PC Laptop Doctor AI v7.3.0-beta.4 — Autopilot and Bottleneck-First UI
+# PC Laptop Doctor AI v7.4.0-beta.5 — Live PC Monitor & Simpler Auto Care
 
-Public beta for Windows 10/11 x64 testers. Unsigned. No guaranteed FPS, latency, CPU or RAM improvement.
+Public beta for Windows 10/11 x64 testers. Unsigned; no guaranteed gaming FPS or latency improvement.
 
-## Added
-- Opt-in Auto Game Focus for exact personally added executable paths or process paths within Steam/Epic installed-game folders verified from launcher manifests. Only Windows Game Mode in Standard profile; no process termination or service/antivirus changes.
-- Session automatically starts after two detections, attempts restore after three misses, and has a two-hour safety cutoff. Existing manual Stop & Restore and startup recovery remain.
-- Opt-in weekly Temp care: once every seven days, limited to top-level user Temp .tmp files at least 30 days old, moved only to Recycle Bin; skips recognized running trusted games. Separate cleaner instance preserves any user-created cleanup preview.
-- Home screen launches on Boost & Play with automatic read-only PC scan, high RAM/disk bottleneck alerts and a simplified Autopilot on/off interface.
-- Added automated regression tests for opt-in, process path matching, manual-session precedence, game exit and weekly cleanup frequency.
+## Improvements over V7.3
+- **Live PC Monitor:** New main Boost & Play panel shows CPU, RAM, system drive usage/free space, CPU temperature if available, and OS-reported network transfer rates. Short trends are only in memory. No cloud transfer or persistent hardware logs.
+- **Better triage:** High-priority low-storage alerts appear for disks at 95%+ usage or less than 10 GiB free; 90%+ RAM and 95%+ CPU use also prompt relevant local troubleshooting.
+- **Performance limits:** Live sampling every ~8 seconds while the panel is open, 5.5-second backend cache and coalesced sensor reads. No repeated ping, startup-app scanning or file changes in the monitor.
+- **Simplified Autopilot setup:** One button can prepare both existing safe automation modes. Explicit consent and Save remain mandatory before either mode activates. The Turn Both Off shortcut makes disabling easy.
+- **Interface:** Compact, higher-contrast monitor cards and trend indicators replace stale one-shot metric cards on the Boost & Play page.
+
+## Preserved
+- Existing read-only Steam/Epic/custom-game detection and launcher handoff, reversible Game Focus, opt-in background Auto Focus, weekly *recoverable* Temp care, optional manual cleanup, network tools and FPS CSV comparison.
 
 ## Honest limitations
-- Auto-Boost covers installed Steam/Epic games with readable process paths under their verified installed-game folders plus personally added exact EXEs. Unknown launchers and hidden/unreadable paths require manual Boost & Play.
-- Autopilot only works while this app is open. Closing the app normally triggers guarded Game Focus recovery.
-- Weekly recycling does NOT free disk space until Recycle Bin is emptied; irreversible deletion is not automated.
-- Does not promise increased game FPS or establish parity with Razer Cortex and Hone. Physical Windows tests, code signing, accessibility QA, anti-cheat compatibility, and an independent security audit remain unfinished.
-- Share links from the official GitHub release with SHA256SUMS.txt; do not disable Windows security protections.
+- No independent evidence of better FPS than Hone or Razer Cortex; no automatic game-specific performance injection.
+- CPU temperature can be unavailable. Network throughput is adapter data, not internet speed.
+- Auto Temp care moves eligible items to Recycle Bin and does **not** free space immediately.
+- Windows builds are unsigned beta binaries; physical device testing, code signing, independent security/anti-cheat audit and comprehensive accessibility QA remain incomplete.
+
+Please share the official GitHub release page and SHA256SUMS.txt with testers. See docs/V7_4_MONITOR.md.
