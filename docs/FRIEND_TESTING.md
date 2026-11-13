@@ -51,3 +51,5 @@ Until these are completed, **do not describe this build as verified safe for eve
 - [ ] Check 1366×768, keyboard navigation and advanced disclosure controls.
 
 Do not use irreversible cleanup on an important work PC until this build has been tested with disposable files. This is a public beta, not certified stable software.
+
+- [ ] Test Add a trusted installed game using a disposable known-safe game EXE. Confirm it appears without showing its directory, opens only after a click, and Remove deletes only the entry.
