@@ -87,7 +87,7 @@ The timer only runs while PC Doctor is running; after a crash, reopening it init
 - [x] Existing file previews remain independent of the scheduled maintenance service.
 - [x] Open directly on Boost & Play with automatic read-only hardware diagnosis and severity-based RAM/disk alerts.
 - [x] Add automated unit tests for narrow process matching, restore and seven-day scheduling.
-- [ ] No guaranteed FPS gain, no third-party GPU/CPU tuning, no automatic boost of every launcher, no verified stable release.
+- [ ] No guaranteed FPS gain, no third-party GPU/CPU tuning, no automatic boost of unsupported or unreadable launchers, no verified stable release.
 - [ ] Code signing, physical Windows device matrix and independent comparative benchmarks remain open.
 
 See [V7.3 Autopilot design](V7_3_AUTOPILOT.md).
