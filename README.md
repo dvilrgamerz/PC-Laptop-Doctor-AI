@@ -15,8 +15,8 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-7.4.0-beta.5-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-7.4.0-beta.5-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-7.5.0-beta.6-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-7.5.0-beta.6-x64.exe | Run without installing |
 
 ## New in V7.5 — find real storage pressure and add GPU monitoring
 
