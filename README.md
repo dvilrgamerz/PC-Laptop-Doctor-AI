@@ -7,16 +7,16 @@
 
 **PC Monster: a simpler daily performance dashboard with local health trends, optional disk-space alerts, Boost & Play, safe storage care, and honest game performance comparisons. Free and open source.**
 
-## Download V8.1 PC Monster Storage Goal — public beta (Windows x64)
+## Download V8.2 PC Monster — public tester release (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.1.0-beta.2)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.3)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-8.1.0-beta.2-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-8.1.0-beta.2-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-8.2.0-beta.3-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-8.2.0-beta.3-x64.exe | Run without installing |
 
 ## New in V8.1 — PC Monster One-Review Safe Care
 
@@ -27,6 +27,16 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 **New original artwork:** A scalable DVILR PC Monster chip-and-performance illustration is included in both the desktop dashboard and the Boost & Play hero. The UI opens to the simpler Dashboard instead of starting in the advanced gaming controls.
 
 **Important:** The app completes approved, narrowly supported operations itself. It does not claim that every issue can be fixed automatically, that all gaming performance will improve, or that cleanup requires no review. Unattended destructive file deletion is intentionally unavailable.
+
+## New in V8.2 — Monster Mode, in-app care and original artwork
+
+The home screen now features a new illustrated **Monster Mode** with one reviewed activation. After a single explicit approval, PC Doctor enables its existing opt-in **automatic Game Focus** and **weekly Temp care** while the app is open, and immediately moves eligible old top-level user-Temp .tmp files (30+ days old) into Windows **Recycle Bin**. It restores supported gaming preferences when recognized games exit or the app closes normally. **Monster Mode can be switched off inside the app.**
+
+The app shows the **actual** number of temporary files moved and whether the action failed. Moving files into Recycle Bin does **not** immediately free storage; we do not label it as GB reclaimed. The separate **One-Click Care** panel offers further safe, previewed app-cache cleanup and optional explicitly approved irreversible deletion of a tightly limited group of old temporary files. It never silently wipes personal files.
+
+UI improvements: a newly created local SVG gaming-laptop illustration, prominent automatic-care actions, accessible focus states and responsive layouts. Previous Steam/Epic/custom game detection, daily CPU/RAM/GPU monitoring, Space Finder, and measured FPS CSV import remain.
+
+**Be precise:** V8.2 does not optimize every game in existence, silently manage every installed program, guarantee higher FPS, or provide signed/certified binaries. It does not run when closed or with Windows startup by default. No independent benchmark establishes superiority over Razer Cortex/Hone. Users must still approve actions that change Windows preferences or could delete files. The release is **publicly testable**, not independently certified stable.
 
 ## New in V8.1 — measurable storage recovery goal
 
