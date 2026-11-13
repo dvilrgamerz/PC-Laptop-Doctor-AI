@@ -5,7 +5,7 @@ const os=require('node:os')
 const path=require('node:path')
 const {createAutopilot,loadPrefs,processExecutable,gameForProcesses,WEEK}=require('../electron/autopilot.cjs')
 
-function fixture(){
+function fixture(roots=[]){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'pc-autopilot-'))
  const stateFile=path.join(root,'auto.json'),customStoreFile=path.join(root,'games.json')
  fs.writeFileSync(customStoreFile,JSON.stringify({version:1,games:[
@@ -27,7 +27,7 @@ function fixture(){
   recycle:async(token,ids)=>{cleanCalls.push(['recycle',token,ids]);return {ok:true,movedCount:ids.length,failedCount:0}}
  }
  const agent=createAutopilot({stateFile,customStoreFile,gameFocus:focus,
-  processes:async()=>processList,tempCleaner:cleaner,platform:'win32',now:()=>now,
+  processes:async()=>processList,installedRoots:async()=>roots,tempCleaner:cleaner,platform:'win32',now:()=>now,
   schedule:()=>({unref(){}}),cancel:()=>{}})
  return {agent,calls,cleanCalls,stateFile,
   setProcesses:xs=>{processList=xs},
@@ -123,5 +123,21 @@ test('automatic maintenance skips games and manual Game Focus sessions',async()=
   f.setActive(false)
   await f.agent.tick()
   assert.equal(f.cleanCalls.length,2)
+ }finally{f.clean()}
+})
+
+test('Steam/Epic auto boost works without manually adding an EXE, but requires exact installed folder',async()=>{
+ const f=fixture([{root:'D:\\EpicGames\\Fortnite',name:'Fortnite',source:'Epic Games'}])
+ try{
+  await f.agent.configure({autoBoost:true,weeklyCleanup:true})
+  f.setProcesses([{name:'FortniteClient-Win64-Shipping.exe',path:'D:\\EpicGames\\Fortnite\\FortniteGame\\Binaries\\Win64'}])
+  await f.agent.tick()
+  assert.equal(f.cleanCalls.length,0,'weekly maintenance must skip installed running games')
+  await f.agent.tick()
+  assert.equal(f.calls.filter(x=>x[0]==='start').length,1)
+  assert.equal((await f.agent.status()).activeGame,'Fortnite')
+  f.setProcesses([])
+  await f.agent.tick();await f.agent.tick();await f.agent.tick()
+  assert.equal(f.calls.filter(x=>x[0]==='stop').length,1)
  }finally{f.clean()}
 })
