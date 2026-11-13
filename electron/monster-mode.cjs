@@ -90,10 +90,10 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
   try{
    const r=await autopilot.configure({autoBoost:false,weeklyCleanup:false})
    if(!r?.ok)return {ok:false,error:r?.error||'Unable to disable automation'}
-   let warning=null
+   let warning=r.warning||null
    if(startupSupported){
-    try{loginStartup.set(false);if(startupState()!==false)warning='Windows startup registration could not be verified.'}
-    catch{warning='Could not remove PC Doctor from Windows startup; disable it in Windows Startup Apps.'}
+    try{loginStartup.set(false);if(startupState()!==false)warning=[warning,'Windows startup registration could not be verified.'].filter(Boolean).join(' ')}
+    catch{warning=[warning,'Could not remove PC Doctor from Windows startup; disable it in Windows Startup Apps.'].filter(Boolean).join(' ')}
    }
    return {ok:true,enabled:false,startWithWindows:startupState(),warning,
     message:'Monster Mode automations disabled. Supported managed gaming settings are being restored.'}
