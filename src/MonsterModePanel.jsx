@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react'
 import {Check,CheckCircle2,Clock3,RefreshCw,ShieldCheck,Sparkles,StopCircle,TriangleAlert,Zap} from 'lucide-react'
 import machineArt from '../assets/monster-machine.svg'
+import autopilotArt from '../assets/monster-autopilot.svg'
 
 export default function MonsterModePanel({demo}){
  const supported=!demo&&!!window.doctor?.getMonsterStatus&&!!window.doctor?.previewMonsterMode
@@ -47,7 +48,7 @@ export default function MonsterModePanel({demo}){
  }
  const enabled=!!current?.enabled
  return <section className="monster-mode" aria-label="Monster Mode automatic safe PC care">
-   <div className="monster-mode-art"><img src={machineArt} alt="Illustration of a neon-lit laptop displaying a system pulse"/></div>
+   <div className="monster-mode-art"><img src={enabled?autopilotArt:machineArt} alt={enabled?"Original neon PC Monster automation shield":"Original neon PC Monster laptop illustration"}/></div>
    <div className="monster-mode-content">
      <div className="monster-mode-kicker"><Sparkles size={15}/> PC MONSTER · SMART CARE</div>
      <h2>Make your PC a Monster. Keep the changes safe.</h2>
