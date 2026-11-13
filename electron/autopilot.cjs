@@ -92,11 +92,11 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
  async function handleGame(prefs){
   if(!prefs.autoBoost||platform!=='win32')return
   const games=readStore(customStoreFile)
-  if(!games.length)return
+  const roots=await installedRoots().catch(()=>[])
+  if(!games.length&&(!Array.isArray(roots)||!roots.length))return
   let snapshot
   try{snapshot=await processes()}catch{message='Process inventory was unavailable; no automatic setting changes.';return}
   if(!Array.isArray(snapshot))return
-  const roots=await installedRoots().catch(()=>[])
   const found=gameForProcesses(snapshot,games,Array.isArray(roots)?roots:[])
   if(!found){
    if(!owner){blockedFile=null;seenFile=null;seenCount=0;return}
