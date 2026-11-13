@@ -16,6 +16,7 @@ const {createNetworkPath} = require('./network-path.cjs')
 const {createGameFocus} = require('./game-focus.cjs')
 const {createTempCleaner} = require('./temp-cleaner.cjs')
 const {createAutopilot} = require('./autopilot.cjs')
+const {createInstalledGameRoots} = require('./installed-game-roots.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -266,11 +267,13 @@ app.whenReady().then(async () => {
       return result.canceled?null:result.filePaths?.[0]||null},
     openFile:file=>shell.openPath(file)})
   const networkPath=createNetworkPath({si})
+  const installedRoots=createInstalledGameRoots()
   const autopilot=createAutopilot({
     stateFile:path.join(app.getPath('userData'),'autopilot-prefs-v1.json'),
     customStoreFile:path.join(app.getPath('userData'),'user-added-games.json'),
     gameFocus,
     processes:async()=>(await si.processes()).list||[],
+    installedRoots:()=>installedRoots.list(),
     tempCleaner:autoTempCleaner
   })
   const guard = (event) => trustedDoctorFrame(event)
