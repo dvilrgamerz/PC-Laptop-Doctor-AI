@@ -59,7 +59,7 @@ export default function MonsterModePanel({demo}){
        <span><Check size={15}/> Game settings restored when supported games close</span>
      </div>
      {!enabled&&current?.startupSupported===true&&<label className="monster-login-option">
-      <input type="checkbox" checked={startWithWindows} onChange={e=>setStartWithWindows(e.target.checked)}/>
+      <input type="checkbox" checked={startWithWindows} onChange={e=>{setStartWithWindows(e.target.checked);setPlan(null);setMessage('Startup preference changed. Preview again before approving.')}}/>
       <span><strong>Start PC Doctor with Windows</strong><small>Recommended for automatic care after sign-in. This is optional and can be disabled here.</small></span>
      </label>}
      {enabled&&<div className="monster-live-grid" aria-label="Live automation status">
