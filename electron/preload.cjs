@@ -3,6 +3,10 @@ const { contextBridge, ipcRenderer } = require('electron')
 contextBridge.exposeInMainWorld('doctor', {
   runDiagnostics: () => ipcRenderer.invoke('doctor:run-diagnostics'),
   getLiveMonitor: () => ipcRenderer.invoke('doctor:v7-live-monitor'),
+  getDailyStatus: () => ipcRenderer.invoke('doctor:v8-daily-status'),
+  checkDailyHealth: () => ipcRenderer.invoke('doctor:v8-daily-check'),
+  configureDailyHealth: options => ipcRenderer.invoke('doctor:v8-daily-config',options),
+  clearDailyHistory: () => ipcRenderer.invoke('doctor:v8-daily-clear'),
   getFixStatus: () => ipcRenderer.invoke('doctor:fix-status'),
   runFix: action => ipcRenderer.invoke('doctor:apply-fix', action),
   openSettings: pageId => ipcRenderer.invoke('doctor:open-settings', pageId),
