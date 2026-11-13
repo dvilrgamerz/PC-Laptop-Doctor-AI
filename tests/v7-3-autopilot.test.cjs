@@ -173,3 +173,18 @@ test('disabling Auto-Boost reports incomplete Windows preference restoration',as
   assert.match(disabled.message,/Stop & Restore/i)
  }finally{f.clean()}
 })
+
+test('automatic AC-only preference must be explicit; profile is plugged only when approved',async()=>{
+ const f=fixture()
+ try{
+  assert.equal((await f.agent.status()).boostOnAC,false)
+  assert.equal((await f.agent.configure({autoBoost:true,weeklyCleanup:false,boostOnAC:'yes'})).ok,false)
+  await f.agent.configure({autoBoost:true,weeklyCleanup:false,boostOnAC:true})
+  f.setProcesses([gameProcess])
+  await f.agent.tick();await f.agent.tick()
+  assert.deepEqual(f.calls.slice(0,2),[['preview','plugged',120],['start','plugged','approved']])
+  assert.equal(loadPrefs(f.stateFile).boostOnAC,true)
+  await f.agent.configure({autoBoost:false,weeklyCleanup:false,boostOnAC:false})
+  assert.equal(loadPrefs(f.stateFile).boostOnAC,false)
+ }finally{f.clean()}
+})
