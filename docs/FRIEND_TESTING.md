@@ -39,3 +39,15 @@ For performance reports include game/version, resolution, graphics preset, drive
 - Repeatable FPS data for real-world value claims, ideally 3–5 before and after runs, with failures disclosed.
 
 Until these are completed, **do not describe this build as verified safe for every PC or guaranteed to accelerate games**. The code is available for review and the installer is a public beta.
+
+## Additional V7.1 friend tests
+
+- [ ] Steam and Epic games appear automatically, without exposing install paths in routine reports.
+- [ ] Boost & Play starts Game Focus and hands off to the selected launcher after consent.
+- [ ] Closing PC Doctor restores changes, and failed launcher handoff triggers rollback.
+- [ ] Auto-clean candidate files in user Temp older than 14 days move to Recycle Bin; restore a disposable file.
+- [ ] Advanced permanent deletion removes only disposable 30+ day .tmp files; never recent files, .log, directories or personal data.
+- [ ] Verify space on Windows Storage settings only after actual permanent deletion; do not count Recycle Bin moves.
+- [ ] Check 1366×768, keyboard navigation and advanced disclosure controls.
+
+Do not use irreversible cleanup on an important work PC until this build has been tested with disposable files. This is a public beta, not certified stable software.
