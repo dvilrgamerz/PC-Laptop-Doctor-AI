@@ -1,5 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import OneClickCare from './OneClickCare.jsx'
+import OneClickBoost from './OneClickBoost.jsx'
 import MonsterModePanel from './MonsterModePanel.jsx'
 import monsterArt from '../assets/pc-monster-core.svg'
 import {Activity,ArrowRight,Bell,CheckCircle2,ClipboardCheck,Cpu,Gamepad2,HardDrive,MemoryStick,RefreshCcw,ShieldCheck,Trash2,TriangleAlert} from 'lucide-react'
@@ -167,5 +168,6 @@ export default function DailyMonsterPanel({demo,data,onNavigate,onRescan}){
   {demo&&<p className="monster-message">Demo values are simulated. Daily monitoring is supported only in the Windows desktop app.</p>}
  </section>
  <OneClickCare demo={demo} onRescan={onRescan}/>
+ <OneClickBoost demo={demo} onNavigate={onNavigate}/>
  </>
 }
