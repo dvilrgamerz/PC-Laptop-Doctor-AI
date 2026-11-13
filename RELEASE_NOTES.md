@@ -1,30 +1,30 @@
-# PC & Laptop Doctor AI — v9.0.0-beta.1
+# PC & Laptop Doctor AI — v9.0.0-beta.2
 
 **Windows 10/11 x64 — unsigned, experimental public beta**
 
-## What changed since v8.2.0-beta.4
+## Main changes since v9.0.0-beta.1
 
-- Added **Background Boost**, a real Windows EcoQoS option scoped to recognized game sessions. It is **OFF until a person explicitly approves each eligible executable** in Monster Mode.
-- Added an in-app running-process list with **Keep** / **Reduce during games** controls, session status and **Restore original QoS**.
-- Added system/game/security/anti-cheat/launcher protections. Unknown processes are kept by default. No arbitrary termination or service disabling.
-- Added write-ahead JSON recovery journals: save original QoS, recheck exact process path/start time before mutation, restore only if the applied state still matches, skip exited/reused PIDs, and retry incomplete restoration at next app launch.
-- Connected Auto-Boost activation and restore to trusted detected Steam/Epic/user-added games, app shutdown, and disabling Monster Mode.
-- Added regression tests, source validation and disclosure of capabilities and limits.
+- Windows-native, fixed-command **C++ EcoQoS helper** replaces per-process PowerShell. It is compiled locally with MSVC during Windows builds and shipped alongside the packaged Electron app. This is a normal-user process, not an elevated driver or service.
+- The helper validates exact PID, executable path and start time, and independently rejects Windows service-owned and cross-logon-session processes. Known anti-cheat, Windows, game-launcher and security processes are blocked by both layers.
+- Auto-Boost game reconciliation checks every **5 seconds** with two sightings to confirm the game. This reduces delay but is still polling, not yet event-driven.
+- Added an explicitly preview-approved, default-off AC-only High Performance plan option for recognized automatic game sessions. Battery and unsupported configurations skip power changes; original setting uses the existing Game Focus restoration journal.
+- Write-ahead journal **fsyncs** before each action, records a UUID, and distinguishes intent, confirmed and uncertain results. Failed operations aren't counted as successful. Revoking an approved app immediately attempts to restore current background adjustments.
+- The UI displays a read-only sample of protected processes with explanations and confirmed vs attempted QoS counts. The README fixes the obsolete V8.2 installer filename references and links to beta.2 assets.
 
-## Scope, hardware and Windows compatibility
+## Scope and limitations
 
-- Only a maximum of **four** explicitly approved running processes are considered for each gaming session. Windows may refuse the operation; that is a safe skip, not an excuse to force permissions.
-- Windows 10 and older Windows 11 versions may not expose the **GetProcessInformation / ProcessPowerThrottling** query needed for a reversible prior-state snapshot. Those versions may show no supported background changes. This beta does **not** force a change without a readable original state.
-- The feature does **not** close/relaunch applications, terminate or suspend processes, stop Windows services, disable security or anti-cheat, alter hardware, overclock, or guarantee FPS/latency gains. It does not control every game launcher.
-- The existing Game Mode and recoverable Temp care remain. Temp recycling still does not free space until Recycle Bin is emptied.
-- Actual Windows 10/11 tests, anti-cheat compatibility tests, PresentMon benchmarks, code signing, source security review and cross-hardware QA remain outstanding. **Not a stable production release.**
+- User must explicitly approve an executable for reduction; unknown apps are kept. This version reduces Windows background-process EcoQoS **but never force-closes apps**, suspends threads, disables services, alters firewall/Defender/anti-cheat, or forces Windows updates to stop. Unsaved user work is never intentionally closed.
+- No code-signing certificate has been provisioned. Native helper and setup EXE remain unsigned. Do not represent this as a production-stable release.
+- If the OS cannot safely query the original EcoQoS state (including some Windows 10 builds), no process adjustment is applied.
+- Crash recovery happens **when PC Doctor next runs**; there is no always-on separate watchdog that repairs settings while PC Doctor is closed.
+- Game detection still uses Steam/Epic/custom EXE paths. Multi-game process ancestry, other launchers, temperature-aware power-mode control, PresentMon integration and real FPS benchmarks are not included.
+- A benchmark victory over Razer Cortex or 2×–10× FPS gain is unproven; do not claim either.
 
-## Test gates
+## Required quality gates
 
-1. GitHub Actions regression tests, Electron source validation, Vite build, setup + portable packaging, checksums and artifact publication must pass.
-2. On a noncritical Windows 11 22H2+ test PC, test exact-executable consent, background EcoQoS apply, game exit restore, and force quit/relaunch recovery.
-3. Verify Windows 10 and unsupported machines **skip without modification**.
-4. Verify that protected processes cannot be selected and that failed restoration is visible.
-5. Repeat baseline/boosted FPS and 1%-low measurements before making performance claims.
+1. Windows CI compiles the C++ helper from source; all tests and a disposable-child real Win32 apply-and-restore smoke test pass.
+2. Vite build, Windows Setup and Portable EXE packages, SHA-256 list and GitHub release upload all pass.
+3. A noncritical physical Windows laptop is tested for startup, per-executable consent, game detection, restoration on game exit, force-quit and reboot recovery.
+4. Protect user data and security components in real games/anti-cheat scenarios, and obtain a code-signing identity before any stable public launch.
 
-See [V9 beta test plan](docs/V9_GAME_SESSION_BETA_TEST_PLAN.md).
+Detailed plan: [V9 Game Session beta testing](docs/V9_GAME_SESSION_BETA_TEST_PLAN.md).

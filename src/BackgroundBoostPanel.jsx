@@ -43,7 +43,7 @@ export default function BackgroundBoostPanel({demo}){
    <div className="background-boost-head">
     <div className="background-boost-symbol"><Zap size={24}/></div>
     <div><p className="eyebrow">V9 GAME BOOST ENGINE · OPT-IN BETA</p><h3>Background Boost</h3>
-     <p>Automatically reduce the power and scheduling impact of applications you explicitly approve while a trusted game is detected. Windows EcoQoS is reversible. This version does not close apps, stop services or promise FPS gains.</p></div>
+     <p>Automatically reduce the power and scheduling impact of applications you explicitly approve while a trusted game is detected. Windows EcoQoS is reversible. Beta.2 uses a Windows-native process helper (no PowerShell). It does not close apps, stop services or promise FPS gains.</p></div>
    </div>
    <div className="background-boost-summary">
     <span><ShieldCheck size={15}/> System, anti-cheat and game processes protected</span>
@@ -52,7 +52,7 @@ export default function BackgroundBoostPanel({demo}){
    </div>
    {supported&&state&&<div className="background-boost-stats">
      <div><small>Approved applications</small><strong>{state.approvedCount}</strong></div>
-     <div><small>Background actions recorded</small><strong>{state.modifiedCount}</strong></div>
+     <div><small>Confirmed EcoQoS actions</small><strong>{state.modifiedCount}{state.attemptedCount>state.modifiedCount?' / '+state.attemptedCount+' attempted':''}</strong></div>
      <div><small>Session</small><strong>{state.active?'Active':state.needsRecovery?'Recovery needed':'Standby'}</strong></div>
    </div>}
    <div className="background-boost-buttons">
@@ -72,6 +72,11 @@ export default function BackgroundBoostPanel({demo}){
       </div>)}
      </div>
    </>}
+   {inventory&&<details className="background-boost-protected">
+     <summary>Protected and unverifiable processes ({inventory.protectedCount}) — never selected</summary>
+     <p>Read-only examples. Security, Windows, anti-cheat, game and unverifiable processes are not candidates for EcoQoS.</p>
+     <ul>{(inventory.protectedSample||[]).map((p,i)=><li key={i}><strong>{p.name||'Unknown process'}</strong><span>{p.reason}</span></li>)}</ul>
+   </details>}
    {!!message&&<p className="background-boost-message" role="status"><CheckCircle2 size={15}/>{message}</p>}
    {!!error&&<p className="background-boost-error" role="alert"><TriangleAlert size={15}/>{error}</p>}
    <p className="background-boost-hint"><ShieldCheck size={14}/> Only when Monster Mode Auto-Boost is enabled and the app is open. Changes are session-scoped; if Windows refuses an operation, the app reports it. App-crash recovery is attempted when you reopen PC Doctor.</p>

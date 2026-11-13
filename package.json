@@ -1,6 +1,6 @@
 {
   "name": "pc-laptop-doctor-ai",
-  "version": "9.0.0-beta.1",
+  "version": "9.0.0-beta.2",
   "private": true,
   "description": "Windows PC Monster with automatic safe gaming care, daily hardware dashboard, in-app cleanup and local privacy",
   "main": "electron/main.cjs",
@@ -10,8 +10,9 @@
     "preview": "vite preview",
     "start": "electron .",
     "test": "node --test",
-    "dist:win": "npm run build && electron-builder --win nsis portable --x64 --publish never",
-    "pack:win": "npm run build && electron-builder --win dir --x64 --publish never"
+    "dist:win": "npm run build:helper && npm run build && electron-builder --win nsis portable --x64 --publish never",
+    "pack:win": "npm run build:helper && npm run build && electron-builder --win dir --x64 --publish never",
+    "build:helper": "node scripts/build-native-helper.cjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
@@ -69,6 +70,12 @@
     },
     "portable": {
       "artifactName": "PC-Laptop-Doctor-AI-Portable-${version}-${arch}.${ext}"
-    }
+    },
+    "extraResources": [
+      {
+        "from": "native/build/boost-helper.exe",
+        "to": "bin/pcdoctor-boost-helper.exe"
+      }
+    ]
   }
 }

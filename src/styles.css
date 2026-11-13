@@ -936,3 +936,15 @@ footer a{color:#85e7eb;text-decoration:none}
 .background-boost-error{border-color:#ad706a;background:#462d33;color:#ffe0d7}
 @media(max-width:750px){.background-boost-list{grid-template-columns:1fr}.background-boost-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:420px){.background-boost{padding:13px}.background-boost-stats{grid-template-columns:1fr}.background-boost-process{flex-direction:column;align-items:stretch}}
+
+
+/* Beta.2: transparent exclusions without leaking protected executable paths. */
+.background-boost-protected{width:100%;border:1px solid #46657b;border-radius:10px;padding:11px 13px;background:rgba(9,27,47,.72);color:#cfe2e9}
+.background-boost-protected summary{cursor:pointer;font-size:11px;font-weight:800;color:#bbf1e4}
+.background-boost-protected summary:focus-visible{outline:2px solid #a0e9dc;outline-offset:4px}
+.background-boost-protected p{font-size:10px;line-height:1.65;color:#b1cad5;margin:10px 0}
+.background-boost-protected ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.background-boost-protected li{display:flex;flex-direction:column;gap:4px;padding:7px 9px;border-radius:8px;border:1px solid #345b6c;background:#0c2a37;min-width:0}
+.background-boost-protected li strong{font-size:11px;overflow-wrap:anywhere}
+.background-boost-protected li span{font-size:10px;color:#b2ccd5}
+@media(max-width:650px){.background-boost-protected ul{grid-template-columns:1fr}}

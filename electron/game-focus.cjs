@@ -59,7 +59,9 @@ function createGameFocus({fixes,stateFile,platform=process.platform,readBattery=
   else if([null,0].includes(status.gameMode.value))actions.push('gameMode')
   if(profile==='plugged'){
    const battery=await readBattery().catch(()=>null)
-   if(battery?.hasBattery && battery.acConnected!==true&&battery.isCharging!==true)
+   if(!battery||typeof battery.hasBattery!=='boolean')
+    skips.push('Battery/AC state unavailable. Refusing to switch the performance plan.')
+   else if(battery.hasBattery && battery.acConnected!==true&&battery.isCharging!==true)
     skips.push('Connect the laptop to AC power before using the performance plan.')
    else if(status.canRestore?.performance)skips.push('Power plan already managed by another PC Doctor setting.')
    else if(!status.highPerformanceAvailable)skips.push('Standard High performance power plan is not available on this PC.')
@@ -88,7 +90,8 @@ function createGameFocus({fixes,stateFile,platform=process.platform,readBattery=
     if(action==='gameMode' && (current.canRestore?.gameMode || current.gameMode?.available!==true ||
         ![null,0].includes(current.gameMode.value)))return {ok:false,error:'Game Mode changed after preview. Review again.'}
     if(action==='performance' && (current.canRestore?.performance || !current.highPerformanceAvailable ||
-       (battery?.hasBattery && battery.acConnected!==true && battery.isCharging!==true)))
+       !battery || typeof battery.hasBattery!=='boolean' ||
+       (battery.hasBattery && battery.acConnected!==true && battery.isCharging!==true)))
        return {ok:false,error:'Power prerequisites changed after preview. Review again.'}
    }
    persist(stateFile,journal)

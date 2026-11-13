@@ -5,7 +5,7 @@
 
 # PC & Laptop Doctor AI — PC Monster
 
-**Version: v9.0.0-beta.1 | Windows 10/11 x64 | Public tester beta (unsigned)**
+**Version: v9.0.0-beta.2 | Windows 10/11 x64 | Public tester beta (unsigned)**
 
 PC Monster is an actual Windows Electron desktop app, not a browser-only mockup. It measures CPU, RAM, GPU, battery, storage, temperature (when hardware reports it) and gaming-relevant conditions. **Monster Mode** performs reviewed automation, and **V9 Background Boost** adds an opt-in process-scoped Windows EcoQoS session optimizer. No background applications are force-closed.
 
@@ -17,13 +17,23 @@ PC Monster is an actual Windows Electron desktop app, not a browser-only mockup.
 
 ## Download Windows app
 
-**[Latest PC Monster public tester release](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.1)**
+**[Latest PC Monster public tester release](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.2)**
 
-- **[Setup EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.1/PC-Laptop-Doctor-AI-Setup-8.2.0-beta.4-x64.exe)** — guided install, Start menu shortcuts, uninstall.
-- **[Portable EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.1/PC-Laptop-Doctor-AI-Portable-8.2.0-beta.4-x64.exe)** — run without installing.
-- **[SHA-256 checksum list](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.1/SHA256SUMS.txt)** — verify installer integrity before sharing.
+- **[Setup EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.2/PC-Laptop-Doctor-AI-Setup-9.0.0-beta.2-x64.exe)** — guided install, Start menu shortcuts, uninstall.
+- **[Portable EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.2/PC-Laptop-Doctor-AI-Portable-9.0.0-beta.2-x64.exe)** — run without installing.
+- **[SHA-256 checksum list](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.2/SHA256SUMS.txt)** — verify installer integrity before sharing.
 
-These links become available when the tagged Windows GitHub Actions release build succeeds. Until V9 artifacts are published and checked, [v8.2.0-beta.4](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.4) is the previous confirmed public beta. **Do not share a version whose EXEs have not finished building.**
+These links become available when the tagged Windows GitHub Actions release build succeeds. Until the beta.2 artifacts are published and checked, [v9.0.0-beta.1](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.1) is the last confirmed downloadable beta. **Do not share a version whose EXEs have not finished building.**
+
+### V9 Game Session Engine — beta.2 native helper and recovery
+
+Beta.2 replaces the per-process PowerShell/C# EcoQoS bridge with a locally compiled, **non-elevated Windows C++ helper**. Its fixed commands are limited to inspection, reduction, restoration and lifetime probing. The helper verifies the target's executable and process creation time and independently blocks Windows service processes, cross-session processes, known game launcher, anti-cheat, security and Windows components. A rejected operation leaves the target unchanged. Microsoft documents the [GetProcessInformation](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessinformation) and [SetProcessInformation](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setprocessinformation) APIs used.
+
+Monster Mode also offers an **optional AC-only High Performance power profile**, OFF by default and bound to the short-lived approval preview. On battery or if the plan is unsupported, Game Focus skips the power change. The previous plan is restored on game exit or recovery; more fan noise, heat and energy use are possible. There is not yet thermal-throttling-aware automatic power rollback.
+
+The journal now records a unique session ID, durable written intent, and separate **confirmed vs attempted** counts. Revoking consent during an active game requests immediate restoration. Protected/unverifiable processes are shown in a read-only explanation list without exposing their executable paths. Game monitoring polls at 5-second intervals (two consistent sightings to activate); event-driven detection is **not yet implemented**.
+
+**Caution:** A non-elevated helper is not the same as a digitally signed helper. The beta.2 installer and helper remain unsigned until a trusted signing certificate and independent QA are available. The build compiles the helper from the repository C++ source using MSVC; no prebuilt binary is downloaded.
 
 ### V9 Game Session Engine — first beta implementation
 
@@ -31,7 +41,7 @@ These links become available when the tagged Windows GitHub Actions release buil
 
 **Important restrictions:** unknown, unverified, Windows system, anti-cheat, security, launcher, game, and PC Doctor processes are kept by default. Only exact executable identities that you select in the desktop UI can be reduced. The helper does not force terminate or suspend apps, disable services, edit registry keys, elevate Electron or alter your files. Windows 10 and older Windows 11 builds may not support reading the prior EcoQoS state; those processes must be skipped safely rather than changed without a reversible snapshot. Some third-party apps will also deny access. No 2×–10× performance or guaranteed FPS benefit is claimed.
 
-**Not implemented in this beta:** auto-closing apps/relaunching their working state, event-driven game detection, PresentMon FPS/1%-low capture, signed installer, multi-device Windows validation, or game-specific graphics presets. See [V9 implementation and test gates](docs/V9_GAME_SESSION_BETA_TEST_PLAN.md).
+**Not implemented in this beta:** auto-closing apps/relaunching their working state, event-driven game detection, PresentMon FPS/1%-low capture, signed installer/native helper, multi-device Windows validation, or game-specific graphics presets. See [V9 implementation and test gates](docs/V9_GAME_SESSION_BETA_TEST_PLAN.md).
 
 ### Do this once; then let supported automation run
 
@@ -76,6 +86,8 @@ See [Friend testing checklist](docs/FRIEND_TESTING.md) and [V8.2 beta.4 test gat
 **Release status:** suitable for informed opt-in testers after artifacts are published; **not** independently validated or code signed for broad, unattended public deployment.
 
 ## Development
+
+Building the Windows installer requires **Visual Studio C++ x64 Build Tools** so the helper can be compiled locally. The release workflow compiles and tests it on a Windows runner before packaging.
 
 ```bash
 npm install

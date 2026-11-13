@@ -2,15 +2,24 @@
 // V9 beta: consented, process-scoped EcoQoS. No killing, suspension, service or registry changes.
 const fs=require('node:fs')
 const path=require('node:path')
+const {randomUUID}=require('node:crypto')
 const {classify,protectedReason,cleanWinPath}=require('./boost-policy.cjs')
 const MAX_RULES=24,MAX_ACTIONS=4
 function save(file,value){
  fs.mkdirSync(path.dirname(file),{recursive:true})
  const tmp=file+'.tmp'
+ let fd=null
  try{
-  fs.writeFileSync(tmp,JSON.stringify(value),{encoding:'utf8',mode:0o600})
+  fd=fs.openSync(tmp,'w',0o600)
+  fs.writeFileSync(fd,JSON.stringify(value),{encoding:'utf8'})
+  fs.fsyncSync(fd)
+  fs.closeSync(fd);fd=null
   fs.renameSync(tmp,file)
- }catch(e){try{fs.rmSync(tmp,{force:true})}catch{}throw e}
+ }catch(e){
+  if(fd!==null)try{fs.closeSync(fd)}catch{}
+  try{fs.rmSync(tmp,{force:true})}catch{}
+  throw e
+ }
 }
 function readJson(file){
  try{return JSON.parse(fs.readFileSync(file,'utf8'))}catch{return null}
@@ -46,20 +55,24 @@ function createBackgroundBoost({rulesFile,journalFile,processes,adapter,platform
    const list=await processes()
    if(!Array.isArray(list))throw Error('Process inventory unavailable')
    const c=context()
-   const candidates=list.map(p=>classify(p,c))
-    .filter(p=>p.status==='eligible'&&p.exe&&p.pid>4)
+   const classified=list.map(p=>classify(p,c))
+   const protectedItems=classified.filter(p=>p.status==='protected')
+   const candidates=classified.filter(p=>p.status==='eligible'&&p.exe&&p.pid>4)
     .sort((a,b)=>(b.cpu-a.cpu)||(b.memMB||0)-(a.memMB||0))
    const rules=loadRules(rulesFile)
    return {ok:true,items:candidates.slice(0,35).map(p=>({...p,mode:rules.some(x=>x.exe===p.exe)?'reduce':'keep'})),
     eligibleCount:candidates.length,shownCount:Math.min(35,candidates.length),
-    protectedCount:list.length-candidates.length}
+    protectedCount:protectedItems.length,
+    protectedSample:protectedItems.slice(0,10).map(p=>({name:p.name,reason:p.reason}))}
   }catch(e){return {ok:false,error:'Could not inspect running applications: '+String(e?.message||e).slice(0,130)}}
  }
  async function status(){
   const journal=loadJournal(journalFile)
   return {ok:true,supported:platform==='win32',active:!!journal&&journal.phase==='active',
    needsRecovery:hasJournal()&&(!journal||journal.actions.length>0),
-   modifiedCount:journal?.actions.length||0,approvedCount:loadRules(rulesFile).length,
+   modifiedCount:journal?.actions.filter(x=>x.status==='applied').length||0,
+   attemptedCount:journal?.actions.length||0,
+   sessionId:journal?.sessionId||null,approvedCount:loadRules(rulesFile).length,
    game:game?.name||null,busy,message:lastMessage,
    limits:'Only user-approved, verified background EXEs can receive EcoQoS while an auto-detected game is active. No process is closed. Restore is attempted on game exit, app quit and next launch.'}
  }
@@ -81,7 +94,12 @@ function createBackgroundBoost({rulesFile,journalFile,processes,adapter,platform
   }
   try{save(rulesFile,{version:1,rules})}
   catch{return {ok:false,error:'Could not save local app consent.'}}
-  lastMessage=mode==='reduce'?'Approved EcoQoS for future detected game sessions. No app was closed.':'Consent removed. Active sessions must still be restored.'
+  lastMessage=mode==='reduce'?'Approved EcoQoS for future detected game sessions. No app was closed.':'Consent removed.'
+  if(mode==='keep'&&hasJournal()){
+   const result=await restore()
+   if(!result.ok)return {ok:false,mode,approvedCount:rules.length,error:'Consent was removed but active QoS restoration needs attention: '+String(result.error||'Unknown').slice(0,140)}
+   lastMessage='Consent removed; current session background QoS restored.'
+  }
   return {ok:true,mode,approvedCount:rules.length,message:lastMessage}
  }
  async function begin(gameInfo){
@@ -91,7 +109,7 @@ function createBackgroundBoost({rulesFile,journalFile,processes,adapter,platform
   const rules=loadRules(rulesFile)
   if(!rules.length)return {ok:true,modifiedCount:0,message:'No background applications approved for EcoQoS.'}
   busy=true;game={name:String(gameInfo.name||'Game').slice(0,90),file:gameInfo.file,key:gameInfo.key}
-  const journal={version:1,phase:'preparing',createdAt:now(),game:game.name,actions:[]}
+  const journal={version:1,sessionId:randomUUID(),phase:'preparing',createdAt:now(),game:game.name,actions:[]}
   const skipped=[]
   try{
    save(journalFile,journal)
@@ -111,18 +129,22 @@ function createBackgroundBoost({rulesFile,journalFile,processes,adapter,platform
     const record={pid:item.pid,exe:item.exe,startTicks:String(before.startTicks),before:{
      controlMask:before.controlMask,stateMask:before.stateMask},applied}
     if(!/^[0-9]{1,21}$/.test(record.startTicks)){skipped.push(item.name+': missing process lifetime');continue}
-    // Write-ahead: after a crash we know exactly what we MAY have applied.
+    // Write-ahead + fsync: an interruption can happen during apply.
+    record.status='intent'
     journal.actions.push(record);save(journalFile,journal)
     const result=await adapter.apply(record)
+    record.status=result.ok?'applied':'uncertain'
+    save(journalFile,journal)
     if(!result.ok){
-     // Do not claim success; leave the attempted record for recovery.
+     // A failed API response is not proof that nothing changed.
      skipped.push(item.name+': '+String(result.error||'Windows refused the change'))
     }
    }
    journal.phase='active';save(journalFile,journal)
-   lastMessage=journal.actions.length+' user-approved process actions attempted; no apps closed.'+
+   const confirmed=journal.actions.filter(x=>x.status==='applied').length
+   lastMessage=confirmed+' process QoS changes confirmed; '+journal.actions.length+' attempted; no apps closed.'+
     (skipped.length?' Some actions need review: '+skipped.join('; ').slice(0,250):'')
-   return {ok:true,modifiedCount:journal.actions.length,warnings:skipped,message:lastMessage}
+   return {ok:true,modifiedCount:confirmed,attemptedCount:journal.actions.length,warnings:skipped,message:lastMessage}
   }catch(e){
    lastMessage='Background Boost could not finish; the write-ahead journal is preserved for restoration: '+String(e.message||e).slice(0,150)
    return {ok:false,error:lastMessage}

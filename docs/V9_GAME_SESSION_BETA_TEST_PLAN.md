@@ -6,6 +6,12 @@ A consented background-process EcoQoS prototype: user selects exact eligible exe
 
 This is not app-closing functionality. The app does not force-stop, suspend, terminate or automatically reopen background software. The reversible EcoQoS mechanism does not free RAM. The existing Game Mode, optional power profile and Temp care remain separate.
 
+## Beta.2 implementation note
+
+The Windows x64 C++ helper is built with MSVC and packaged as a fixed-command, non-elevated binary in the app's resources. It validates process image path and lifetime before any EcoQoS changes and blocks service-owned or other-session PIDs. The former per-process PowerShell launch is removed. Consent revocation attempts immediate restore; the write-ahead journal is flushed to disk before mutation. Game scanning polls every 5 seconds, with event-driven detection still outstanding.
+
+Optional **High Performance on AC** is now available in Monster Mode's reviewed preview, off by default. Game Focus checks that the battery/AC conditions and Windows plan availability permit it and stores a reversible journal; no temperature-adaptive rollback is claimed.
+
 ## Windows and security limits
 
 1. Never approve antivirus, EDR, encryption, accessibility, anti-cheat, game executables, game launchers, hardware driver services or PC Doctor itself. The classifier has a defense-in-depth denylist but cannot know every third-party security program. Unsupported and unknown processes stay on Keep.
