@@ -1,4 +1,4 @@
-# PC Laptop Doctor AI V7 — Public beta tester guide
+# PC Laptop Doctor AI V8.2 — Public beta tester guide
 
 **Build:** Windows 10/11 x64, Setup.exe or Portable.exe. **Signed publisher:** no. **Status:** public beta for controlled testing, not a certified gaming optimization application.
 
@@ -134,3 +134,19 @@ V7.4 remains an unsigned public beta pending real-device/security validation.
 - [ ] Verify hardware snapshots update after cleanup; no fabricated improvement in benchmark or FPS data.
 - [ ] Test a 1366×768 laptop, keyboard navigation, reduced motion preferences and the image alt text.
 - [ ] Check version V8.1 in the app and README, along with actual Setup/Portable filenames on the published GitHub release.
+
+
+## V8.2 Monster Mode QA — additional release gates
+
+- [ ] On a physical Windows 10/11 x64 machine, open PC Monster and check the illustrated Monster Mode panel.
+- [ ] Click **Power up Monster Mode**. Confirm the preview itself makes no registry edits or file moves.
+- [ ] With a disposable old top-level .tmp test file in user Temp, approve once; verify it is moved to Recycle Bin and can be restored.
+- [ ] Verify only user Temp files at least 30 days old are eligible; recent .tmp files, .log, directories, Downloads, game saves and Windows security files remain untouched.
+- [ ] Close a recognized game and check managed Game Mode changes restore; also test normal app exit and error recovery.
+- [ ] Switch Monster Mode off and confirm automatic gaming and weekly Temp care are disabled.
+- [ ] Check that app-cache cleaning and permanent deletion require independent approval and never show Recycle Bin moves as immediately recovered disk space.
+- [ ] Verify 1366x768 and 1920x1080 layouts, keyboard focus and high-DPI scaling with the hero illustration.
+- [ ] Validate Windows Defender and SmartScreen compatibility. Do not disable protections to install unsigned third-party builds.
+- [ ] Repeat comparable FPS/frametime trials and record positive, negative or neutral outcomes. Without such evidence, do not advertise FPS improvements.
+
+**Distribution decision:** Share the GitHub release as a *public tester beta* until code signing, independent security review and real-hardware QA finish; do not label it a certified stable release.
