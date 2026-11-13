@@ -13,12 +13,12 @@ function loadPrefs(file){
  try{
   const v=JSON.parse(fs.readFileSync(file,'utf8'))
   if(v?.version!==VERSION)return defaults()
-  return {version:VERSION,autoBoost:v.autoBoost===true,weeklyCleanup:v.weeklyCleanup===true,
+  return {version:VERSION,autoBoost:v.autoBoost===true,weeklyCleanup:v.weeklyCleanup===true,boostOnAC:v.boostOnAC===true,
    lastCleanupAt:Number.isSafeInteger(v.lastCleanupAt)&&v.lastCleanupAt>=0?v.lastCleanupAt:0,
    lastCleanupCount:Number.isInteger(v.lastCleanupCount)?Math.max(0,Math.min(300,v.lastCleanupCount)):0}
  }catch{return defaults()}
 }
-function defaults(){return {version:VERSION,autoBoost:false,weeklyCleanup:false,lastCleanupAt:0,lastCleanupCount:0}}
+function defaults(){return {version:VERSION,autoBoost:false,weeklyCleanup:false,boostOnAC:false,lastCleanupAt:0,lastCleanupCount:0}}
 function savePrefs(file,v){
  fs.mkdirSync(path.dirname(file),{recursive:true})
  const tmp=file+'.tmp'
@@ -65,16 +65,18 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
  async function status(){
   const v=loadPrefs(stateFile)
   return {ok:true,supported:platform==='win32',autoBoost:v.autoBoost,weeklyCleanup:v.weeklyCleanup,
-   lastCleanupAt:v.lastCleanupAt||null,lastCleanupCount:v.lastCleanupCount,activeGame:owner?.name||null,
+   lastCleanupAt:v.lastCleanupAt||null,lastCleanupCount:v.lastCleanupCount,boostOnAC:v.boostOnAC,activeGame:owner?.name||null,
    running:working,message,
    limits:'Auto-Boost recognizes exact user-added EXEs or running processes inside verified Steam/Epic game install folders. Weekly cleanup moves old .tmp files to Recycle Bin; it does not immediately free disk space.'}
  }
  async function configure(options){
   if(platform!=='win32')return {ok:false,error:'Windows desktop only.'}
-  if(!options||typeof options.autoBoost!=='boolean'||typeof options.weeklyCleanup!=='boolean')
+  if(!options||typeof options.autoBoost!=='boolean'||typeof options.weeklyCleanup!=='boolean'||
+   (options.boostOnAC!==undefined&&typeof options.boostOnAC!=='boolean'))
    return {ok:false,error:'Choose both automation switches explicitly.'}
   const prev=loadPrefs(stateFile)
-  const next={...prev,autoBoost:options.autoBoost,weeklyCleanup:options.weeklyCleanup}
+  const next={...prev,autoBoost:options.autoBoost,weeklyCleanup:options.weeklyCleanup,
+   boostOnAC:options.boostOnAC===undefined?prev.boostOnAC:options.boostOnAC}
   let restoreWarning=null
   try{savePrefs(stateFile,next)}catch{return {ok:false,error:'Could not save your local opt-in settings.'}}
   if(!next.autoBoost){
@@ -143,13 +145,16 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   if(seenCount<2)return
   const state=await gameFocus.state()
   if(state.session)return // Manual Game Focus takes precedence.
-  const p=await gameFocus.preview('standard',120)
+  const profile=prefs.boostOnAC?'plugged':'standard'
+  const p=await gameFocus.preview(profile,120)
   if(!p.ok){message='Auto-Boost skipped: '+String(p.error||'Windows settings unavailable').slice(0,110);return}
-  const r=await gameFocus.start('standard',p.token)
+  const r=await gameFocus.start(profile,p.token)
   if(r.ok){
    owner={file:found.file,key:found.key,name:found.name}
    const background=backgroundBoost?await backgroundBoost.begin(found):{ok:true,modifiedCount:0}
-   message='Auto-Boost activated for '+owner.name+'. '+(background.ok?
+   message='Auto-Boost activated for '+owner.name+'. '+(prefs.boostOnAC?
+    'AC-only High Performance was requested and is subject to Windows/AC availability. ':'')+
+    (background.ok?
     background.modifiedCount+' approved background process adjustments attempted.':
     'Background QoS unavailable: '+String(background.error||'Unknown error').slice(0,135))+
     ' Restoration is attempted after the game exits, on quit or at next launch.'
