@@ -31,7 +31,7 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,platform=process.pla
       'Enable weekly recycling of safe top-level user-Temp .tmp files aged 30+ days',
       'Immediately move '+files.length+' matching temporary files to Windows Recycle Bin (not permanently delete)'
      ],
-     caution:'Nothing is deleted permanently. Recycle Bin files still occupy disk space. Game Focus may not improve FPS and automatically restores when supported game exits.'}
+     caution:'PC Doctor will not permanently delete files. Recycle Bin files still occupy disk space. Game Focus may not improve FPS and automatically restores when supported game exits.'}
   }catch(e){pending=null;return {ok:false,error:'Could not safely preview Monster Mode: '+String(e?.message||e).slice(0,160)}}
   finally{busy=false}
  }
