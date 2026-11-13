@@ -521,3 +521,23 @@ footer a{color:#85e7eb;text-decoration:none}
 .sidebar-advanced{border-left:2px solid #286a69;padding-left:9px}
 .sidebar-advanced-toggle:hover{background:#174253}
 .sidebar-advanced-toggle:focus-visible{outline:2px solid #72e9d7;outline-offset:3px}
+
+
+/* V7.1: approachable one-screen boost-and-clean workflow */
+.v7-lead{background:radial-gradient(ellipse at 94% 2%,rgba(48,166,171,.24),transparent 42%),linear-gradient(125deg,#0b2838,#0b1b2b)}
+.v7-lead h2{font-size:clamp(24px,3vw,35px);letter-spacing:-.7px}
+.v7-lead p{color:#b4d1de;line-height:1.8}
+.v7-section{border-color:#315363;border-radius:16px}
+.v7-section-head p:not(.eyebrow){color:#bfd5dc;line-height:1.7}
+.v7-auto-clean{display:flex;flex-direction:column;gap:12px;border-radius:12px;border:1px solid #346d72;background:#0c343c;padding:16px}
+.v7-auto-clean .v7-primary{width:100%;justify-content:center;font-size:13px;min-height:47px}
+.v7-advanced-clean,.v7-manual-clean{border-top:1px solid #36616d;padding-top:11px}
+.v7-advanced-clean summary,.v7-manual-clean summary{font-size:12px;cursor:pointer;color:#bae8e1;font-weight:750;padding:6px 0}
+.v7-advanced-clean>p{font-size:11px;line-height:1.7;color:#dfc6a4}
+.v7-danger{border:1px solid #b37462;background:#4b2f2b;color:#ffe0cf;border-radius:10px;cursor:pointer;font-weight:800;padding:12px 14px}
+.v7-danger:disabled{opacity:.45;cursor:not-allowed}
+.v7-clean-preview{background:#0b2a36}
+.v7-boost-status .v7-state{font-size:12px}
+.v7-caption{color:#adc5d0}
+.v7-game-select select:focus-visible,.v7-advanced-clean summary:focus-visible,.v7-manual-clean summary:focus-visible{outline:2px solid #91eedc;outline-offset:3px}
+@media(max-width:690px){.v7-pair{grid-template-columns:1fr}.v7-auto-clean{padding:13px}}
