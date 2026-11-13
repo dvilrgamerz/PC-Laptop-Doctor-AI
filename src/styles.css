@@ -880,3 +880,23 @@ footer a{color:#85e7eb;text-decoration:none}
 .monster-boost-status{border:1px solid #417688;background:#113744;padding:11px 13px;border-radius:9px;font-size:11px;line-height:1.6;color:#bedae8;margin:0}
 .monster-boost-link{width:fit-content;cursor:pointer;border:0;background:transparent;color:#9bd9fb;text-align:left;text-decoration:underline;font-size:11px;padding:3px 0}
 .monster-boost button:focus-visible,.monster-boost input:focus-visible,.monster-boost select:focus-visible{outline:2px solid #9eece3;outline-offset:3px}
+
+/* V8.2 beta.4: honest, accessible automation control cards. */
+.monster-login-option{display:flex;align-items:flex-start;gap:12px;width:100%;max-width:570px;
+ padding:13px 15px;border:1px solid rgba(121,250,217,.42);border-radius:13px;
+ background:linear-gradient(125deg,rgba(18,84,87,.6),rgba(14,40,64,.72));cursor:pointer}
+.monster-login-option input{width:18px;height:18px;accent-color:#69edd1;flex:0 0 auto;margin:3px 0 0}
+.monster-login-option span{display:flex;flex-direction:column;gap:4px;line-height:1.5}
+.monster-login-option strong{color:#e8fff7;font-size:12px}
+.monster-login-option small{color:#b9d3df;font-size:11px}
+.monster-live-grid{display:grid;width:100%;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;
+ margin:1px 0 2px}
+.monster-live-grid>div{display:flex;flex-direction:column;justify-content:space-between;gap:7px;
+ border:1px solid #3b7182;border-radius:11px;padding:11px 12px;min-width:0;
+ background:linear-gradient(155deg,rgba(27,74,85,.75),rgba(8,29,52,.93))}
+.monster-live-grid small{font-size:10px;letter-spacing:.035em;color:#a4c5d2}
+.monster-live-grid strong{font-size:12px;line-height:1.4;overflow-wrap:anywhere;color:#e6fbf5}
+.monster-login-option:focus-within,.monster-mode button:focus-visible{outline:2px solid #b4ffee;outline-offset:3px}
+@media(max-width:1100px){.monster-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.monster-live-grid{grid-template-columns:1fr}.monster-login-option{padding:12px}}
+@media(prefers-reduced-motion:reduce){.monster-mode-art img{animation:none}}

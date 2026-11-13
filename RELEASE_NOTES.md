@@ -1,22 +1,24 @@
-# PC & Laptop Doctor AI v8.2.0-beta.3 — PC Monster Mode and one-click care
+# PC & Laptop Doctor AI — v8.2.0-beta.4
 
-**Public tester build — unsigned Windows 10/11 x64.**
+**Windows 10/11 x64 — unsigned public tester beta**
 
-## New
-- Direct **Game Focus** controls now appear on the home dashboard. Users can preview, approve and restore supported Game Mode/performance settings without navigating to Windows Settings. A two-hour safety timer applies when supported.
-- Original PC Monster performance-core illustration joins the neon laptop illustration. Both are scalable vector assets built into the app, not stock imagery or fabricated performance graphs.
-- Added original lightweight neon laptop illustration and a simpler prominent Monster Mode home action.
-- One reviewed activation turns on existing trusted-game Auto-Boost and weekly recoverable Temp care; immediate approved cleanup moves only 30+ day top-level user-Temp .tmp files to Recycle Bin.
-- Game Focus recovers supported Windows preferences after tracked game exit or normal app close, subject to existing safeguards.
-- One-Click Care remains available in-app for previewed application-only HTTP cache and Temp cleaning. It distinguishes recycled bytes from truly reclaimed space.
-- Concrete storage recovery target based on reported drive capacity (15% or 20 GiB target when feasible), with missing sensors shown as unknown.
-- Added automated tests for consent/replay/expiration, game-active refusal and opt-out, refreshed download links and friend test checklist.
+## Changes since v8.2.0-beta.3
+- Fixed a duplicate Monster Mode dashboard panel.
+- Added explicitly reviewed, opt-in **Start with Windows** integration for packaged Windows releases. Disabled by default until a person approves Monster Mode; disabling Monster Mode also attempts to remove its login registration.
+- Added real automation status tiles: trusted game activity, weekly care, startup state, date and count of previous cleanup.
+- Made warnings about failing to apply/remove Windows startup settings visible. An approval token is still short-lived, single-use and bound to the previewed startup option.
+- Updated desktop downloads, version labels, UI and friend-testing documentation.
+- Paused automatic GitHub Pages deployments until repository Pages is configured. This avoids a failing Pages job incorrectly obscuring successful Windows builds.
 
-## Important limitations
-- This is not a verified fps booster for every game and does not claim superiority to Razer Cortex/Hone.
-- Safe Auto Care operates only when PC Doctor is running. Onboarding approval is required once, and dangerous cleanup actions remain separately approved.
-- Moving files to Recycle Bin does not free drive capacity. Do not confuse candidate bytes with reclaimed bytes.
-- No automatic deletion of Downloads, Windows security changes, arbitrary background-process killing, GPU overclock or game/anti-cheat tampering.
-- Installer is **unsigned**; this version has not been independently tested across multiple physical Windows machines or audited by a third party. Keep it a public beta until those gates pass.
+## Scope and safety
+- The PC must be on and PC Doctor must be running. Starting with Windows is **optional**, not a background system service.
+- No arbitrary process termination, security-product disabling, overclocking, permanent personal-file cleanup, or guaranteed FPS gain.
+- Temp cleanup only moves eligible files to Recycle Bin; this does not free disk space until the user empties it.
+- Preview and approval must occur before enabling automation. Auto-Boost touches only supported Windows preferences; old values have a restore flow.
+- Installer is unsigned. Automated CI does not establish real-device stability or third-party code security.
 
-Read docs/FRIEND_TESTING.md and docs/ROADMAP.md before sharing with friends. Download only from the official GitHub release and verify SHA256SUMS.txt.
+## Minimum public-test gates
+1. Node tests and Windows GitHub Actions installer/portable jobs succeed for this commit.
+2. Two EXEs plus `SHA256SUMS.txt` are attached to the tagged prerelease.
+3. At least two different physical Windows machines complete the tester checklist before broad marketing.
+4. Do not claim benchmark superiority over Razer Cortex until controlled before/after comparisons substantiate it.

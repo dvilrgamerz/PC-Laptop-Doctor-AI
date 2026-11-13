@@ -4,7 +4,7 @@ contextBridge.exposeInMainWorld('doctor', {
   runDiagnostics: () => ipcRenderer.invoke('doctor:run-diagnostics'),
   getLiveMonitor: () => ipcRenderer.invoke('doctor:v7-live-monitor'),
   getMonsterStatus: () => ipcRenderer.invoke('doctor:v8-monster-status'),
-  previewMonsterMode: () => ipcRenderer.invoke('doctor:v8-monster-preview'),
+  previewMonsterMode: options => ipcRenderer.invoke('doctor:v8-monster-preview',options),
   activateMonsterMode: token => ipcRenderer.invoke('doctor:v8-monster-activate',token),
   disableMonsterMode: () => ipcRenderer.invoke('doctor:v8-monster-disable'),
   getDailyStatus: () => ipcRenderer.invoke('doctor:v8-daily-status'),

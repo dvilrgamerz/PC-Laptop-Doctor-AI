@@ -234,7 +234,20 @@ function openTaskManager() {
   })
 }
 
-app.whenReady().then(async () => {
+// Prevent two startup/manual instances from competing over the same
+// temporary Windows preferences and local cleanup journals.
+const hasSingleInstanceLock=app.requestSingleInstanceLock()
+if(!hasSingleInstanceLock){
+  app.quit()
+}else{
+  app.on('second-instance',()=>{
+    const win=BrowserWindow.getAllWindows()[0]
+    if(!win)return
+    if(win.isMinimized())win.restore()
+    win.show()
+    win.focus()
+  })
+  app.whenReady().then(async () => {
   const fixes = createFixService({
     stateFile: path.join(app.getPath('userData'), 'safe-fix-backups.json'),
     battery: () => si.battery(),
@@ -290,12 +303,30 @@ app.whenReady().then(async () => {
     tempCleaner:autoTempCleaner
   })
   const monsterCareCleaner=createTempCleaner({trashItem:target=>shell.trashItem(target)})
-  const monsterMode=createMonsterMode({autopilot,tempCleaner:monsterCareCleaner,gameFocus})
+  const monsterMode=createMonsterMode({
+    autopilot,tempCleaner:monsterCareCleaner,gameFocus,
+    // Only packaged Windows builds may register themselves on login.
+    loginStartup:process.platform==='win32'&&app.isPackaged?(()=>{
+      // electron-builder portable EXEs unpack to a temporary location. Register
+      // the persistent original launcher, not the short-lived extracted child.
+      const portableLauncher=process.env.PORTABLE_EXECUTABLE_FILE
+      const startupExecutable=typeof portableLauncher==='string'&&
+        path.win32.isAbsolute(portableLauncher)&&/\.exe$/i.test(portableLauncher)
+        ?portableLauncher:process.execPath
+      return {
+        get:()=>{
+          const state=app.getLoginItemSettings({path:startupExecutable})
+          return state.openAtLogin===true&&state.executableWillLaunchAtLogin!==false
+        },
+        set:enabled=>app.setLoginItemSettings({openAtLogin:enabled===true,path:startupExecutable})
+      }
+    })():null
+  })
   const guard = (event) => trustedDoctorFrame(event)
   ipcMain.handle('doctor:v8-monster-status', event=>guard(event)
     ? monsterMode.status():{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-monster-preview', event=>guard(event)
-    ? monsterMode.preview():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-monster-preview', (event,options)=>guard(event)
+    ? monsterMode.preview(options):{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-monster-activate', (event,token)=>guard(event)
     ? monsterMode.activate(token):{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-monster-disable', event=>guard(event)
@@ -429,3 +460,4 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
+}

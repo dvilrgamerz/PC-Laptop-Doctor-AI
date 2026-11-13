@@ -1,6 +1,6 @@
 {
   "name": "pc-laptop-doctor-ai",
-  "version": "8.2.0-beta.3",
+  "version": "8.2.0-beta.4",
   "private": true,
   "description": "Windows PC Monster with automatic safe gaming care, daily hardware dashboard, in-app cleanup and local privacy",
   "main": "electron/main.cjs",

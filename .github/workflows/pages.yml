@@ -16,6 +16,10 @@ concurrency:
 
 jobs:
   build:
+    # Pages is not enabled on every repository. Opt in after setting:
+    # Settings > Pages > Build and deployment > GitHub Actions, and then
+    # repository variable DVILR_ENABLE_PAGES=true.
+    if: vars.DVILR_ENABLE_PAGES == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -1,12 +1,14 @@
 import React,{useEffect,useState} from 'react'
 import {Check,CheckCircle2,Clock3,RefreshCw,ShieldCheck,Sparkles,StopCircle,TriangleAlert,Zap} from 'lucide-react'
 import machineArt from '../assets/monster-machine.svg'
+import autopilotArt from '../assets/monster-autopilot.svg'
 
 export default function MonsterModePanel({demo}){
  const supported=!demo&&!!window.doctor?.getMonsterStatus&&!!window.doctor?.previewMonsterMode
  const [current,setCurrent]=useState(null)
  const [plan,setPlan]=useState(null)
  const [busy,setBusy]=useState(false)
+ const [startWithWindows,setStartWithWindows]=useState(true)
  const [message,setMessage]=useState('')
  const [error,setError]=useState('')
  async function refresh(){
@@ -19,7 +21,7 @@ export default function MonsterModePanel({demo}){
   if(!supported||busy)return
   setBusy(true);setPlan(null);setError('');setMessage('Inspecting only safe old temporary files and current gaming state…')
   try{
-   const r=await window.doctor.previewMonsterMode()
+   const r=await window.doctor.previewMonsterMode({startWithWindows:startWithWindows&&current?.startupSupported===true})
    if(r.ok){setPlan(r);setMessage('Preview ready. Nothing has changed yet.')}
    else{setMessage('');setError(r.error||'Could not make a safe plan.')}
   }catch{setError('The preview failed. No changes were approved.')}
@@ -40,38 +42,50 @@ export default function MonsterModePanel({demo}){
  async function disable(){
   if(!supported||busy)return
   setBusy(true);setPlan(null);setError('');setMessage('')
-  try{const r=await window.doctor.disableMonsterMode();if(r.ok)setMessage(r.message);else setError(r.error||'Unable to stop Monster Mode');await refresh()}
+  try{const r=await window.doctor.disableMonsterMode();if(r.ok){setMessage(r.message);if(r.warning)setError(r.warning)}else setError(r.error||'Unable to stop Monster Mode');await refresh()}
   catch{setError('Unable to disable Monster Mode; review the separate Autopilot controls.')}
   finally{setBusy(false)}
  }
  const enabled=!!current?.enabled
  return <section className="monster-mode" aria-label="Monster Mode automatic safe PC care">
-   <div className="monster-mode-art"><img src={machineArt} alt="Illustration of a neon-lit laptop displaying a system pulse"/></div>
+   <div className="monster-mode-art"><img src={enabled?autopilotArt:machineArt} alt={enabled?"Original neon PC Monster automation shield":"Original neon PC Monster laptop illustration"}/></div>
    <div className="monster-mode-content">
      <div className="monster-mode-kicker"><Sparkles size={15}/> PC MONSTER · SMART CARE</div>
-     <h2>One approval. Your PC takes care of the basics.</h2>
-     <p>Enable automatic gaming settings for recognized games, weekly recoverable Temp cleanup, and an immediate safe cleanup of eligible old files. All changes are local and limited.</p>
+     <h2>Make your PC a Monster. Keep the changes safe.</h2>
+     <p>One reviewed setup handles trusted-game Game Focus, weekly recoverable Temp care, and an immediate eligible-file pass. No Windows Settings hopping, no fake RAM boosts, no forced app closing.</p>
      <div className="monster-mode-points">
        <span><Check size={15}/> Automatic Game Focus for recognized games</span>
        <span><Check size={15}/> Safe weekly Temp care</span>
        <span><Check size={15}/> Game settings restored when supported games close</span>
      </div>
+     {!enabled&&current?.startupSupported===true&&<label className="monster-login-option">
+      <input type="checkbox" checked={startWithWindows} onChange={e=>{setStartWithWindows(e.target.checked);setPlan(null);setMessage('Startup preference changed. Preview again before approving.')}}/>
+      <span><strong>Start PC Doctor with Windows</strong><small>Recommended for automatic care after sign-in. This is optional and can be disabled here.</small></span>
+     </label>}
+     {enabled&&<div className="monster-live-grid" aria-label="Live automation status">
+      <div><small>Game Focus</small><strong>{current?.autoBoost?'Watching for trusted games':'Off'}</strong></div>
+      <div><small>Gaming session</small><strong>{current?.activeGame||'No detected game'}</strong></div>
+      <div><small>Weekly safe care</small><strong>{current?.weeklyCleanup?'Active':'Off'}</strong></div>
+      <div><small>Starts with Windows</small><strong>{current?.startupSupported===false?'Not available':current?.startWithWindows===true?'On':current?.startWithWindows===false?'Off':'Not verified'}</strong></div>
+      <div><small>Last Temp care</small><strong>{current?.lastCleanupAt?new Date(current.lastCleanupAt).toLocaleDateString():'Not run yet'}</strong></div>
+      <div><small>Files recycled last run</small><strong>{current?.lastCleanupCount??0}</strong></div>
+     </div>}
      <div className="monster-mode-actions">
       {enabled?
        <><div className="monster-mode-enabled"><CheckCircle2 size={17}/> Monster Mode enabled</div>
         <button type="button" className="monster-mode-stop" disabled={busy||!supported} onClick={disable}><StopCircle size={16}/> Turn off automation</button></>:
-       <button type="button" className="monster-mode-button" disabled={busy||!supported} onClick={preview}><Zap size={20}/>{busy?'Checking PC…':'Power up Monster Mode'}</button>}
+       <button type="button" className="monster-mode-button" disabled={busy||!supported||!current} onClick={preview}><Zap size={20}/>{busy?'Checking PC…':'Power up Monster Mode'}</button>}
        <button type="button" className="monster-mode-refresh" disabled={busy||!supported} onClick={refresh} aria-label="Refresh Monster Mode status"><RefreshCw size={17}/></button>
      </div>
      {!supported&&<p className="monster-mode-note">The web demo shows a design preview only. Real care requires the Windows desktop application.</p>}
-     <p className="monster-mode-fine"><ShieldCheck size={14}/> No arbitrary app closing, security disabling, overclocking, game-file changes or permanent deletion. No FPS improvement is promised.</p>
+     <p className="monster-mode-fine"><ShieldCheck size={14}/> No arbitrary app closing, security disabling, overclocking, game-file changes or permanent deletion. Actual FPS gains require benchmarks; none are promised.</p>
      {!!message&&<p className="monster-mode-message" role="status">{message}</p>}
      {!!error&&<p className="monster-mode-error" role="alert"><TriangleAlert size={16}/>{error}</p>}
    </div>
    {!!plan&&<div className="monster-mode-preview" role="group" aria-label="Review automated care before activation">
-    <div className="monster-mode-preview-head"><Clock3 size={18}/><strong>Review once, then automate</strong><small>Confirmation expires in 60 seconds</small></div>
+    <div className="monster-mode-preview-head"><Clock3 size={18}/><strong>Approve exactly these actions</strong><small>Confirmation expires in 60 seconds</small></div>
     <ul>{plan.actions.map((a,i)=><li key={i}>{a}</li>)}</ul>
-    <p>{plan.caution} Your existing Autopilot preferences will be enabled, and work only while PC Doctor is open.</p>
+    <p>{plan.caution} Game Focus only runs while the app is open. If Windows startup is selected, the packaged app will launch on sign-in. No restart or administrator access is requested.</p>
     <div className="monster-mode-preview-actions">
       <button type="button" disabled={busy} className="monster-mode-button" onClick={activate}><Zap size={17}/> Approve and automate</button>
       <button type="button" disabled={busy} onClick={()=>{setPlan(null);setMessage('No changes made.')}}>Cancel</button>

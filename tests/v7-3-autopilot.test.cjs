@@ -10,14 +10,14 @@ function fixture(roots=[],hasCustom=true){
  const stateFile=path.join(root,'auto.json'),customStoreFile=path.join(root,'games.json')
  fs.writeFileSync(customStoreFile,JSON.stringify({version:1,games:hasCustom?
   [{id:'a'.repeat(24),name:'Chess Game',file:'D:\\Games\\Chess\\Chess.exe'}]:[]}))
- let now=Date.UTC(2026,10,12,12,0,0),active=false
+ let now=Date.UTC(2026,10,12,12,0,0),active=false,restoreWorks=true
  let processList=[]
  const calls=[],cleanCalls=[]
  const focus={
   state:async()=>({ok:true,session:active?{phase:'active'}:null}),
   preview:async(p,m)=>{calls.push(['preview',p,m]);return {ok:true,profile:p,token:'approved'}},
   start:async(p,t)=>{calls.push(['start',p,t]);active=true;return {ok:true}},
-  stop:async()=>{calls.push(['stop']);active=false;return {ok:true}}
+  stop:async()=>{calls.push(['stop']);if(restoreWorks)active=false;return {ok:restoreWorks}}
  }
  let filePreview=[{id:'old',name:'old.tmp',ageDays:45},{id:'recent',name:'recent.tmp',ageDays:18},
   {id:'log',name:'old.log',ageDays:70}]
@@ -33,7 +33,7 @@ function fixture(roots=[],hasCustom=true){
   setTime:t=>{now=t},
   jumpTime:ms=>{now+=ms},
   setPreview:xs=>{filePreview=xs},
-  setActive:v=>{active=v},
+  setActive:v=>{active=v},setRestoreWorks:v=>{restoreWorks=v},
   clean:()=>fs.rmSync(root,{recursive:true,force:true})}
 }
 const gameProcess={name:'Chess.exe',path:'D:\\Games\\Chess'}
@@ -138,5 +138,38 @@ test('Steam/Epic auto boost works without manually adding an EXE, but requires e
   f.setProcesses([])
   await f.agent.tick();await f.agent.tick();await f.agent.tick()
   assert.equal(f.calls.filter(x=>x[0]==='stop').length,1)
+ }finally{f.clean()}
+})
+
+test('approved Monster cleanup is recorded and prevents immediate duplicate sweep',async()=>{
+ const f=fixture()
+ try{
+  assert.equal((await f.agent.recordApprovedCleanup(1)).ok,false)
+  assert.equal((await f.agent.configure({autoBoost:false,weeklyCleanup:true})).ok,true)
+  const record=await f.agent.recordApprovedCleanup(2)
+  assert.equal(record.ok,true)
+  assert.equal((await f.agent.status()).lastCleanupCount,2)
+  assert.ok((await f.agent.status()).lastCleanupAt)
+  await f.agent.tick()
+  assert.deepEqual(f.cleanCalls,[]) // no second sweep straight after activation
+  f.jumpTime(WEEK+1)
+  await f.agent.tick()
+  assert.ok(f.cleanCalls.includes('scan')) // ordinary weekly schedule resumes
+ }finally{f.clean()}
+})
+
+test('disabling Auto-Boost reports incomplete Windows preference restoration',async()=>{
+ const f=fixture()
+ try{
+  await f.agent.configure({autoBoost:true,weeklyCleanup:false})
+  f.setProcesses([gameProcess])
+  await f.agent.tick();await f.agent.tick()
+  assert.ok(f.calls.some(x=>x[0]==='start'))
+  f.setRestoreWorks(false)
+  const disabled=await f.agent.configure({autoBoost:false,weeklyCleanup:false})
+  assert.equal(disabled.ok,true)
+  assert.equal(disabled.autoBoost,false)
+  assert.match(disabled.warning,/could not be fully restored/i)
+  assert.match(disabled.message,/Stop & Restore/i)
  }finally{f.clean()}
 })

@@ -75,6 +75,7 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
    return {ok:false,error:'Choose both automation switches explicitly.'}
   const prev=loadPrefs(stateFile)
   const next={...prev,autoBoost:options.autoBoost,weeklyCleanup:options.weeklyCleanup}
+  let restoreWarning=null
   try{savePrefs(stateFile,next)}catch{return {ok:false,error:'Could not save your local opt-in settings.'}}
   if(!next.autoBoost){
    seenFile=null;seenCount=0;blockedFile=null
@@ -82,12 +83,24 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
     const current=owner
     const r=await gameFocus.stop()
     if(r.ok){owner=null;misses=0;message='Autopilot disabled and its Game Focus preferences restored.'}
-    else message='Autopilot disabled but '+current.name+' session may need manual Stop & Restore.'
+    else{restoreWarning='Autopilot disabled but '+current.name+' could not be fully restored. Open Boost & Play and use Stop & Restore.';message=restoreWarning}
    }
   }
   if(!next.weeklyCleanup)message='Weekly cleanup disabled. No background cleanup will run.'
   if(next.autoBoost||next.weeklyCleanup)message='Autopilot preferences saved. It runs only while PC Doctor is open.'
-  return status()
+  if(restoreWarning)message=restoreWarning // Never erase a failed restoration with a success notice.
+  const updated=await status()
+  return restoreWarning?{...updated,warning:restoreWarning}:updated
+ }
+ // The initial user-approved Monster cleanup is a real cleanup run, not a
+ // separate invisible pass. Record it to avoid a duplicate scheduled sweep.
+ async function recordApprovedCleanup(count){
+  if(platform!=='win32'||!Number.isSafeInteger(count)||count<0)return {ok:false,error:'Invalid cleanup record.'}
+  const prefs=loadPrefs(stateFile)
+  if(!prefs.weeklyCleanup)return {ok:false,error:'Automatic cleanup is not enabled.'}
+  try{savePrefs(stateFile,{...prefs,lastCleanupAt:now(),lastCleanupCount:Math.min(300,count)})}
+  catch{return {ok:false,error:'Could not persist the completed cleanup time.'}}
+  return {ok:true}
  }
  async function handleGame(prefs){
   if(!prefs.autoBoost||platform!=='win32')return
@@ -175,6 +188,6 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   timer?.unref?.()
  }
  function stop(){if(timer){cancel(timer);timer=null}}
- return {status,configure,tick,start,stop}
+ return {status,configure,recordApprovedCleanup,tick,start,stop}
 }
 module.exports={createAutopilot,loadPrefs,savePrefs,processExecutable,gameForProcesses,WEEK,INTERVAL}

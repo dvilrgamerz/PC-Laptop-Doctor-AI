@@ -161,7 +161,7 @@ const NAV_ITEMS = [
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
 const ESSENTIAL_IDS = new Set(['dashboard','boost','performance','storage','battery','network'])
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.3'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.4'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -323,7 +323,7 @@ export default function App() {
         </section>}
 
         <div className="scan-notice">
-          <span><ShieldCheck size={16}/> {isDemoMode ? 'Sample measurements — not your computer' : 'Local diagnostics — no automatic system changes'}</span>
+          <span><ShieldCheck size={16}/> {isDemoMode ? 'Sample measurements — not your computer' : 'Read-only scans; only approved Monster Mode actions make bounded changes'}</span>
           <span><Clock3 size={15}/> {data?.timestamp ? 'Snapshot: ' + new Date(data.timestamp).toLocaleString() : 'Not yet scanned'}</span>
         </div>
 

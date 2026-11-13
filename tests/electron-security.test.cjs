@@ -24,3 +24,19 @@ test('desktop window denies web permission and in-app navigation',async()=>{
   let allowed;permission(null,'camera',value=>allowed=value);
   assert.equal(allowed,false);
 });
+
+// Starting the application at Windows sign-in must not create a second independent optimizer.
+const fsSingle=require('node:fs')
+const pathSingle=require('node:path')
+test('Electron main process uses a single-instance lock for automatic care',()=>{
+ const source=fsSingle.readFileSync(pathSingle.join(__dirname,'../electron/main.cjs'),'utf8')
+ assert.match(source,/app\.requestSingleInstanceLock\(\)/)
+ assert.match(source,/app\.on\('second-instance'/)
+})
+
+test('Portable login autostart uses persistent launcher path, not temporary extraction',()=>{
+ const source=fsSingle.readFileSync(pathSingle.join(__dirname,'../electron/main.cjs'),'utf8')
+ assert.match(source,/PORTABLE_EXECUTABLE_FILE/)
+ assert.match(source,/getLoginItemSettings\(\{path:startupExecutable\}\)/)
+ assert.match(source,/setLoginItemSettings\(\{openAtLogin:enabled===true,path:startupExecutable\}\)/)
+})
