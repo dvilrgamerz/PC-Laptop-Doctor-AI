@@ -1,5 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import AutopilotPanel from './AutopilotPanel.jsx'
+import LiveMonitorPanel from './LiveMonitorPanel.jsx'
 import {Activity,CheckCircle2,ChevronRight,Download,ExternalLink,Gamepad2,HardDrive,Info,Play,RefreshCcw,RotateCcw,Rocket,ShieldCheck,Trash2,TriangleAlert,Wifi,Zap} from 'lucide-react'
 
 const size=bytes=>bytes>=1073741824?(bytes/1073741824).toFixed(2)+' GiB':
@@ -157,21 +158,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
     <div className="v7-lead-visual"><div className="v7-circle"><Rocket size={43}/></div><span>SCAN <ChevronRight size={13}/> REVIEW <ChevronRight size={13}/> MEASURE</span></div>
    </section>
    {demo&&<p className="v7-demo"><Info size={16}/> Browser demo: real Windows changes, cleanup and Steam launching are disabled. Install the Windows desktop app to use them.</p>}
-   {data&&<div className="v7-mini-stats">
-    <div><small>Memory in use</small><strong>{data.memory?.total?Math.round(data.memory.used/data.memory.total*100)+'%':'Unknown'}</strong></div>
-    <div><small>Drive space free</small><strong>{Number.isFinite(data.storage?.[0]?.available)?size(data.storage[0].available):'Unknown'}</strong></div>
-    <div><small>CPU load</small><strong>{Number.isFinite(data.cpu?.load)?Math.round(data.cpu.load)+'%':'Unknown'}</strong></div>
-   </div>}
-   {(diskUsed>=90||memoryUsed>=85)&&<div className="v8-diagnostic-priority" role="note">
-     <div><TriangleAlert size={23}/><div><strong>Fix what is actually slowing down your PC</strong>
-       <p>{diskUsed>=90?'Your main drive is '+Math.round(diskUsed)+'% used. Free space for Windows updates, apps and games. ':''}
-         {memoryUsed>=85?'RAM is '+Math.round(memoryUsed)+'% occupied in this scan. Check demanding applications before expecting FPS gains.':''}
-       </p></div></div>
-     <div className="v8-priority-actions">
-      {diskUsed>=90&&<button type="button" onClick={()=>document.getElementById('v7-cleanup')?.scrollIntoView({behavior:'smooth',block:'start'})}>Review cleanup</button>}
-      {memoryUsed>=85&&<button type="button" onClick={()=>onNavigate('performance')}>Inspect RAM & CPU</button>}
-     </div>
-   </div>}
+   <LiveMonitorPanel demo={demo} data={data} onNavigate={onNavigate}/>
    <AutopilotPanel demo={demo} onNavigate={onNavigate}/>
    <Section id="v7-game-focus" icon={Rocket} eyebrow="01 · GAME FOCUS" title="Start a gaming session" description="Temporarily enable supported Windows Game Mode and, on AC power only, the standard High performance plan. No apps are killed or suspended.">
     <div className="v7-boost-status">

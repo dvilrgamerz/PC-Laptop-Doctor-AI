@@ -79,3 +79,16 @@ Do not use irreversible cleanup on an important work PC until this build has bee
 **Unsigned beta:** Friends who cannot independently verify the EXE should not bypass security warnings or install it. A completed CI build does not replace code signing, malware scanning or device-level testing.
 - [ ] Confirm Auto Game Focus recognizes a running Steam or Epic game by a full process path inside its verified installed-game folder, with no need to add the EXE manually.
 - [ ] A process under a similarly named folder outside the verified game installation must NOT trigger a boost.
+
+## V7.4 live monitoring tests
+
+- [ ] Compare live CPU/RAM and drive usage against Windows Task Manager/Settings.
+- [ ] Confirm a Windows machine with an unavailable CPU thermal sensor shows "Not available" rather than 0°C.
+- [ ] Leave Boost & Play open for 2 minutes: resource cards should refresh approximately every 8 seconds, with no growing CPU usage or app freezing.
+- [ ] Switch tabs, return, and verify the old polling loop stops when the monitor is not displayed.
+- [ ] A drive over 95% full must trigger a serious warning and a path to cleanup, never automatic deletion of personal data.
+- [ ] "Prepare safe automatic care" must not turn on game focus or Temp cleanup until explicit consent and Save.
+- [ ] Confirm Windows Setup & Portable behavior, and verify SHA-256 against the release manifest.
+- [ ] Report hardware-specific readings, crashes, false positives and any gaming slowdowns; do not discard negative results.
+
+V7.4 remains an unsigned public beta pending real-device/security validation.

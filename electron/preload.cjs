@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('doctor', {
   runDiagnostics: () => ipcRenderer.invoke('doctor:run-diagnostics'),
+  getLiveMonitor: () => ipcRenderer.invoke('doctor:v7-live-monitor'),
   getFixStatus: () => ipcRenderer.invoke('doctor:fix-status'),
   runFix: action => ipcRenderer.invoke('doctor:apply-fix', action),
   openSettings: pageId => ipcRenderer.invoke('doctor:open-settings', pageId),

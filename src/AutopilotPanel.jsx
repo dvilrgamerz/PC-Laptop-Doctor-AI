@@ -46,12 +46,19 @@ export default function AutopilotPanel({demo,onNavigate}){
   finally{setBusy(false)}
  }
  function change(key,value){setOptions(p=>({...p,[key]:value}));setDirty(true);setApproved(false)}
+ function chooseRecommended(){setOptions({autoBoost:true,weeklyCleanup:true});setDirty(true);setApproved(false)}
+ function chooseOff(){setOptions({autoBoost:false,weeklyCleanup:false});setDirty(true);setApproved(false)}
  return <section className="panel v8-auto" aria-label="Autopilot controls">
   <div className="v8-auto-header">
    <div className="v8-auto-icon"><Zap size={25}/></div>
    <div><p className="eyebrow">AUTOPILOT · OPTIONAL</p><h2>Set it once. Let PC Doctor handle the basics.</h2>
     <p>Two local automations with fixed safety boundaries. No forced app closing, hidden registry tweaks, overclocking or Windows security changes.</p></div>
    <span className={'v8-auto-pill '+(actual?.autoBoost||actual?.weeklyCleanup?'on':'')}>{actual?.autoBoost||actual?.weeklyCleanup?'Enabled':'Off by default'}</span>
+  </div>
+  <div className="v8-auto-shortcuts">
+    <button type="button" disabled={!desktop||busy} onClick={chooseRecommended}><Zap size={16}/> Prepare safe automatic care</button>
+    <button type="button" disabled={!desktop||busy} onClick={chooseOff}>Turn both off</button>
+    <small>Prepare your choice, review the two scopes below, then approve and save. No action starts until you consent.</small>
   </div>
   <div className="v8-auto-grid">
    <label className={'v8-auto-choice '+(options.autoBoost?'selected':'')}>

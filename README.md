@@ -7,16 +7,27 @@
 
 **Local-first Windows PC diagnosis, Boost & Play, installed game discovery, opt-in hands-off Game Focus, recurring recoverable Temp care and evidence-based performance comparisons. Free and open source.**
 
-## Download V7.3 Boost & Play — public beta (Windows x64)
+## Download V7.4 PC Monitor + Boost & Play — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.3.0-beta.4)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.4.0-beta.5)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-7.3.0-beta.4-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-7.3.0-beta.4-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-7.4.0-beta.5-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-7.4.0-beta.5-x64.exe | Run without installing |
+
+## New in V7.4 — Live PC Monitor and simpler Autopilot
+
+- **Current CPU / RAM / storage / CPU temperature / network throughput:** A new main-screen read-only monitor refreshes approximately every eight seconds, keeps short on-screen trends and flags capacity pressures. Unknown temperature or network data is displayed as unavailable, never as a safe reading.
+- **Actual bottlenecks first:** When your primary drive is at 95% capacity or has under 10 GiB free, a prominent warning directs you to safe cleanup and storage review. RAM above 90% and CPU near 95% are also called out.
+- **Simpler automatic setup:** Select **Prepare safe automatic care** to propose both game Autopilot and weekly recoverable Temp care. You still approve and save the settings explicitly. Both remain off by default on first installation.
+- **Privacy/efficiency:** Live readings are collected locally on demand, cached to prevent excessive polling, and kept in memory only while the panel is open. No remote telemetry or automatic process termination.
+
+Read [the V7.4 feature audit and friend-testing checklist](docs/V7_4_MONITOR.md).
+
+**No false promises:** The updated monitor does not prove FPS improvements, fix hardware failures or replace manual review of important Windows files. The user-Temp cleaner is narrowly scoped; moving files to Recycle Bin does not immediately reclaim disk space. The executable remains unsigned and should be treated as a public **beta**, not certified stable software.
 
 ## V7.3 — Hands-off Autopilot with strict safety limits
 

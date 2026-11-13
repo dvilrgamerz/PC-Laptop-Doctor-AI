@@ -16,6 +16,7 @@ const {createNetworkPath} = require('./network-path.cjs')
 const {createGameFocus} = require('./game-focus.cjs')
 const {createTempCleaner} = require('./temp-cleaner.cjs')
 const {createAutopilot} = require('./autopilot.cjs')
+const {createLiveMonitor} = require('./live-monitor.cjs')
 const {createInstalledGameRoots} = require('./installed-game-roots.cjs')
 const si = require('systeminformation')
 
@@ -251,6 +252,7 @@ app.whenReady().then(async () => {
   const autoTempCleaner=createTempCleaner({
     trashItem:(target)=>shell.trashItem(target)
   })
+  const liveMonitor = createLiveMonitor({si})
   const localDoctor = createLocalDoctor()
   const inspector = createHardwareInspector({si})
   const maintenance = createMaintenance({
@@ -277,6 +279,8 @@ app.whenReady().then(async () => {
     tempCleaner:autoTempCleaner
   })
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v7-live-monitor', event=>guard(event)
+    ? liveMonitor.sample():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-auto-status', event=>guard(event)
     ? autopilot.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-auto-config', (event,options)=>guard(event)
