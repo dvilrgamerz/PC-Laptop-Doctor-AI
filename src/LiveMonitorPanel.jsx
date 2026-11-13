@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react'
-import {Activity,AlertTriangle,CheckCircle2,Cpu,HardDrive,MemoryStick,Network,RefreshCcw,Thermometer} from 'lucide-react'
+import {Activity,AlertTriangle,CheckCircle2,Cpu,HardDrive,MemoryStick,Network,RefreshCcw,Thermometer,Gamepad2} from 'lucide-react'
 
 const PER=8_000
 const fmt=(n,suffix)=>Number.isFinite(n)?Number(n).toFixed(Number.isInteger(n)?0:1)+suffix:'Not available'
@@ -45,7 +45,7 @@ export default function LiveMonitorPanel({demo,data,onNavigate}){
  },[desktop])
  const m=snapshot?.metrics
  const sample=data&&demo?{
-  cpuPercent:data.cpu?.load,ramPercent:data.memory?.total>0?100*data.memory.used/data.memory.total:null,
+  cpuPercent:data.cpu?.load,gpuPercent:Array.isArray(data.graphics)?Math.max(...data.graphics.map(g=>Number.isFinite(g.utilizationGpu)?g.utilizationGpu:NaN).filter(Number.isFinite))||null:null,ramPercent:data.memory?.total>0?100*data.memory.used/data.memory.total:null,
   diskPercent:data.storage?.[0]?.use,
   diskFreeGiB:Number.isFinite(data.storage?.[0]?.available)?data.storage[0].available/(1024**3):null,
   temperatureC:data.temperature?.main>0?data.temperature.main:null
@@ -53,7 +53,7 @@ export default function LiveMonitorPanel({demo,data,onNavigate}){
  const current=m||sample
  const alerts=snapshot?.findings||[]
  const progress=useMemo(()=>({
-  cpu:samples.map(x=>x.cpuPercent),ram:samples.map(x=>x.ramPercent),
+  cpu:samples.map(x=>x.cpuPercent),gpu:samples.map(x=>x.gpuPercent),ram:samples.map(x=>x.ramPercent),
   storage:samples.map(x=>x.diskPercent),temperature:samples.map(x=>x.temperatureC!==null?x.temperatureC/100*100:null)
  }),[samples])
  function go(f){
@@ -73,6 +73,7 @@ export default function LiveMonitorPanel({demo,data,onNavigate}){
   </div>
   <div className="live-grid">
    <Metric icon={Cpu} label="CPU" value={fmt(current?.cpuPercent,'%')} sub="Processor load" points={progress.cpu} warning={current?.cpuPercent>=90}/>
+   <Metric icon={Gamepad2} label="GPU" value={fmt(current?.gpuPercent,'%')} sub="Highest reported adapter load" points={progress.gpu}/>
    <Metric icon={MemoryStick} label="Memory" value={fmt(current?.ramPercent,'%')} sub="RAM in use" points={progress.ram} warning={current?.ramPercent>=85}/>
    <Metric icon={HardDrive} label="Storage" value={fmt(current?.diskPercent,'%')} sub={Number.isFinite(current?.diskFreeGiB)?fmt(current.diskFreeGiB,' GiB free'):'Drive capacity unknown'}
      points={progress.storage} warning={current?.diskPercent>=85} critical={current?.diskPercent>=95}/>
