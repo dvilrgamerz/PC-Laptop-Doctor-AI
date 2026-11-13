@@ -37,7 +37,8 @@ function createBackgroundBoost({rulesFile,journalFile,processes,adapter,platform
  function context(gameInfo=game){
   const exe=gameInfo?.file||null
   const key=gameInfo?.key||null
-  return {gameExe:exe,gameRoot:key&&key!==exe?key:null,appExe}
+  const root=key&&cleanWinPath(key)!==cleanWinPath(exe)?key:exe?path.win32.dirname(exe):null
+  return {gameExe:exe,gameRoot:root,appExe}
  }
  async function inventory(){
   if(platform!=='win32')return {ok:false,error:'Windows only.'}
@@ -138,13 +139,11 @@ function createBackgroundBoost({rulesFile,journalFile,processes,adapter,platform
    journal.phase='restoring';save(journalFile,journal)
    for(const entry of [...journal.actions].reverse()){
     let result=await adapter.restore(entry)
-    if(!result.ok){
-     // The target may have exited. Inspect and release the record only when
-     // another verification confirms the original process is no longer alive.
-     const live=await processes().catch(()=>null)
-     const oldStillRunning=Array.isArray(live)&&live.some(p=>p.pid===entry.pid&&
-      classify(p).exe===entry.exe)
-     if(Array.isArray(live)&&!oldStillRunning)result={ok:true,exited:true}
+    if(!result.ok&&typeof adapter.probe==='function'){
+     // PID reuse and exited apps must not trap a journal forever. The Win32
+     // helper checks the *original* executable and creation-time identity.
+     const probe=await adapter.probe(entry)
+     if(probe?.ok&&probe.same===false)result={ok:true,exited:true}
     }
     if(result.ok){
      journal.actions=journal.actions.filter(x=>x!==entry)
