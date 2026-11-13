@@ -7,16 +7,22 @@
 
 **PC Monster: a simpler daily performance dashboard with local health trends, optional disk-space alerts, Boost & Play, safe storage care, and honest game performance comparisons. Free and open source.**
 
-## Download V8.0 PC Monster Daily Dashboard — public beta (Windows x64)
+## Download V8.1 PC Monster Storage Goal — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.0.0-beta.1)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.1.0-beta.2)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-7.5.0-beta.6-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-7.5.0-beta.6-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-8.1.0-beta.2-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-8.1.0-beta.2-x64.exe | Run without installing |
+
+## New in V8.1 — measurable storage recovery goal
+
+PC Monster now calculates how much space should be recovered to reach a practical free-space maintenance target (15% of disk capacity, or 20 GiB on smaller drives, capped by the drive's size). The target appears beside the storage warning and links to existing safe cleanup tools. No data is deleted automatically and no FPS gain is promised. The calculation uses real drive capacity; if capacity is unknown, the app does not invent a target.
+
+**Public release limitations:** Installer remains unsigned, physical device and anti-cheat compatibility testing are incomplete, and no head-to-head FPS advantage over other gaming optimizers has been established. This is a public beta for consenting testers, not a certified stable utility.
 
 ## New in V8.0 — PC Monster for daily use
 
