@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell, session, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, session, dialog, Notification } = require('electron')
 const { secureDoctorWindow } = require('./security.cjs')
 const path = require('path')
 const { execFile, spawn } = require('child_process')
@@ -18,6 +18,7 @@ const {createTempCleaner} = require('./temp-cleaner.cjs')
 const {createSpaceFinder} = require('./space-finder.cjs')
 const {createAutopilot} = require('./autopilot.cjs')
 const {createLiveMonitor} = require('./live-monitor.cjs')
+const {createDailyMonster} = require('./daily-monster.cjs')
 const {createInstalledGameRoots} = require('./installed-game-roots.cjs')
 const si = require('systeminformation')
 
@@ -255,6 +256,13 @@ app.whenReady().then(async () => {
   })
   const spaceFinder=createSpaceFinder({trashItem:(target)=>shell.trashItem(target)})
   const liveMonitor = createLiveMonitor({si})
+  const dailyMonster = createDailyMonster({
+    file:path.join(app.getPath('userData'),'daily-health-v1.json'),
+    monitor:liveMonitor,
+    notifier:({title,body})=>{
+      if(Notification.isSupported())new Notification({title,body}).show()
+    }
+  })
   const localDoctor = createLocalDoctor()
   const inspector = createHardwareInspector({si})
   const maintenance = createMaintenance({
@@ -281,6 +289,14 @@ app.whenReady().then(async () => {
     tempCleaner:autoTempCleaner
   })
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v8-daily-status', event=>guard(event)
+    ? dailyMonster.status():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-daily-check', event=>guard(event)
+    ? dailyMonster.check():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-daily-config', (event,options)=>guard(event)
+    ? dailyMonster.configure(options):{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-daily-clear', event=>guard(event)
+    ? dailyMonster.clearHistory():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v7-live-monitor', event=>guard(event)
     ? liveMonitor.sample():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-auto-status', event=>guard(event)
@@ -384,9 +400,11 @@ app.whenReady().then(async () => {
   // Never overwrite external changes: the existing fix service verifies state before restoring.
   try { await gameFocus.stop() } catch { /* Recovery remains visible in the app. */ }
   autopilot.start()
+  dailyMonster.start()
   let quitting=false
   app.on('before-quit',event=>{
     autopilot.stop()
+    dailyMonster.stop()
     if(quitting)return
     event.preventDefault()
     quitting=true

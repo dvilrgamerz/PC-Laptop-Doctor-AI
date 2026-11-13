@@ -69,3 +69,13 @@ A Windows process crash or machine power loss interrupts in-process timers; guar
 - Weekly maintenance runs only with prior opt-in, every seven days while PC Doctor is open. It moves regular .tmp files older than 30 days from the top level of this Windows user's Temp directory to Recycle Bin, excludes folders/symlinks, and skips detected trusted running games.
 - The weekly cleaner owns a separate preview state so it cannot invalidate user-confirmed cleanup previews. It never permanently deletes files; Recycle Bin contents remain recoverable, but disk capacity is not reclaimed immediately.
 - These background tasks require live Windows API/device QA; CI is not a professional security audit or a guarantee against application-specific conflicts.
+
+## V8 Daily Monster privacy model
+
+- Daily PC monitoring is disabled by default. Enabling it stores a bounded rolling history of numeric CPU/RAM/GPU percentages, temperature if exposed, primary-volume disk used/free amounts, day and sample count.
+- No raw systeminformation objects, process identifiers/names, network addresses, file paths, game lists, battery serial numbers or personal documents are persisted by this feature.
+- Collection runs no more frequently than once per 30 minutes **only while the application process is running**. It is separate from the existing live on-screen monitor and diagnostic snapshot.
+- Windows low-space notifications are disabled by default and require a second explicit opt-in. The app limits them to one per local calendar day.
+- Data is stored in local application user-data JSON with atomic replacement and mode 0600 where the OS supports it. This is **not encryption**; Windows account and disk protections remain important.
+- Local history can be cleared without disabling monitoring. Disabling monitoring does not delete old history until the user requests deletion.
+- These health summaries are not proof of fault, performance uplift, or specific hardware diagnosis; high CPU/RAM use can be normal during games.

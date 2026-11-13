@@ -5,11 +5,11 @@
 
 # PC & Laptop Doctor AI
 
-**Local-first Windows PC diagnosis, Boost & Play, installed game discovery, opt-in hands-off Game Focus, recurring recoverable Temp care and evidence-based performance comparisons. Free and open source.**
+**PC Monster: a simpler daily performance dashboard with local health trends, optional disk-space alerts, Boost & Play, safe storage care, and honest game performance comparisons. Free and open source.**
 
-## Download V7.5 Space Finder + GPU Monitor — public beta (Windows x64)
+## Download V8.0 PC Monster Daily Dashboard — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.5.0-beta.6)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.0.0-beta.1)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
@@ -17,6 +17,21 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 | --- | --- | --- |
 | Guided setup | PC-Laptop-Doctor-AI-Setup-7.5.0-beta.6-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
 | Portable | PC-Laptop-Doctor-AI-Portable-7.5.0-beta.6-x64.exe | Run without installing |
+
+## New in V8.0 — PC Monster for daily use
+
+The home screen is no longer a long diagnostics catalog. **Daily Monster** shows current CPU, GPU, RAM and available disk capacity, then presents the single most important issue and a direct action. A separate live resource monitor remains available; the detailed scan report is collapsed by default.
+
+- **Daily local history (opt-in):** User-approved periodic sampling at most once every 30 minutes **while the application is open**, retained for at most 30 local calendar days; no network/cloud account or personal file access.
+- **Private readings:** History contains only CPU/RAM/GPU load, temperature when reported, primary disk usage/free space and sample counts. No IP addresses, process names, filenames, serials, or diagnostic exports.
+- **Optional daily storage notification:** A separate checkbox controls a Windows notification for critically low drive space, no more than once per local day. This is not advertising or telemetry.
+- **One-click daily actions:** Check the present snapshot, navigate to Boost & Play, inspect space pressure and launch approved safe cleanup. Dangerous system settings and deletion are **never applied without user approval**.
+- **Simplified diagnostics:** Older score cards and technical reports are still available by expanding the advanced details section.
+- **Existing gaming and cleanup tools preserved:** Steam/Epic/custom game detection, opt-in Game Focus, cleanup previews, large Downloads file selection and external measured FPS CSV comparison.
+
+**Limits:** A PC utility cannot turn a dual-core laptop into a high-end gaming machine, guarantee improved FPS, unlock unused physical GPU cores or safely delete unknown personal files. The history feature does not run after PC Doctor closes, and no cloud synchronization or Windows startup service is installed.
+
+**Release quality:** Windows CI tests the code and builds both EXEs, but independent real-device gaming benchmarks, OS compatibility and code signing are still required. V8.0 is a **public testing beta**, not an independently certified stable product or measured winner over Razer Cortex and Hone.
 
 ## New in V7.5 — find real storage pressure and add GPU monitoring
 

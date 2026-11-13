@@ -1,16 +1,21 @@
-# PC Laptop Doctor AI v7.5.0-beta.6 — Space Finder and Live GPU Monitoring
+# PC Laptop Doctor AI v8.0.0-beta.1 — PC Monster Daily Dashboard
 
-Public Windows 10/11 x64 beta. Unsigned binaries. No claimed gaming FPS gain.
+Windows 10/11 x64 public beta; unsigned installer and portable app.
 
-## Additions
-- On-demand **Large Downloads Space Finder**, limited to ordinary files at the top level of the current Windows user's default Downloads folder. Only files >=100 MiB are listed, top 60, with fixed scan limit. No recursive crawling or private file-content reads.
-- Explicit selected-file Recycle Bin operation after consent, limited to 20 files and 20 GiB, with metadata revalidation and no permanent-delete fallback. Files moved to Recycle Bin do **not** release disk space until emptied.
-- New numeric-only **GPU utilization** card in the 8-second live PC monitor, if the graphics subsystem makes it available. Values may be unknown on some hardware. UI remains local and does not upload system data.
-- Critical storage alert now jumps to the in-app Space Finder.
-- Existing Steam/Epic/custom-game detection, opt-in Game Focus Autopilot, weekly recoverable Temp cleanup and external FPS testing are retained.
+## New in this release
+- New compact **PC Monster** home panel: current CPU, RAM, GPU and free storage; a prioritized actionable alert and direct Boost & Cleanup links.
+- Optional private **Daily Health** recording. OFF by default, sampled at most once per 30 minutes only while the app is running; maximum 30 local days of numeric-only summaries.
+- Optional native Windows notification, at most once per local day, when main-drive storage is critically low. Requires explicit opt-in, separate from monitoring consent.
+- In-app daily storage trend with delete-history control; saved history can be cleared independently of enabling/disabling monitoring.
+- Existing live monitor, auto Game Focus/restore, game discovery, recoverable file cleanup and manual FPS experiment remain.
+- Previous detailed diagnostic and heuristic-score panels are now collapsed by default; no new hidden system changes.
 
-## Public tester warnings
-- A near-full drive often requires uninstalling unnecessary apps or reviewing large personal files. The app cannot safely delete personal data without review.
-- The portable and installer EXEs are unsigned. Do not weaken Windows security protections. Use SHA256SUMS.txt and obtain binaries only from this repository's release.
-- Physical Windows hardware testing, anti-cheat tests, professional code signing and verified FPS improvements are not complete. Do not call this an independently certified stable release or superior to other optimizers.
-- See docs/V7_5_SPACE_FINDER.md and docs/FRIEND_TESTING.md.
+## Security and reliability
+- Monitor IPC requires the trusted app frame. Sanitization and bounded local data persistence are tested.
+- No process names, IP addresses, file paths, serial numbers, or user files in the daily history.
+- Background sampling stops when PC Doctor exits; disabling the switch prevents collection.
+- No automatic Windows security changes, forced application closing, irreversible file deletion, or claimed FPS uplift.
+
+## Before recommending to friends
+See docs/FRIEND_TESTING.md. CI passes are not an independent Windows/anti-cheat audit or proof of measured performance gains.
+This beta is unsigned. Verify checksums and obtain binaries from the GitHub release page. Do not disable security defenses to install an untrusted file.
