@@ -122,3 +122,25 @@ test('unknown platform never applies Windows settings',async()=>{
   assert.equal(f.commands.length,0)
  }finally{f.cleanup()}
 })
+
+test('unknown power source fails closed for High Performance, including AC state changing after preview',async()=>{
+ const f=fixture()
+ try{
+  const unknown=f.make(null),p=await unknown.preview('plugged')
+  assert.equal(p.ok,true)
+  assert.deepEqual(p.actions,['Windows Game Mode'])
+  assert.ok(p.skips.some(x=>/unavailable/i.test(x)))
+  await unknown.start('plugged',p.token)
+  assert.ok(!f.commands.includes('enablePerformance'))
+  await unknown.stop()
+  let scans=0
+  const agent=createGameFocus({platform:'win32',fixes:f.fixes,stateFile:f.file,
+    readBattery:async()=>++scans===1?{hasBattery:true,acConnected:true}:null,
+    now:()=>Date.UTC(2026,10,12),random:()=> 'changing-source'})
+  const ready=await agent.preview('plugged')
+  assert.equal(ready.actions.length,2)
+  const result=await agent.start('plugged',ready.token)
+  assert.equal(result.ok,false)
+  assert.equal(f.commands.filter(x=>x==='enablePerformance').length,0)
+ }finally{f.cleanup()}
+})
