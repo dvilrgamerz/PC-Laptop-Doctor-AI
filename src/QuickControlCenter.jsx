@@ -122,7 +122,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
    <section className="v7-lead">
     <div className="v7-lead-content"><span className="v7-kicker"><Rocket size={15}/> DVILR PERFORMANCE CENTER</span>
       <h2>Play smarter. Keep your PC in control.</h2>
-      <p>One screen for Game Focus, game launching, safe cleanup and recovery. Changes are explained before you approve them. No hidden service shutdowns or guaranteed FPS claims.</p>
+      <p>Find your installed games automatically, boost and launch them with one approval, and clean eligible old temporary files. Every Windows change is explained and reversible where possible.</p>
       <div className="v7-lead-actions">
        <button className="v7-main-button" type="button" disabled={scanning} onClick={onScan}><Activity size={18}/>{scanning?'Scanning…':'Diagnose my PC'}</button>
        <button className="v7-ghost-button" type="button" onClick={()=>onNavigate('history')}><Zap size={17}/> Compare FPS</button>
@@ -153,7 +153,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
     </div>}
     {boost?.session?
       <button type="button" className="v7-restore" disabled={!desktop||busy} onClick={stop}><RotateCcw size={18}/>{busy?'Restoring…':'Stop & restore my PC'}</button>:
-      <button type="button" className="v7-primary" disabled={!desktop||busy} onClick={preview}><ShieldCheck size={17}/>{busy?'Inspecting…':'Review Game Focus changes'}</button>}
+      <button type="button" className="v7-primary" disabled={!desktop||busy} onClick={()=>preview(false)}><ShieldCheck size={17}/>{busy?'Inspecting…':'Review Game Focus changes'}</button>}
     {!!plan&&<div className="v7-preview">
       <h3>Changes planned for this session</h3>
       {plan.actions.length?<ul>{plan.actions.map(x=><li key={x}><CheckCircle2 size={16}/>{x}</li>)}</ul>:<p>There are no new Windows preferences to change. This session can still be tracked and stopped.</p>}
