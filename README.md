@@ -5,24 +5,36 @@
 
 # PC & Laptop Doctor AI
 
-**Simple, local-first Windows diagnostics and gaming tools with Boost & Play, Steam/Epic detection, trusted custom games, optional automatic temporary-file cleanup, and reproducible performance comparisons. Free and open source.**
+**Local-first Windows PC diagnosis, Boost & Play, installed game discovery, opt-in hands-off Game Focus, recurring recoverable Temp care and evidence-based performance comparisons. Free and open source.**
 
-## Download V7.2 Boost & Play — public beta (Windows x64)
+## Download V7.3 Boost & Play — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.2.0-beta.3)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.3.0-beta.4)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-7.1.0-beta.2-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-7.1.0-beta.2-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-7.3.0-beta.4-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-7.3.0-beta.4-x64.exe | Run without installing |
+
+## V7.3 — Hands-off Autopilot with strict safety limits
+
+- **Auto Game Focus:** Off by default. After one explicit opt-in, PC Doctor checks only the full process executable paths of games you personally added through its trusted-file picker. Two consecutive detections start a temporary Standard Game Mode session; three consecutive misses restore previous supported Windows preferences. It will not match a random process by name alone, force-close apps, alter a game, or bypass anti-cheat. Exact process paths may be unavailable; unsupported games are skipped.
+- **Timed safety fallback:** An automatic session has a two-hour maximum. The process watcher runs only while PC Doctor is open. Steam/Epic titles without a personally added matching game EXE still use the explicit Boost & Play launch flow. Restart recovery remains available.
+- **Weekly Safe Temp Care:** Separate opt-in. While PC Doctor is running, once per seven days it moves only top-level user Temp .tmp files older than 30 days into Windows Recycle Bin. Files younger than 30 days, log files, folders, personal files and game installations are excluded. It skips known active custom-game sessions and has the existing caps of 300 files and 1 GiB. No permanent unattended deletion is performed.
+- **Faster start and clear priorities:** The app opens on Boost & Play, performs a read-only scan automatically, and brings high RAM utilization or nearly full storage to the top of the screen. Settings and storage maintenance remain user-controlled.
+- **Performance claims:** Running Windows Game Mode is not a guarantee of improved FPS. Recycling files is recoverable but does not free disk space until Recycle Bin is emptied. An additional manually approved irreversible .tmp cleanup remains available as an advanced feature.
+
+**Release assessment:** This is an unsigned public beta for willing Windows testers, not a certified stable Razer Cortex/Hone replacement. Real physical-device Windows tests, code signing, performance comparisons and an independent security audit are still required. Do not disable Windows protections to install it.
+
+See [Autopilot design and limitations](docs/V7_3_AUTOPILOT.md) and [friend testing checklist](docs/FRIEND_TESTING.md).
 
 ### Three steps to start
 
-1. Install the Windows Setup edition or run Portable. Keep Windows security protections enabled.
+1. Install Windows Setup or run Portable. It opens on Boost & Play and starts a read-only system diagnosis automatically. Keep Windows security protections enabled.
 2. Click **Run Full Diagnosis**, then open **Boost & Play**. Steam and Epic titles are discovered automatically; other trusted installed games can be added once using the file picker.
-3. Choose a game and **Boost & Play**. Review the Game Focus plan and approve once. For cleanup, scan old Temp files and approve the scoped automatic cleanup. Use **Stop & Restore** after gaming or close PC Doctor normally.
+3. Choose a game and **Boost & Play**. Or opt in once to **Autopilot** for automatic Game Focus when an exact trusted, user-added game executable starts. Separately opt in to weekly recoverable cleanup of old Temp .tmp files. You can disable both switches at any time.
 
 Game Focus uses supported Windows Game Mode and optional standard High performance on AC power. It does **not** close background apps, edit game files, or guarantee FPS gains. The recoverable automatic cleaner moves stale top-level user Temp `.tmp`/`.log` files to Recycle Bin; space is not reclaimed until you empty the bin. An optional **irreversible** advanced action deletes only older `.tmp` candidates to reclaim some space.
 
@@ -58,7 +70,7 @@ npm run dist:win
 The generated setup and portable executables are written to **release/**. For development, run **npm run dev**. GitHub Actions also builds the two executables on Windows and publishes a versioned prerelease when merged code passes the pipeline.
 
 
-## V7.2 — Automatic Game Focus restoration and easier cleanup
+## V7.3 — Automatic Game Focus restoration and easier cleanup
 
 - **New: timer-based recovery.** The Game Focus session can restore managed Windows Game Mode and the optional High performance power plan automatically after 30, 60, 120 (default) or 240 minutes. It also attempts restoration on normal exit and at next start after interruption.
 - **New: automatic read-only preview.** Opening Boost & Play starts local game discovery and safe Temp candidate scanning without making any changes.
