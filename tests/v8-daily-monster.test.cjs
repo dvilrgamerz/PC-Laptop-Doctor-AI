@@ -3,7 +3,7 @@ const assert=require('node:assert/strict')
 const fs=require('node:fs')
 const os=require('node:os')
 const path=require('node:path')
-const {createDailyMonster,snapshot,warnings,load,updateDay,CHECK_INTERVAL}=require('../electron/daily-monster.cjs')
+const {createDailyMonster,snapshot,warnings,storageGoal,load,updateDay,CHECK_INTERVAL}=require('../electron/daily-monster.cjs')
 const GIB=1024**3
 function fixture(initial={cpuPercent:35,ramPercent:55,gpuPercent:20,diskPercent:97,diskFreeGiB:5.1,temperatureC:null}){
  const folder=fs.mkdtempSync(path.join(os.tmpdir(),'pc-monster-test-'))
@@ -101,4 +101,23 @@ test('missing sensors are unknown, not false healthy or a fabricated zero',()=>{
  const days=updateDay([],s,new Date('2026-11-13T12:00:00Z').getTime())
  assert.equal(days.length,1)
  assert.equal(days[0].peakCpu,null)
+})
+
+test('storage target is bounded, useful on small drives and not fabricated when unknown',()=>{
+ const a=storageGoal({diskFreeGiB:5.1,diskTotalGiB:236.6})
+ assert.deepEqual(a&&{target:a.targetFreeGiB,additional:a.additionalGiB},{target:35.5,additional:30.4})
+ assert.equal(storageGoal({diskFreeGiB:30,diskTotalGiB:100}).additionalGiB,0)
+ assert.equal(storageGoal({diskFreeGiB:1,diskTotalGiB:64}).targetFreeGiB,20)
+ assert.equal(storageGoal({diskFreeGiB:1,diskTotalGiB:10}).targetFreeGiB,10)
+ assert.equal(storageGoal({diskFreeGiB:20,diskTotalGiB:10}),null)
+ assert.equal(storageGoal({diskFreeGiB:null,diskTotalGiB:236}),null)
+ assert.equal(storageGoal({diskFreeGiB:5,diskTotalGiB:Infinity}),null)
+})
+test('daily check returns a storage target without saving it when monitoring is disabled',async()=>{
+ const f=fixture({cpuPercent:20,ramPercent:30,diskPercent:98,diskFreeGiB:5.1,diskTotalGiB:236.6})
+ try{
+  const r=await f.monster.check()
+  assert.equal(r.storageGoal.additionalGiB,30.4)
+  assert.equal(fs.existsSync(f.file),false)
+ }finally{f.cleanup()}
 })
