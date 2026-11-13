@@ -4,7 +4,7 @@ Autopilot is a **local, opt-in background assistant**, not a universal game FPS 
 
 ## What runs automatically
 
-**Auto Game Focus** checks Windows process listings approximately every 15 seconds, but only when explicitly enabled. A process must have a readable executable path exactly matching an EXE previously selected through PC Doctor's Windows file picker. Two consecutive matches cause the pre-existing, tested Standard Game Focus logic to preview internally and enable supported Windows Game Mode preferences (no process killing, no power-plan changes). Three missing matches prompt guarded restoration. The session has a maximum two-hour safety timer and existing crash/restart recovery. If process paths are unavailable, the feature does nothing. The app must be open.
+**Auto Game Focus** checks Windows process listings approximately every 15 seconds, but only when explicitly enabled. A process must have a readable executable path either exactly matching an EXE previously selected through PC Doctor's Windows file picker, or located inside a Steam/Epic game directory derived from a bounded read-only installed-game manifest. Two consecutive matches cause the pre-existing, tested Standard Game Focus logic to preview internally and enable supported Windows Game Mode preferences (no process killing, no power-plan changes). Three missing matches prompt guarded restoration. The session has a maximum two-hour safety timer and existing crash/restart recovery. If process paths are unavailable, the feature does nothing. The app must be open.
 
 **Weekly Safe Temp Care**, when separately enabled, checks roughly every seven days while the app is open. It scans the current Windows user's standard Local AppData Temp folder with the pre-existing scoped cleaner. It excludes subdirectories, links, documents, all .log files, and .tmp files younger than 30 days, and respects existing 300-file/1-GiB limits. Eligible files are moved to the Windows Recycle Bin, not permanently deleted. Auto Care does not free space until the bin is emptied. A game in progress or an unavailable process inventory prevents unattended cleanup.
 
@@ -15,7 +15,7 @@ Autopilot is a **local, opt-in background assistant**, not a universal game FPS 
 - Game Focus never assumes FPS increases. On an already-enabled Game Mode system the session might change nothing.
 - Two different Temp-cleaner instances are used so background scans cannot invalidate manual cleanup previews.
 - First app launch opens Boost & Play and automatically starts a read-only hardware snapshot; high disk/RAM utilization is prioritized.
-- Steam/Epic titles can be detected and launched with the existing one-approval flow. For automatic background process identification, users may add the exact trusted game executable once. Not all games expose process paths.
+- Steam/Epic titles can be detected and launched with the existing one-approval flow. Automatic background detection also recognizes processes under verified installed-game directories. Other launchers can be added using the trusted executable picker. Not all games expose reliable process paths.
 
 ## Honest comparison with commercial optimizers
 
