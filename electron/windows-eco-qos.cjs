@@ -22,11 +22,21 @@ public static class EcoNative {
 '@
  $pidValue=[int]$q.pid
  if($pidValue -le 4){throw 'Protected or invalid PID'}
- $proc=Get-Process -Id $pidValue -ErrorAction Stop
+ $proc=Get-Process -Id $pidValue -ErrorAction SilentlyContinue
+ if($q.op -eq 'probe' -and $null -eq $proc){
+  @{ok=$true;same=$false;exists=$false} | ConvertTo-Json -Compress
+  return
+ }
+ if($null -eq $proc){throw 'Process no longer running'}
  $exe=$proc.Path
  if([string]::IsNullOrWhiteSpace($exe)){throw 'Process executable unavailable'}
  if(-not [string]::Equals([IO.Path]::GetFullPath($exe),[IO.Path]::GetFullPath([string]$q.exe),[StringComparison]::OrdinalIgnoreCase)){throw 'Process executable changed'}
  $ticks=$proc.StartTime.ToUniversalTime().Ticks.ToString()
+ if($q.op -eq 'probe'){
+  $same=([string]::Equals([IO.Path]::GetFullPath($exe),[IO.Path]::GetFullPath([string]$q.exe),[StringComparison]::OrdinalIgnoreCase) -and [string]$q.startTicks -eq $ticks)
+  @{ok=$true;same=$same;exists=$true} | ConvertTo-Json -Compress
+  return
+ }
  if($q.op -ne 'inspect' -and [string]$q.startTicks -ne $ticks){throw 'Process lifetime changed; refusing PID reuse'}
  $handle=[EcoNative]::OpenProcess(0x1200,$false,[uint32]$pidValue)
  if($handle -eq [IntPtr]::Zero){throw 'Unable to open process for QoS; permission denied'}
@@ -43,6 +53,10 @@ public static class EcoNative {
     $target.ControlMask=$original.ControlMask -bor [uint32]1
     $target.StateMask=$original.StateMask -bor [uint32]1
    } elseif($q.op -eq 'restore'){
+    if([int64]$original.ControlMask -eq [int64]$q.before.controlMask -and [int64]$original.StateMask -eq [int64]$q.before.stateMask){
+     @{ok=$true;alreadyOriginal=$true} | ConvertTo-Json -Compress
+     return
+    }
     if([int64]$original.ControlMask -ne [int64]$q.applied.controlMask -or [int64]$original.StateMask -ne [int64]$q.applied.stateMask){throw 'QoS changed outside PC Doctor; refusing to overwrite'}
     $target=New-Object PowerThrottling
     $target.Version=1
@@ -58,7 +72,7 @@ public static class EcoNative {
 }
 `
 function validate(op,payload){
- if(!['inspect','apply','restore'].includes(op))throw Error('Unknown EcoQoS operation')
+ if(!['inspect','apply','restore','probe'].includes(op))throw Error('Unknown EcoQoS operation')
  if(!payload||!Number.isSafeInteger(payload.pid)||payload.pid<=4||
   typeof payload.exe!=='string'||payload.exe.length>1024||!/^[a-z]:\\/i.test(payload.exe)||!/[.]exe$/i.test(payload.exe))
   throw Error('Invalid Windows process identity')
@@ -84,6 +98,7 @@ function createWindowsEcoQos({platform=process.platform,execute=run}={}){
   }catch(e){return {ok:false,error:'EcoQoS operation unavailable: '+String(e.message||e).slice(0,180)}}
  }
  return {inspect:identity=>invoke('inspect',identity),
-  apply:record=>invoke('apply',record),restore:record=>invoke('restore',record)}
+  apply:record=>invoke('apply',record),restore:record=>invoke('restore',record),
+  probe:record=>invoke('probe',record)}
 }
 module.exports={createWindowsEcoQos,validate}
