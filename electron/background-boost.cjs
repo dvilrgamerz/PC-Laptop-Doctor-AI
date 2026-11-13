@@ -55,20 +55,22 @@ function createBackgroundBoost({rulesFile,journalFile,processes,adapter,platform
    const list=await processes()
    if(!Array.isArray(list))throw Error('Process inventory unavailable')
    const c=context()
-   const candidates=list.map(p=>classify(p,c))
-    .filter(p=>p.status==='eligible'&&p.exe&&p.pid>4)
+   const classified=list.map(p=>classify(p,c))
+   const protectedItems=classified.filter(p=>p.status==='protected')
+   const candidates=classified.filter(p=>p.status==='eligible'&&p.exe&&p.pid>4)
     .sort((a,b)=>(b.cpu-a.cpu)||(b.memMB||0)-(a.memMB||0))
    const rules=loadRules(rulesFile)
    return {ok:true,items:candidates.slice(0,35).map(p=>({...p,mode:rules.some(x=>x.exe===p.exe)?'reduce':'keep'})),
     eligibleCount:candidates.length,shownCount:Math.min(35,candidates.length),
-    protectedCount:list.length-candidates.length}
+    protectedCount:protectedItems.length,
+    protectedSample:protectedItems.slice(0,10).map(p=>({name:p.name,reason:p.reason}))}
   }catch(e){return {ok:false,error:'Could not inspect running applications: '+String(e?.message||e).slice(0,130)}}
  }
  async function status(){
   const journal=loadJournal(journalFile)
   return {ok:true,supported:platform==='win32',active:!!journal&&journal.phase==='active',
    needsRecovery:hasJournal()&&(!journal||journal.actions.length>0),
-   modifiedCount:journal?.actions.filter(x=>x.status==='applied'||!x.status).length||0,
+   modifiedCount:journal?.actions.filter(x=>x.status==='applied').length||0,
    attemptedCount:journal?.actions.length||0,
    sessionId:journal?.sessionId||null,approvedCount:loadRules(rulesFile).length,
    game:game?.name||null,busy,message:lastMessage,
