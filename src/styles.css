@@ -752,3 +752,8 @@ footer a{color:#85e7eb;text-decoration:none}
 @media(max-width:1080px){.monster-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.monster-action-row{grid-template-columns:1fr}.monster-status{flex-basis:190px}}
 @media(max-width:750px){.monster-top{flex-direction:column}.monster-status{width:100%;flex:0 0 auto}.monster-panel{padding:18px}.monster-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:430px){.monster-metrics{grid-template-columns:1fr}.monster-buttons{grid-template-columns:1fr}.monster-primary{grid-column:auto}.monster-daily summary{align-items:flex-start;flex-direction:column}}
+
+/* V8.1: concrete recovery target within daily action row */
+.monster-storage-goal{display:flex;flex-direction:column;gap:5px;padding:12px 14px;border:1px solid rgba(88,191,192,.4);border-radius:12px;background:rgba(29,96,109,.22);max-width:420px}
+.monster-storage-goal strong{font-size:13px;color:#a4f3e3}
+.monster-storage-goal small{font-size:11px;color:#c4d6df;line-height:1.5}
