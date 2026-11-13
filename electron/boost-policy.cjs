@@ -18,7 +18,7 @@ function protectedReason(proc,{gameExe=null,gameRoot=null,appExe=null}={}){
  const exe=processExecutable(proc)
  if(!exe)return 'Unknown or unverifiable executable path'
  const file=path.win32.basename(exe)
- if(/^[a-z]:\\\\windows\\\\/i.test(exe)||/^[a-z]:\\windowsapps\\/i.test(exe)||exe.includes('\\windowsapps\\'))return 'Windows protected installation'
+ if(/^[a-z]:\\windows\\/i.test(exe)||/^[a-z]:\\windowsapps\\/i.test(exe)||exe.includes('\\windowsapps\\'))return 'Windows protected installation'
  if(PROTECTED_LAUNCHERS.test(file)||PROTECTED_NAMES.test(file)||PROTECTED_TERMS.test(file))return 'Security, anti-cheat, device or system component'
  if(gameExe&&cleanWinPath(gameExe)===exe)return 'Active game'
  const root=cleanWinPath(gameRoot)
