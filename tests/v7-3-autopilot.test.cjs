@@ -140,3 +140,20 @@ test('Steam/Epic auto boost works without manually adding an EXE, but requires e
   assert.equal(f.calls.filter(x=>x[0]==='stop').length,1)
  }finally{f.clean()}
 })
+
+test('approved Monster cleanup is recorded and prevents immediate duplicate sweep',async()=>{
+ const f=fixture()
+ try{
+  assert.equal((await f.agent.recordApprovedCleanup(1)).ok,false)
+  assert.equal((await f.agent.configure({autoBoost:false,weeklyCleanup:true})).ok,true)
+  const record=await f.agent.recordApprovedCleanup(2)
+  assert.equal(record.ok,true)
+  assert.equal((await f.agent.status()).lastCleanupCount,2)
+  assert.ok((await f.agent.status()).lastCleanupAt)
+  await f.agent.tick()
+  assert.deepEqual(f.cleanCalls,[]) // no second sweep straight after activation
+  f.jumpTime(WEEK+1)
+  await f.agent.tick()
+  assert.ok(f.cleanCalls.includes('scan')) // ordinary weekly schedule resumes
+ }finally{f.clean()}
+})
