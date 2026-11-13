@@ -30,7 +30,7 @@ public static class EcoNative {
  if($null -eq $proc){throw 'Process no longer running'}
  $exe=$proc.Path
  if([string]::IsNullOrWhiteSpace($exe)){throw 'Process executable unavailable'}
- if(-not [string]::Equals([IO.Path]::GetFullPath($exe),[IO.Path]::GetFullPath([string]$q.exe),[StringComparison]::OrdinalIgnoreCase)){throw 'Process executable changed'}
+ if($q.op -ne 'probe' -and -not [string]::Equals([IO.Path]::GetFullPath($exe),[IO.Path]::GetFullPath([string]$q.exe),[StringComparison]::OrdinalIgnoreCase)){throw 'Process executable changed'}
  $ticks=$proc.StartTime.ToUniversalTime().Ticks.ToString()
  if($q.op -eq 'probe'){
   $same=([string]::Equals([IO.Path]::GetFullPath($exe),[IO.Path]::GetFullPath([string]$q.exe),[StringComparison]::OrdinalIgnoreCase) -and [string]$q.startTicks -eq $ticks)
