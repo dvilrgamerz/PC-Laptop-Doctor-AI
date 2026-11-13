@@ -160,7 +160,7 @@ const NAV_ITEMS = [
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
 const ESSENTIAL_IDS = new Set(['dashboard','boost','performance','storage','battery','network'])
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.1.0-beta.2'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.3'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -407,7 +407,7 @@ export default function App() {
 
         </> : activeTab === 'boost' ? <QuickControlCenter demo={isDemoMode} data={data} onNavigate={setActiveTab} onScan={runScan} scanning={scanning}/> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : activeTab === 'optimize' ? <OptimizationStudio data={data} demo={isDemoMode} onNavigate={setActiveTab}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V8.1 · Daily Monster dashboard & offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V8.2 · Daily Monster dashboard & offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )
