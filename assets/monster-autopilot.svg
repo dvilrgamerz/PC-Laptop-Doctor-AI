@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" role="img" aria-labelledby="title desc">
+  <title id="title">PC Monster Autopilot</title><desc id="desc">Original futuristic shield core linking gaming, storage and Windows startup automation.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#103d54"/><stop offset="1" stop-color="#08152b"/></linearGradient>
+    <linearGradient id="jade" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a7ffe7"/><stop offset=".56" stop-color="#38e9c1"/><stop offset="1" stop-color="#56a8ff"/></linearGradient>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1d6472"/><stop offset="1" stop-color="#143047"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="soft"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#2ce6cc" flood-opacity=".3"/></filter>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#4e95a7" stroke-opacity=".13"/></pattern>
+  </defs>
+  <rect x="45" y="30" width="550" height="372" rx="42" fill="url(#bg)" stroke="#3b8191" stroke-width="2"/>
+  <rect x="45" y="30" width="550" height="372" rx="42" fill="url(#grid)"/>
+  <ellipse cx="320" cy="218" rx="165" ry="130" fill="#16eac4" fill-opacity=".12" filter="url(#glow)"/>
+  <g fill="none" stroke="#55efd1" stroke-width="3" opacity=".6">
+    <path d="M180 206H104V140H145"/><path d="M460 206H538V140H497"/>
+    <path d="M320 312V365"/><path d="M233 132L175 90H128"/><path d="M407 132L465 90H512"/>
+  </g>
+  <g stroke="#7efde1" stroke-width="3" fill="#0d2f42">
+    <circle cx="105" cy="206" r="7"/><circle cx="537" cy="206" r="7"/>
+    <circle cx="320" cy="365" r="7"/><circle cx="128" cy="90" r="6"/><circle cx="512" cy="90" r="6"/>
+  </g>
+  <g filter="url(#soft)">
+    <path d="M320 78L459 130V226C459 310 404 354 320 377C236 354 181 310 181 226V130Z" fill="url(#plate)" stroke="url(#jade)" stroke-width="5"/>
+    <path d="M320 104L434 145V226C434 286 390 326 320 348C250 326 206 286 206 226V145Z" fill="#081c30" stroke="#4ab1bb" stroke-width="2"/>
+    <path d="M255 225L296 264L385 175" fill="none" stroke="url(#jade)" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M255 225L296 264L385 175" fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+    <rect x="236" y="26" width="168" height="32" rx="16" fill="#0e473e" stroke="#40dcb8"/>
+    <text x="320" y="47" font-size="14" font-weight="800" letter-spacing="2" fill="#c4fff1">AUTO CARE ACTIVE</text>
+    <text x="320" y="423" font-size="15" font-weight="700" letter-spacing="3" fill="#9ceddf">MONSTER MODE</text>
+    <text x="110" y="192" font-size="11" fill="#8bf7dc">GAME</text>
+    <text x="527" y="192" font-size="11" fill="#8bf7dc">TEMP</text>
+  </g>
+</svg>
