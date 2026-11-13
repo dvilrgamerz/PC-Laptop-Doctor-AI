@@ -757,3 +757,56 @@ footer a{color:#85e7eb;text-decoration:none}
 .monster-storage-goal{display:flex;flex-direction:column;gap:5px;padding:12px 14px;border:1px solid rgba(88,191,192,.4);border-radius:12px;background:rgba(29,96,109,.22);max-width:420px}
 .monster-storage-goal strong{font-size:13px;color:#a4f3e3}
 .monster-storage-goal small{font-size:11px;color:#c4d6df;line-height:1.5}
+
+
+/* V8.1 PC Monster artwork + genuine in-app Safe Care */
+.monster-dashboard-art{width:174px;height:128px;object-fit:cover;flex:0 0 174px;border:1px solid #38767c;border-radius:15px;box-shadow:0 8px 34px #0005;background:#081b2a}
+.v8-hero-art{width:min(100%,270px);height:208px;object-fit:cover;border-radius:16px;border:1px solid #3a8388;box-shadow:0 15px 48px rgba(13,205,171,.12)}
+.v7-lead-visual:has(.v8-hero-art){flex-basis:265px;gap:12px}
+.monster-care{display:flex;flex-direction:column;gap:16px;border:1px solid #3d8981;border-radius:20px;padding:23px 25px;background:linear-gradient(130deg,rgba(13,60,65,.96),rgba(8,29,46,.98));box-shadow:0 12px 32px rgba(1,13,22,.28)}
+.monster-care-title{display:flex;align-items:flex-start;gap:15px}
+.monster-care-symbol{display:grid;place-items:center;flex:0 0 43px;height:43px;border:1px solid #52e4c7;border-radius:13px;background:#194e51;color:#98fae0}
+.monster-care-title .eyebrow{margin:0 0 7px;font-size:10px;letter-spacing:1.4px;color:#8af1cf;font-weight:800}
+.monster-care-title h3{font-size:20px;letter-spacing:-.3px;margin:0 0 9px;color:#eafff8}
+.monster-care-title p{margin:0;font-size:12px;line-height:1.7;color:#accdd6;max-width:740px}
+.monster-care-primary,.monster-care-secondary{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:fit-content;border-radius:11px;padding:12px 17px;font-size:12px;font-weight:800;cursor:pointer;transition:filter .12s ease,transform .12s ease}
+.monster-care-primary{background:linear-gradient(110deg,#8ef4d7,#46bff2);color:#08313a;border:1px solid #6ae8d5}
+.monster-care-primary:not(:disabled):hover{filter:brightness(1.08);transform:translateY(-1px)}
+.monster-care-secondary{background:#193e50;border:1px solid #397587;color:#bdece6}
+.monster-care button:disabled{opacity:.48;cursor:not-allowed}
+.monster-care-review{display:flex;flex-direction:column;gap:15px;border:1px solid #336773;border-radius:14px;padding:17px;background:rgba(8,35,51,.72)}
+.monster-care-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.monster-care-stats>div{display:flex;flex-direction:column;gap:6px;min-width:0;border:1px solid #356976;background:#0d3040;padding:13px;border-radius:11px}
+.monster-care-stats small{font-size:10px;color:#a6c6d2}
+.monster-care-stats strong{font-size:16px;color:#f4fffc;overflow-wrap:anywhere}
+.monster-care-caution{display:flex;gap:8px;align-items:flex-start;line-height:1.7;color:#b8ded9;font-size:11px}
+.monster-care-caution svg{flex:0 0 auto;color:#83f3d7}
+.monster-care-choices{border:1px solid #426b76;border-radius:11px;padding:13px;display:flex;flex-direction:column;gap:11px}
+.monster-care-choices legend{font-size:11px;color:#c4f1eb;font-weight:800;padding:0 7px}
+.monster-care-choices label{display:flex;gap:11px;align-items:flex-start;padding:10px;border-radius:8px;cursor:pointer;background:#123242}
+.monster-care-choices label:has(input:checked){background:#194c4a;outline:1px solid #4eb7a4}
+.monster-care-choices input,.monster-care-check input{accent-color:#6df3cf;flex:0 0 auto;margin:2px 0 0;width:17px;height:17px}
+.monster-care-choices span{display:flex;flex-direction:column;gap:5px}
+.monster-care-choices strong{font-size:12px;color:#e9fff7}
+.monster-care-choices small{font-size:11px;line-height:1.55;color:#9abcc8}
+.monster-care-check{display:flex;align-items:flex-start;gap:10px;color:#c5e7e5;font-size:12px;line-height:1.55}
+.monster-care-check.danger{padding:12px;border:1px solid #a36c4f;background:#382d2a;border-radius:10px;color:#ffdfc9}
+.monster-care-buttons{display:flex;flex-wrap:wrap;gap:10px}
+.monster-care-working{display:flex;align-items:center;gap:10px;color:#acf4dc;font-size:12px}
+.monster-care-working svg{animation:monsterSpin 1.7s linear infinite}
+@keyframes monsterSpin{to{transform:rotate(360deg)}}
+.monster-care-results{border:1px solid #4c9587;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:12px;background:#123f45}
+.monster-care-summary{display:flex;align-items:center;gap:8px;color:#b0ffe3;font-size:14px}
+.monster-care-result{display:flex;gap:9px;align-items:flex-start;border-top:1px solid #316f73;padding:10px 0 0}
+.monster-care-result svg{color:#83e5cb}
+.monster-care-result div{display:flex;flex-direction:column;gap:5px}
+.monster-care-result strong{font-size:12px}
+.monster-care-result small{font-size:11px;color:#a9c9d3;line-height:1.5}
+.monster-care-results>p{display:flex;gap:7px;align-items:flex-start;color:#d0f3eb;font-size:11px;line-height:1.6;margin:0}
+.monster-care-status,.monster-care-note{font-size:11px;line-height:1.7;color:#a7cbcf;margin:0}
+.monster-care-status{border:1px solid #387179;border-radius:9px;padding:10px;background:#103745}
+.monster-care button:focus-visible,.monster-care input:focus-visible{outline:2px solid #96ffdd;outline-offset:3px}
+@media(max-width:1320px){.monster-dashboard-art{display:none}}
+@media(max-width:900px){.v7-lead-visual:has(.v8-hero-art){display:none}}
+@media(max-width:660px){.monster-care{padding:17px}.monster-care-stats{grid-template-columns:1fr}.monster-care-buttons>*{width:100%}}
+@media(prefers-reduced-motion:reduce){.monster-care-working svg{animation:none}.monster-care-primary{transition:none}}
