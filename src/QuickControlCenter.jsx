@@ -13,6 +13,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
  const desktop=!demo && !!window.doctor?.getGameFocusStatus
  const [boost,setBoost]=useState(null)
  const [profile,setProfile]=useState('standard')
+ const [autoStopMinutes,setAutoStopMinutes]=useState(120)
  const [plan,setPlan]=useState(null)
  const [approve,setApprove]=useState(false)
  const [busy,setBusy]=useState(false)
@@ -33,7 +34,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
  const selectedBytes=ageSummary.reduce((n,f)=>n+f.sizeBytes,0)
  const permanentlyEligible=useMemo(()=>temp?.files?.filter(f=>f.name.toLowerCase().endsWith('.tmp')&&f.ageDays>=30)||[],[temp])
  const permanentBytes=permanentlyEligible.reduce((n,f)=>n+f.sizeBytes,0)
- useEffect(()=>{if(desktop)findGames()},[desktop])
+ useEffect(()=>{if(desktop){findGames();scanTemp()}},[desktop])
  async function oneClickClean(permanent=false){
   if(!desktop||!temp||cleanupBusy)return
   if(!cleanupApprove||(permanent&&!permanentApprove))return
@@ -50,11 +51,11 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
   try{const r=await window.doctor.getGameFocusStatus();setBoost(r)}
   catch{setBoost({ok:false,error:'Game Focus status is unavailable.'})}
  }
- useEffect(()=>{status()},[desktop])
+ useEffect(()=>{status();if(!desktop)return undefined;const timer=setInterval(status,15000);return ()=>clearInterval(timer)},[desktop])
  async function preview(launchAfter=false){
   if(!desktop||busy)return
   setBusy(true);setPlan(null);setApprove(false);setPlayAfterBoost(Boolean(launchAfter&&gameId));setPlannedGameId(launchAfter?gameId:'');setNotice('')
-  try{const r=await window.doctor.previewGameFocus(profile);if(r.ok)setPlan(r);else setNotice(r.error||'Could not preview.')}
+  try{const r=await window.doctor.previewGameFocus(profile,autoStopMinutes);if(r.ok)setPlan(r);else setNotice(r.error||'Could not preview.')}
   catch{setNotice('Windows preferences could not be inspected safely.')}
   finally{setBusy(false)}
  }
@@ -65,7 +66,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
    const r=await window.doctor.startGameFocus(p.profile,p.token)
    if(r.ok && playAfterBoost && plannedGameId){
      const launch=await window.doctor.launchDetectedGame(plannedGameId)
-     if(launch.ok)setNotice('Game Focus started and the game was sent to its launcher. Stop & Restore when finished, or close PC Doctor to restore.')
+     if(launch.ok)setNotice('Game Focus started and the game was sent to its launcher. Supported Windows settings will restore at your chosen time limit; use Stop & Restore earlier if needed.')
      else{
        const recovered=await window.doctor.stopGameFocus()
        setNotice((launch.error||'Game could not be launched.')+(recovered.ok?' Windows settings were restored.':' Restoration needs review.'))
@@ -159,7 +160,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
    <Section id="v7-game-focus" icon={Rocket} eyebrow="01 · GAME FOCUS" title="Start a gaming session" description="Temporarily enable supported Windows Game Mode and, on AC power only, the standard High performance plan. No apps are killed or suspended.">
     <div className="v7-boost-status">
      <span className={'v7-state '+(boost?.session?'in-session':'')}>{boost?.session?'Active or awaiting recovery':'Not running'}</span>
-     <p>{boost?.session?('Profile: '+boost.session.profile+' · '+boost.session.phase+'. Stop restores only the settings the session attempted.'):'These settings are optional. If Windows already has a preference enabled, PC Doctor leaves it unchanged.'}</p>
+     <p>{boost?.session?('Profile: '+boost.session.profile+' · '+boost.session.phase+(boost.session.expiresAt?' · Auto-restore by '+new Date(boost.session.expiresAt).toLocaleTimeString():' · Manual stop')+'. Stop restores only the settings the session attempted.'):'These settings are optional. If Windows already has a preference enabled, PC Doctor leaves it unchanged.'}</p>
     </div>
     {!boost?.session&&<div className="v7-boost-controls">
       <label className={'v7-mode '+(profile==='standard'?'chosen':'')}>
@@ -171,6 +172,18 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
        <strong>Plugged-in gaming</strong><span>Game Mode + power plan if supported</span>
       </label>
     </div>}
+    {!boost?.session&&<div className="v7-duration">
+      <label htmlFor="v7-auto-stop">Restore Windows preferences automatically after</label>
+      <select id="v7-auto-stop" value={autoStopMinutes} onChange={e=>{setAutoStopMinutes(Number(e.target.value));setPlan(null);setApprove(false)}}>
+        <option value={30}>30 minutes</option>
+        <option value={60}>1 hour</option>
+        <option value={120}>2 hours (recommended)</option>
+        <option value={240}>4 hours</option>
+        <option value={0}>Only when I stop/exit PC Doctor</option>
+      </select>
+      <small>The time limit is a safety fallback, not automatic game-exit detection. The game keeps running; only supported Windows preferences are restored.</small>
+    </div>}
+    {boost?.automaticOutcome&&<p className="v7-notice" role="status">{boost.automaticOutcome}</p>}
     {boost?.session?
       <button type="button" className="v7-restore" disabled={!desktop||busy} onClick={stop}><RotateCcw size={18}/>{busy?'Restoring…':'Stop & restore my PC'}</button>:
       <button type="button" className="v7-primary" disabled={!desktop||busy} onClick={()=>preview(false)}><ShieldCheck size={17}/>{busy?'Inspecting…':'Review Game Focus changes'}</button>}
@@ -178,12 +191,12 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
       <h3>Changes planned for this session</h3>
       {plan.actions.length?<ul>{plan.actions.map(x=><li key={x}><CheckCircle2 size={16}/>{x}</li>)}</ul>:<p>There are no new Windows preferences to change. This session can still be tracked and stopped.</p>}
       {plan.skips.map((s,i)=><p key={i} className="v7-skipped">{s}</p>)}
-      <p className="v7-caution">{plan.warning} {playAfterBoost?'After approval, PC Doctor will start Game Focus and ask the selected launcher to open your game.':''}</p>
+      <p className="v7-caution">{plan.stopAfterMinutes?'Auto-restore is scheduled after '+plan.stopAfterMinutes+' minutes while PC Doctor stays open. ':'Auto-restore timer is disabled. '}{plan.warning} {playAfterBoost?'After approval, PC Doctor will start Game Focus and ask the selected launcher to open your game.':''}</p>
       <label className="v7-consent"><input type="checkbox" checked={approve} onChange={e=>setApprove(e.target.checked)}/> I reviewed the listed changes and agree to temporary Game Focus settings.</label>
       <div className="v7-actions"><button type="button" className="v7-primary" disabled={!approve||busy} onClick={begin}><Play size={16}/>{playAfterBoost?'Confirm boost & launch game':'Start Game Focus'}</button><button type="button" className="v7-secondary" onClick={()=>{setPlan(null);setApprove(false)}}>Cancel</button></div>
     </div>}
     {notice&&<p className="v7-notice" role="status">{notice}</p>}
-    <p className="v7-caption">After a normal app exit or restart, PC Doctor attempts to restore the saved settings. Unrecoverable changes are shown for manual review. Game Focus cannot guarantee a higher frame rate.</p>
+    <p className="v7-caption">PC Doctor attempts to restore changes automatically at the selected time limit and on normal app exit. Startup recovery handles interrupted sessions. The timer does not close games or detect their exit. FPS gains are not guaranteed.</p>
    </Section>
    <div className="v7-pair">
     <Section icon={Gamepad2} eyebrow="02 · GAMES" title="Your installed games" description="Steam and Epic Games titles appear automatically. For other launchers, add a trusted installed game executable once. No game files are modified.">

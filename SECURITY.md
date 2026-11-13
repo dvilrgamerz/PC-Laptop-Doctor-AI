@@ -54,3 +54,9 @@ The changes are audited in automated tests, **not independently security-certifi
 
 ## V7.1 manually added games
 Only after clicking Add Game does PC Doctor open the native Windows file chooser. It accepts local .exe files outside Windows system/WindowsApps folders, verifies they are regular files, and saves an opaque reference and local path in the user's app profile. The renderer receives the display name and ID but not the executable path. The user must only add trusted installed games; executable files can be harmful, and a selected game may prompt for Windows permissions. Custom games are not automatically discovered. Remove deletes the list entry, never the game executable.
+
+## V7.2 time-limited session safety
+
+The user chooses an allowlisted duration of 0, 30, 60, 120 or 240 minutes at preview time. The approval token binds the previewed duration to the ensuing session. An active session records its expiration time locally and schedules a restore operation; manual Stop cancels the timer. The timer does not execute arbitrary processes or terminate any game. It only invokes the existing confirmed Game Focus rollback path.
+
+A Windows process crash or machine power loss interrupts in-process timers; guarded recovery occurs the next time PC Doctor starts. The stored journal and original values are retained when restoration is incomplete. The app never claims automatic game-exit recognition.

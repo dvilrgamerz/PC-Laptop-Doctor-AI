@@ -1,6 +1,6 @@
 # PC Laptop Doctor AI V7 — implementation and public beta gate
 
-**Version:** 7.1.0-beta.2 (Windows 10/11 x64). **Target audience:** willing early testers and friends who understand unsigned prereleases. Not certified stable software.
+**Version:** 7.2.0-beta.3 (Windows 10/11 x64). **Target audience:** willing early testers and friends who understand unsigned prereleases. Not certified stable software.
 
 ## The practical user experience
 
@@ -69,3 +69,13 @@ Before moving from beta to a stable release, complete [the Windows tester checkl
 Recycle Bin moves are recoverable but do not reclaim space. The permanent option reclaims some space but has no undo.
 
 - [x] Native Add Game picker for trusted installed executable files outside protected Windows locations, supporting other launchers without pretending every game can be automatically identified. Paths remain local in the user's PC Doctor profile. Users can remove entries without removing game files.
+
+## V7.2 timed automation
+
+- [x] Optional automatic rollback time limit for Game Focus: 30, 60, 120 or 240 minutes.
+- [x] Persistent deadline in the current session journal, validated and tested with a fake scheduler.
+- [x] Read-only game and Temp scanning on opening Boost & Play, no hidden file modification.
+- [x] Manual Stop & Restore and normal exit continue to restore owned preferences.
+- [ ] Game process-exit detection, guaranteed immediate rollback after Windows process termination, complete launcher support, code signing, independent Windows QA and real FPS evidence.
+
+The timer only runs while PC Doctor is running; after a crash, reopening it initiates session recovery. The chosen time limit does not affect the game process itself.

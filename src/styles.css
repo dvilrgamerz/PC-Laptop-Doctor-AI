@@ -541,3 +541,11 @@ footer a{color:#85e7eb;text-decoration:none}
 .v7-caption{color:#adc5d0}
 .v7-game-select select:focus-visible,.v7-advanced-clean summary:focus-visible,.v7-manual-clean summary:focus-visible{outline:2px solid #91eedc;outline-offset:3px}
 @media(max-width:690px){.v7-pair{grid-template-columns:1fr}.v7-auto-clean{padding:13px}}
+
+
+/* V7.2: compact beginner-facing session timer with accessible mobile layout */
+.v7-duration{display:flex;flex-direction:column;align-items:flex-start;gap:9px;border:1px solid #356c70;border-radius:12px;background:linear-gradient(125deg,#0f343e,#0c2838);padding:14px 16px}
+.v7-duration label{font-size:12px;font-weight:800;color:#d1f0e9}
+.v7-duration select{background:#0a2230;color:#ddfaf4;border:1px solid #4c847f;border-radius:9px;padding:10px 12px;max-width:100%;min-height:42px;font-size:12px}
+.v7-duration small{font-size:11px;color:#a9c8d3;line-height:1.6}
+.v7-duration select:focus-visible{outline:2px solid #78e9d4;outline-offset:3px}

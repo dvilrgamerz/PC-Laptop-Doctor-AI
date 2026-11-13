@@ -7,9 +7,9 @@
 
 **Simple, local-first Windows diagnostics and gaming tools with Boost & Play, Steam/Epic detection, trusted custom games, optional automatic temporary-file cleanup, and reproducible performance comparisons. Free and open source.**
 
-## Download V7.1 Boost & Play — public beta (Windows x64)
+## Download V7.2 Boost & Play — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.1.0-beta.2)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.2.0-beta.3)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
@@ -57,6 +57,16 @@ npm run dist:win
 
 The generated setup and portable executables are written to **release/**. For development, run **npm run dev**. GitHub Actions also builds the two executables on Windows and publishes a versioned prerelease when merged code passes the pipeline.
 
+
+## V7.2 — Automatic Game Focus restoration and easier cleanup
+
+- **New: timer-based recovery.** The Game Focus session can restore managed Windows Game Mode and the optional High performance power plan automatically after 30, 60, 120 (default) or 240 minutes. It also attempts restoration on normal exit and at next start after interruption.
+- **New: automatic read-only preview.** Opening Boost & Play starts local game discovery and safe Temp candidate scanning without making any changes.
+- After you approve, Boost & Play runs supported temporary settings and asks the selected game launcher to start; no manual Windows Settings navigation. Steam and Epic detection, plus one-time custom executable selection, remain supported.
+- A single approved Auto Clean action sends eligible old Temp files to Recycle Bin. Advanced permanent cleanup is narrowly bounded and separately approved. **A Recycle Bin move does not actually reclaim disk space.**
+- **Not automatic:** game-exit detection, every launcher, closing background processes, a universal FPS improvement, and forced deletion of unknown files.
+
+This is a **public beta** for friends, not a signed production release. Game Focus timers do not close games and are not performance guarantees.
 
 ## V7.1 — More automatic game and storage workflows
 

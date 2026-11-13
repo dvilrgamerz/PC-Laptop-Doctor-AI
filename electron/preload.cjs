@@ -17,7 +17,7 @@ contextBridge.exposeInMainWorld('doctor', {
   scanSteamLibrary: () => ipcRenderer.invoke('doctor:v6-games'),
   runV6NetworkPath: () => ipcRenderer.invoke('doctor:v6-network-path'),
   getGameFocusStatus: () => ipcRenderer.invoke('doctor:v7-boost-status'),
-  previewGameFocus: profile => ipcRenderer.invoke('doctor:v7-boost-preview',profile),
+  previewGameFocus: (profile,minutes) => ipcRenderer.invoke('doctor:v7-boost-preview',profile,minutes),
   startGameFocus: (profile,token) => ipcRenderer.invoke('doctor:v7-boost-start',profile,token),
   stopGameFocus: () => ipcRenderer.invoke('doctor:v7-boost-stop'),
   scanOldTempFiles: () => ipcRenderer.invoke('doctor:v7-temp-scan'),
