@@ -1,4 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react'
+import OneClickCare from './OneClickCare.jsx'
+import monsterArt from '../assets/pc-monster-core.svg'
 import {Activity,ArrowRight,Bell,CheckCircle2,ClipboardCheck,Cpu,Gamepad2,HardDrive,MemoryStick,RefreshCcw,ShieldCheck,Trash2,TriangleAlert} from 'lucide-react'
 
 const value=(n,suffix='')=>Number.isFinite(n)?Number(n).toFixed(Number.isInteger(n)?0:1)+suffix:'Unknown'
@@ -35,7 +37,7 @@ function WeekBar({row}){
   <small>{row.day.slice(5)}</small>
  </div>
 }
-export default function DailyMonsterPanel({demo,data,onNavigate}){
+export default function DailyMonsterPanel({demo,data,onNavigate,onRescan}){
  const supported=!demo&&!!window.doctor?.getDailyStatus&&!!window.doctor?.checkDailyHealth
  const [prefs,setPrefs]=useState({enabled:false,notify:false,days:[]})
  const [metrics,setMetrics]=useState(null)
@@ -106,12 +108,13 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
    // The in-app Space Finder is on Boost & Play; user reviews and approves deletion.
   }
  }
- return <section className="monster-panel" aria-label="Daily Monster performance overview">
+ return <><section className="monster-panel" aria-label="Daily Monster performance overview">
   <div className="monster-top">
    <div><p className="eyebrow"><Activity size={15}/> DVILR PC MONSTER · DAILY CONTROL CENTER</p>
     <h2>Keep your PC ready for today.</h2>
     <p>One place for real resource pressure, gaming sessions and safe storage care. No fake FPS claims or hidden system tweaks.</p>
    </div>
+   <img className="monster-dashboard-art" src={monsterArt} alt="PC Monster performance chip illustration" loading="lazy"/>
    <div className={'monster-status '+(hasReadings?(top?.severity||'okay'):'unknown')}>
     {top?.severity==='critical'?<TriangleAlert size={17}/>:<ShieldCheck size={17}/>}
     <strong>{!hasReadings?'Awaiting readings':top?.severity==='critical'?'Action needed':top?'Review suggestion':'No major threshold warning'}</strong>
@@ -162,4 +165,6 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
   {status&&<p className="monster-message" role="status">{status}</p>}
   {demo&&<p className="monster-message">Demo values are simulated. Daily monitoring is supported only in the Windows desktop app.</p>}
  </section>
+ <OneClickCare demo={demo} onRescan={onRescan}/>
+ </>
 }
