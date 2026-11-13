@@ -135,3 +135,54 @@ test('Windows installation bundles the same locally compiled native helper used 
  const wrapper=fs.readFileSync(path.join(__dirname,'../electron/windows-eco-qos.cjs'),'utf8')
  assert.doesNotMatch(wrapper,/powershell[.]exe|EncodedCommand|Add-Type/)
 })
+
+test('process inventory lists protected classes without exposing their executable paths',async()=>{
+ const f=fixture()
+ try{
+  const snapshot=await f.service().inventory()
+  assert.equal(snapshot.ok,true)
+  assert.ok(snapshot.protectedCount>=2)
+  assert.ok(snapshot.protectedSample.some(x=>/anti-cheat/i.test(x.reason)))
+  assert.ok(snapshot.protectedSample.every(x=>!Object.hasOwn(x,'exe')))
+ }finally{f.clean()}
+})
+test('revoking permission immediately restores current session changes',async()=>{
+ const f=fixture()
+ try{
+  const s=f.service()
+  assert.equal((await s.setRule(exe,'reduce')).ok,true)
+  const result=await s.begin({file:'D:\\Games\\Example\\Game.exe',name:'Game'})
+  assert.equal(result.modifiedCount,1)
+  assert.equal((await s.status()).attemptedCount,1)
+  assert.equal((await s.status()).modifiedCount,1)
+  const revocation=await s.setRule(exe,'keep')
+  assert.equal(revocation.ok,true,revocation.error)
+  assert.equal((await s.status()).approvedCount,0)
+  assert.equal((await s.status()).needsRecovery,false)
+  assert.ok(f.calls.some(c=>c[0]==='restore'))
+ }finally{f.clean()}
+})
+test('failed EcoQoS action is never shown as confirmed, but is preserved for recovery',async()=>{
+ const f=fixture()
+ try{
+  const s=f.service()
+  await s.setRule(exe,'reduce')
+  f.adapter.apply=async record=>{f.calls.push(['apply-failed',record]);return {ok:false,error:'Rejected'}}
+  const r=await s.begin({file:'D:\\Games\\Example\\Game.exe',name:'Game'})
+  assert.equal(r.ok,true)
+  assert.equal(r.modifiedCount,0)
+  assert.equal(r.attemptedCount,1)
+  assert.equal((await s.status()).modifiedCount,0)
+  assert.equal(loadJournal(f.files.journalFile).actions[0].status,'uncertain')
+  assert.equal((await s.restore()).ok,true)
+ }finally{f.clean()}
+})
+test('native helper protects service and cross-session PIDs without process termination',()=>{
+ const cpp=fs.readFileSync(path.join(__dirname,'../native/boost-helper/main.cpp'),'utf8')
+ assert.match(cpp,/EnumServicesStatusExW/)
+ assert.match(cpp,/ProcessIdToSessionId/)
+ assert.match(cpp,/GetProcessTimes/)
+ assert.match(cpp,/QueryFullProcessImageNameW/)
+ assert.match(cpp,/SetProcessInformation/)
+ assert.doesNotMatch(cpp,/TerminateProcess\s*\(|SuspendThread\s*\(|OpenSCManagerW\([^)]*,[^)]*,SC_MANAGER_ALL_ACCESS/)
+})
