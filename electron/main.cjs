@@ -300,7 +300,7 @@ if(!hasSingleInstanceLock){
     rulesFile:path.join(app.getPath('userData'),'background-boost-rules-v1.json'),
     journalFile:path.join(app.getPath('userData'),'background-boost-session-v1.json'),
     processes:async()=>(await si.processes()).list||[],
-    adapter:createWindowsEcoQos(),appExe:process.execPath
+    adapter:createWindowsEcoQos({helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-boost-helper.exe'):path.join(__dirname,'../native/build/boost-helper.exe')}),appExe:process.execPath
   })
   const autopilot=createAutopilot({
     stateFile:path.join(app.getPath('userData'),'autopilot-prefs-v1.json'),
