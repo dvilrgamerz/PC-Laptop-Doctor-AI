@@ -7,6 +7,8 @@ on:
     branches: [main]
     paths:
       - 'electron/**'
+      - 'native/**'
+      - 'scripts/**'
       - 'src/**'
       - 'build/**'
       - 'index.html'
@@ -33,6 +35,8 @@ jobs:
           node-version: '22'
       - name: Install build dependencies
         run: npm install --no-audit --no-fund
+      - name: Compile audited native EcoQoS helper (MSVC x64)
+        run: npm run build:helper
       - name: Run regression tests
         run: npm test
       - name: Validate Electron sources
