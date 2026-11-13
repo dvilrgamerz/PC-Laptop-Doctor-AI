@@ -5,7 +5,13 @@
 
 # PC & Laptop Doctor AI
 
-**PC Monster: a simpler daily performance dashboard with local health trends, optional disk-space alerts, Boost & Play, safe storage care, and honest game performance comparisons. Free and open source.**
+**PC Monster: a daily performance dashboard with direct gaming controls, recoverable automatic care, local health trends and honest game performance comparisons. Free and open source.**
+
+<p align="center">
+  <img src="./assets/monster-machine.svg" width="46%" alt="Original neon laptop and system-monitor artwork for PC Monster." />
+  <img src="./assets/pc-monster-core.svg" width="46%" alt="Original PC Monster gaming processor and performance art." />
+</p>
+<p align="center"><em>Original vector illustrations used in the app—not benchmark results or screenshots.</em></p>
 
 ## Download V8.2 PC Monster — public tester release (Windows x64)
 
@@ -17,6 +23,18 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 | --- | --- | --- |
 | Guided setup | PC-Laptop-Doctor-AI-Setup-8.2.0-beta.3-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
 | Portable | PC-Laptop-Doctor-AI-Portable-8.2.0-beta.3-x64.exe | Run without installing |
+
+## New in V8.2 — Monster Mode and direct in-app actions
+
+**Monster Mode** is available directly on the home dashboard. One preview and approval enables supported hands-off Auto-Boost for verified Steam, Epic and user-added games, weekly recoverable Temp care, and a single immediate previewed old-Temp recycling pass. The automation runs only while PC Doctor remains open and can be disabled at any time. It does not run a Windows service or kill processes.
+
+**Direct Game Focus** is also available on the dashboard: choose Standard or Plugged-in, inspect the exact proposed Windows preferences, approve, and use **Stop & Restore** without opening Windows Settings. A two-hour fallback restoration timer applies when available; signed-in apps and games are never forcibly closed.
+
+**Safe Care** stays in-app: after a reviewed preview, it can actually clear PC Doctor's own HTTP cache and recycle or narrowly delete eligible old temporary files, then display completed, skipped or failed actions. Recycle Bin moves are not counted as freed disk space.
+
+For the graphical interface, the dashboard and Boost & Play feature two **original vector illustrations**. Detailed tools remain available under Advanced; Dashboard opens by default.
+
+**Release classification:** The version is an unsigned **public tester beta**. CI is not the same as real Windows device validation, code signing or head-to-head FPS evidence. Distribute it to informed friends for testing, but do not advertise it as a certified, proven faster replacement for Razer Cortex or Hone.gg.
 
 ## New in V8.1 — PC Monster One-Review Safe Care
 
