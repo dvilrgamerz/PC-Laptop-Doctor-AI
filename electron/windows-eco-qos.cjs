@@ -16,7 +16,7 @@ public struct PowerThrottling { public uint Version; public uint ControlMask; pu
 public static class EcoNative {
  [DllImport("kernel32.dll", SetLastError=true)] public static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);
  [DllImport("kernel32.dll", SetLastError=true)] public static extern bool CloseHandle(IntPtr handle);
- [DllImport("kernel32.dll", SetLastError=true)] public static extern bool GetProcessInformation(IntPtr handle, int cls, out PowerThrottling state, uint size);
+ [DllImport("kernel32.dll", SetLastError=true)] public static extern bool GetProcessInformation(IntPtr handle, int cls, ref PowerThrottling state, uint size);
  [DllImport("kernel32.dll", SetLastError=true)] public static extern bool SetProcessInformation(IntPtr handle, int cls, ref PowerThrottling state, uint size);
 }
 '@
