@@ -9,14 +9,14 @@
 
 ## Download V7 Game Focus — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.0.0-beta.1)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.1.0-beta.2)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
 | Edition | File | What it does |
 | --- | --- | --- |
-| Guided setup | PC-Laptop-Doctor-AI-Setup-7.0.0-beta.1-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
-| Portable | PC-Laptop-Doctor-AI-Portable-7.0.0-beta.1-x64.exe | Run without installing |
+| Guided setup | PC-Laptop-Doctor-AI-Setup-7.1.0-beta.2-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
+| Portable | PC-Laptop-Doctor-AI-Portable-7.1.0-beta.2-x64.exe | Run without installing |
 
 ### Three steps to start
 
@@ -56,6 +56,17 @@ npm run dist:win
 ~~~
 
 The generated setup and portable executables are written to **release/**. For development, run **npm run dev**. GitHub Actions also builds the two executables on Windows and publishes a versioned prerelease when merged code passes the pipeline.
+
+
+## V7.1 — More automatic game and storage workflows
+
+- **Boost & Play:** Choose an installed Steam or Epic game. Review the short Game Focus preview, approve once, and PC Doctor starts supported reversible Windows preferences and opens the selected game through its launcher. If launch fails, it attempts to restore the changed settings. Stop & Restore, or close PC Doctor normally, after playing.
+- **Automatic Steam and Epic detection:** Uses read-only installed-game manifests; launch IDs are checked again before use. This does not detect Xbox, Riot, Battle.net, GOG, Ubisoft or standalone games.
+- **Auto-clean safely:** Review a preview and approve moving all eligible top-level user Temp .tmp/.log files older than 14 days to Windows Recycle Bin. No manual file selection necessary, although advanced manual selection remains available. Recycle Bin moves do not immediately free space.
+- **Actually reclaim limited space:** A separate clearly labeled irreversible option permanently removes only top-level .tmp files older than 30 days, capped at 300 candidates and 1 GiB in total, skipping changed or locked files. It never targets Downloads, documents, system folders, game saves or subdirectories. The user must explicitly approve permanent removal.
+- **Simpler main screen:** Boost, detect games and cleanup are foregrounded. Advanced tuning remains secondary.
+
+**Public beta status:** Not a certified stable gaming optimizer or proven superior to Razer Cortex/Hone.gg. Windows installer CI is necessary but not physical-device proof. These unsigned executables can trigger a Windows security warning. Do not disable security tools to run software you cannot independently verify.
 
 ## Project overview
 
