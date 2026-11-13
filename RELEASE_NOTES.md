@@ -3,6 +3,8 @@
 **Public tester build — unsigned Windows 10/11 x64.**
 
 ## New
+- Direct **Game Focus** controls now appear on the home dashboard. Users can preview, approve and restore supported Game Mode/performance settings without navigating to Windows Settings. A two-hour safety timer applies when supported.
+- Original PC Monster performance-core illustration joins the neon laptop illustration. Both are scalable vector assets built into the app, not stock imagery or fabricated performance graphs.
 - Added original lightweight neon laptop illustration and a simpler prominent Monster Mode home action.
 - One reviewed activation turns on existing trusted-game Auto-Boost and weekly recoverable Temp care; immediate approved cleanup moves only 30+ day top-level user-Temp .tmp files to Recycle Bin.
 - Game Focus recovers supported Windows preferences after tracked game exit or normal app close, subject to existing safeguards.
