@@ -150,3 +150,11 @@ V7.4 remains an unsigned public beta pending real-device/security validation.
 - [ ] Repeat comparable FPS/frametime trials and record positive, negative or neutral outcomes. Without such evidence, do not advertise FPS improvements.
 
 **Distribution decision:** Share the GitHub release as a *public tester beta* until code signing, independent security review and real-hardware QA finish; do not label it a certified stable release.
+
+## V8.2 final in-app controls validation
+
+- [ ] Verify the default dashboard shows **Monster Mode**, **Direct Game Focus** and **Safe Care**, with readable layout on a 1366×768 laptop and no stale V7 version label.
+- [ ] Start Direct Game Focus after reviewing the proposed settings. Use Stop & Restore from the same dashboard, not Windows Settings. Verify the exact previous values return.
+- [ ] Enable Monster Mode once. Verify trusted-game Auto-Boost activates only for a verified installed game and that weekly Temp care runs only while PC Doctor is open.
+- [ ] Validate both original vector illustrations in Setup and Portable editions, including keyboard zoom and low-memory machines.
+- [ ] Check the README points to the **exact** published V8.2 Setup/Portable filenames, not old V7.5 files.
