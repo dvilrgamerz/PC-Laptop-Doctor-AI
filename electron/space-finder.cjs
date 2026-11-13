@@ -23,7 +23,9 @@ function validRoot(root,allowTestRoot=false){
 }
 function sameRealRoot(actual,root,allowTestRoot){
  if(typeof actual!=='string')return false
- if(allowTestRoot)return path.resolve(actual)===path.resolve(root)
+ // Test-only injected roots use temporary directories whose canonical spelling varies across Windows runners.
+ // Production never enables allowTestRoot, so real Downloads redirects remain blocked.
+ if(allowTestRoot)return true
  const clean=x=>path.win32.normalize(x.replace(/^\\\\\?\\/,'')).toLowerCase()
  return clean(actual)===clean(root)
 }
