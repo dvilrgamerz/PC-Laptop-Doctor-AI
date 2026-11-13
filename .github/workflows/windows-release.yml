@@ -51,6 +51,7 @@ jobs:
           node --check electron/network-path.cjs
           node --check electron/game-focus.cjs
           node --check electron/temp-cleaner.cjs
+          node --check electron/autopilot.cjs
           node --check electron/epic-library.cjs
           node --check electron/custom-games.cjs
       - name: Build Windows Setup and Portable EXEs
