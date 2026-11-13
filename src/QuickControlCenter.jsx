@@ -1,4 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react'
+import monsterArt from '../assets/pc-monster-core.svg'
 import AutopilotPanel from './AutopilotPanel.jsx'
 import LiveMonitorPanel from './LiveMonitorPanel.jsx'
 import SpaceFinderPanel from './SpaceFinderPanel.jsx'
@@ -156,7 +157,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
        <button className="v7-ghost-button" type="button" onClick={()=>onNavigate('history')}><Zap size={17}/> Compare FPS</button>
       </div>
     </div>
-    <div className="v7-lead-visual"><div className="v7-circle"><Rocket size={43}/></div><span>SCAN <ChevronRight size={13}/> REVIEW <ChevronRight size={13}/> MEASURE</span></div>
+    <div className="v7-lead-visual"><img className="v8-hero-art" src={monsterArt} alt="Decorative original PC Monster processor and performance graph" loading="lazy"/><span>SCAN <ChevronRight size={13}/> APPROVE <ChevronRight size={13}/> MEASURE</span></div>
    </section>
    {demo&&<p className="v7-demo"><Info size={16}/> Browser demo: real Windows changes, cleanup and Steam launching are disabled. Install the Windows desktop app to use them.</p>}
    <LiveMonitorPanel demo={demo} data={data} onNavigate={onNavigate}/>
