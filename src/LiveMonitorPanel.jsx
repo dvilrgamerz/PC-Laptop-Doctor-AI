@@ -58,7 +58,7 @@ export default function LiveMonitorPanel({demo,data,onNavigate}){
  }),[samples])
  function go(f){
   if(f.target==='boost'){
-   const node=document.getElementById('v7-cleanup')
+   const node=document.getElementById('space-finder')||document.getElementById('v7-cleanup')
    if(node){node.scrollIntoView({behavior:'smooth',block:'start'});return}
   }
   onNavigate(f.target)
