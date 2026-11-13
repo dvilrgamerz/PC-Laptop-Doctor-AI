@@ -1,21 +1,22 @@
-# PC Laptop Doctor AI v8.0.0-beta.1 — PC Monster Daily Dashboard
+# PC & Laptop Doctor AI v8.2.0-beta.3 — PC Monster Mode and one-click care
 
-Windows 10/11 x64 public beta; unsigned installer and portable app.
+**Public tester build — unsigned Windows 10/11 x64.**
 
-## New in this release
-- New compact **PC Monster** home panel: current CPU, RAM, GPU and free storage; a prioritized actionable alert and direct Boost & Cleanup links.
-- Optional private **Daily Health** recording. OFF by default, sampled at most once per 30 minutes only while the app is running; maximum 30 local days of numeric-only summaries.
-- Optional native Windows notification, at most once per local day, when main-drive storage is critically low. Requires explicit opt-in, separate from monitoring consent.
-- In-app daily storage trend with delete-history control; saved history can be cleared independently of enabling/disabling monitoring.
-- Existing live monitor, auto Game Focus/restore, game discovery, recoverable file cleanup and manual FPS experiment remain.
-- Previous detailed diagnostic and heuristic-score panels are now collapsed by default; no new hidden system changes.
+## New
+- Direct **Game Focus** controls now appear on the home dashboard. Users can preview, approve and restore supported Game Mode/performance settings without navigating to Windows Settings. A two-hour safety timer applies when supported.
+- Original PC Monster performance-core illustration joins the neon laptop illustration. Both are scalable vector assets built into the app, not stock imagery or fabricated performance graphs.
+- Added original lightweight neon laptop illustration and a simpler prominent Monster Mode home action.
+- One reviewed activation turns on existing trusted-game Auto-Boost and weekly recoverable Temp care; immediate approved cleanup moves only 30+ day top-level user-Temp .tmp files to Recycle Bin.
+- Game Focus recovers supported Windows preferences after tracked game exit or normal app close, subject to existing safeguards.
+- One-Click Care remains available in-app for previewed application-only HTTP cache and Temp cleaning. It distinguishes recycled bytes from truly reclaimed space.
+- Concrete storage recovery target based on reported drive capacity (15% or 20 GiB target when feasible), with missing sensors shown as unknown.
+- Added automated tests for consent/replay/expiration, game-active refusal and opt-out, refreshed download links and friend test checklist.
 
-## Security and reliability
-- Monitor IPC requires the trusted app frame. Sanitization and bounded local data persistence are tested.
-- No process names, IP addresses, file paths, serial numbers, or user files in the daily history.
-- Background sampling stops when PC Doctor exits; disabling the switch prevents collection.
-- No automatic Windows security changes, forced application closing, irreversible file deletion, or claimed FPS uplift.
+## Important limitations
+- This is not a verified fps booster for every game and does not claim superiority to Razer Cortex/Hone.
+- Safe Auto Care operates only when PC Doctor is running. Onboarding approval is required once, and dangerous cleanup actions remain separately approved.
+- Moving files to Recycle Bin does not free drive capacity. Do not confuse candidate bytes with reclaimed bytes.
+- No automatic deletion of Downloads, Windows security changes, arbitrary background-process killing, GPU overclock or game/anti-cheat tampering.
+- Installer is **unsigned**; this version has not been independently tested across multiple physical Windows machines or audited by a third party. Keep it a public beta until those gates pass.
 
-## Before recommending to friends
-See docs/FRIEND_TESTING.md. CI passes are not an independent Windows/anti-cheat audit or proof of measured performance gains.
-This beta is unsigned. Verify checksums and obtain binaries from the GitHub release page. Do not disable security defenses to install an untrusted file.
+Read docs/FRIEND_TESTING.md and docs/ROADMAP.md before sharing with friends. Download only from the official GitHub release and verify SHA256SUMS.txt.

@@ -49,6 +49,15 @@ function snapshot(metrics){
   temperature:finite(metrics.temperatureC)!==null&&metrics.temperatureC>=0&&metrics.temperatureC<=125?quantity(metrics.temperatureC):null
  }
 }
+// A concrete free-space target is useful; this is not a performance guarantee.
+function storageGoal(metrics){
+ if(!metrics||typeof metrics!=='object')return null
+ const free=finite(metrics.diskFreeGiB),total=finite(metrics.diskTotalGiB)
+ if(free===null||total===null||total<=0||free<0||free>total)return null
+ const target=Math.min(total,Math.max(20,total*0.15))
+ return {freeGiB:quantity(free),totalGiB:quantity(total),targetFreeGiB:quantity(target),
+  additionalGiB:quantity(Math.max(0,target-free)),basis:'Aim for at least 15% free, or 20 GiB on smaller drives. This is a practical maintenance target, not a guaranteed FPS improvement.'}
+}
 function warnings(metrics){
  const m=snapshot(metrics)
  if(!m)return []
@@ -110,7 +119,7 @@ function createDailyMonster({file,monitor,now=()=>Date.now(),schedule=fn=>setInt
     }
     if(alerted)try{notifier({title:'PC Doctor: low disk space',body:'Your Windows drive is nearly full. Open PC Doctor to review safe cleanup options.'})}catch{}
    }
-   return {ok:true,metrics:m,alerts,recorded,days:prefs.days}
+   return {ok:true,metrics:m,storageGoal:storageGoal(result.metrics),alerts,recorded,days:prefs.days}
   })()
   try{return await inFlight}finally{inFlight=null}
  }
@@ -135,4 +144,4 @@ function createDailyMonster({file,monitor,now=()=>Date.now(),schedule=fn=>setInt
  function stop(){if(timer){cancel(timer);timer=null}}
  return {status,check,configure,clearHistory,tick,start,stop}
 }
-module.exports={createDailyMonster,snapshot,warnings,updateDay,load,save,MAX_DAYS,CHECK_INTERVAL}
+module.exports={createDailyMonster,snapshot,warnings,storageGoal,updateDay,load,save,MAX_DAYS,CHECK_INTERVAL}

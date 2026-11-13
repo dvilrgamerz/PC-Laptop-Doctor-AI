@@ -1,4 +1,4 @@
-# PC Laptop Doctor AI V7 — Public beta tester guide
+# PC Laptop Doctor AI V8.2 — Public beta tester guide
 
 **Build:** Windows 10/11 x64, Setup.exe or Portable.exe. **Signed publisher:** no. **Status:** public beta for controlled testing, not a certified gaming optimization application.
 
@@ -122,3 +122,39 @@ V7.4 remains an unsigned public beta pending real-device/security validation.
 - [ ] Log crashes, hardware sensor inaccuracies, incorrect warnings, untrusted prompts, or failed cleanup. Report negative benchmark outcomes.
 
 **Status:** Public beta, not signed/stable certification. Test on noncritical PCs before using irreversible advanced cleanup.
+
+## V8.1 in-app Safe Care and UI evaluation
+
+- [ ] Open the app on Windows; verify PC Monster Dashboard is the default page and the artwork renders without covering metrics.
+- [ ] Click **Inspect & prepare Safe Care**. Verify the number and size of eligible user-Temp files matches a manual inspection of disposable test files.
+- [ ] Choose recoverable mode and approve once. Confirm PC Doctor performs both its app HTTP-cache cleanup and eligible Temp recycling without opening Windows Settings.
+- [ ] Verify files moved to Recycle Bin can be restored and are **not** reported as disk-space freed.
+- [ ] Use disposable old .tmp samples to test the *separately approved* permanent mode; 30+ day files may be removed, but newer files, logs, folders, Downloads and documents must remain.
+- [ ] Force an unavailable cache service or locked Temp file; the app should report partial failures, not falsely claim success.
+- [ ] Verify hardware snapshots update after cleanup; no fabricated improvement in benchmark or FPS data.
+- [ ] Test a 1366×768 laptop, keyboard navigation, reduced motion preferences and the image alt text.
+- [ ] Check version V8.1 in the app and README, along with actual Setup/Portable filenames on the published GitHub release.
+
+
+## V8.2 Monster Mode QA — additional release gates
+
+- [ ] On a physical Windows 10/11 x64 machine, open PC Monster and check the illustrated Monster Mode panel.
+- [ ] Click **Power up Monster Mode**. Confirm the preview itself makes no registry edits or file moves.
+- [ ] With a disposable old top-level .tmp test file in user Temp, approve once; verify it is moved to Recycle Bin and can be restored.
+- [ ] Verify only user Temp files at least 30 days old are eligible; recent .tmp files, .log, directories, Downloads, game saves and Windows security files remain untouched.
+- [ ] Close a recognized game and check managed Game Mode changes restore; also test normal app exit and error recovery.
+- [ ] Switch Monster Mode off and confirm automatic gaming and weekly Temp care are disabled.
+- [ ] Check that app-cache cleaning and permanent deletion require independent approval and never show Recycle Bin moves as immediately recovered disk space.
+- [ ] Verify 1366x768 and 1920x1080 layouts, keyboard focus and high-DPI scaling with the hero illustration.
+- [ ] Validate Windows Defender and SmartScreen compatibility. Do not disable protections to install unsigned third-party builds.
+- [ ] Repeat comparable FPS/frametime trials and record positive, negative or neutral outcomes. Without such evidence, do not advertise FPS improvements.
+
+**Distribution decision:** Share the GitHub release as a *public tester beta* until code signing, independent security review and real-hardware QA finish; do not label it a certified stable release.
+
+## V8.2 final in-app controls validation
+
+- [ ] Verify the default dashboard shows **Monster Mode**, **Direct Game Focus** and **Safe Care**, with readable layout on a 1366×768 laptop and no stale V7 version label.
+- [ ] Start Direct Game Focus after reviewing the proposed settings. Use Stop & Restore from the same dashboard, not Windows Settings. Verify the exact previous values return.
+- [ ] Enable Monster Mode once. Verify trusted-game Auto-Boost activates only for a verified installed game and that weekly Temp care runs only while PC Doctor is open.
+- [ ] Validate both original vector illustrations in Setup and Portable editions, including keyboard zoom and low-memory machines.
+- [ ] Check the README points to the **exact** published V8.2 Setup/Portable filenames, not old V7.5 files.

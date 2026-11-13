@@ -1,8 +1,8 @@
 {
   "name": "pc-laptop-doctor-ai",
-  "version": "8.0.0-beta.1",
+  "version": "8.2.0-beta.3",
   "private": true,
-  "description": "Daily PC Monster performance dashboard, optional local health history, safe Game Focus and storage tools",
+  "description": "Windows PC Monster with automatic safe gaming care, daily hardware dashboard, in-app cleanup and local privacy",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",

@@ -3,6 +3,10 @@ const { contextBridge, ipcRenderer } = require('electron')
 contextBridge.exposeInMainWorld('doctor', {
   runDiagnostics: () => ipcRenderer.invoke('doctor:run-diagnostics'),
   getLiveMonitor: () => ipcRenderer.invoke('doctor:v7-live-monitor'),
+  getMonsterStatus: () => ipcRenderer.invoke('doctor:v8-monster-status'),
+  previewMonsterMode: () => ipcRenderer.invoke('doctor:v8-monster-preview'),
+  activateMonsterMode: token => ipcRenderer.invoke('doctor:v8-monster-activate',token),
+  disableMonsterMode: () => ipcRenderer.invoke('doctor:v8-monster-disable'),
   getDailyStatus: () => ipcRenderer.invoke('doctor:v8-daily-status'),
   checkDailyHealth: () => ipcRenderer.invoke('doctor:v8-daily-check'),
   configureDailyHealth: options => ipcRenderer.invoke('doctor:v8-daily-config',options),
