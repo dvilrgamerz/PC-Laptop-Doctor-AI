@@ -54,7 +54,7 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
    const [p,r]=await Promise.all([window.doctor.getDailyStatus(),window.doctor.checkDailyHealth()])
    if(p.ok)setPrefs(p)
    if(r.ok)setMetrics(r.metrics)
-   if(!r.ok)setStatus(r.error||'Could not read today's sensors.')
+   if(!r.ok)setStatus(r.error||'Could not read current sensors.')
   }catch{setStatus('Local daily health information is temporarily unavailable.')}
  }
  useEffect(()=>{load()},[supported])
