@@ -125,6 +125,12 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   if(!prefs.weeklyCleanup||platform!=='win32'||(prefs.lastCleanupAt&&now()-prefs.lastCleanupAt<WEEK))return
   const focus=await gameFocus.state()
   if(focus.session||owner)return // Never clean during an active Game Focus session.
+  // If we can see a trusted game running but have not yet enabled Game Focus,
+  // avoid interfering with its temporary files. If enumeration fails, skip.
+  try{
+   const active=gameForProcesses(await processes(),readStore(customStoreFile))
+   if(active)return
+  }catch{return}
   // Separate cleaner instance: cannot invalidate user-created file previews.
   const s=await tempCleaner.scan()
   let count=0,desc=''
