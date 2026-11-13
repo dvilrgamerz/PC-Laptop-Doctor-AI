@@ -851,3 +851,32 @@ footer a{color:#85e7eb;text-decoration:none}
 @media(max-width:790px){.monster-mode{grid-template-columns:1fr}.monster-mode-content{grid-column:1;grid-row:1}.monster-mode-art{grid-column:1;grid-row:2;min-height:120px;max-height:190px}.monster-mode-art img{max-width:240px}.monster-mode-preview{grid-row:3}}
 @media(max-width:460px){.monster-mode{padding:17px}.monster-mode-button{width:100%}.monster-mode-preview-head{flex-wrap:wrap}.monster-mode-preview-head small{margin-left:0}}
 @media(prefers-reduced-motion:reduce){.monster-mode-art img{animation:none}.monster-mode-button{transition:none}}
+
+
+/* V8.1 direct gaming panel: no separate settings window required */
+.monster-boost{display:flex;flex-direction:column;gap:14px;padding:21px 24px;border:1px solid #426d95;border-radius:19px;background:linear-gradient(135deg,#112b4a,#0b202f);box-shadow:0 12px 38px #0003}
+.monster-boost-head{display:flex;gap:13px;align-items:flex-start}
+.monster-boost-icon{flex:0 0 43px;height:43px;border:1px solid #5e9cc2;border-radius:12px;background:#1c4260;color:#a1d8ff;display:grid;place-items:center}
+.monster-boost-head .eyebrow{font-size:10px;letter-spacing:1.4px;color:#8dcbec;margin:0 0 7px}
+.monster-boost h3{font-size:18px;color:#e7f6ff;margin:0 0 8px}
+.monster-boost-head p:not(.eyebrow){font-size:11px;line-height:1.8;color:#aac6d6;margin:0}
+.monster-boost-controls{display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px}
+.monster-boost-controls label{display:flex;flex-direction:column;gap:7px;flex:1;min-width:210px;color:#b6d6e9;font-size:11px}
+.monster-boost-controls select{padding:11px;background:#0c2134;border:1px solid #49718d;border-radius:9px;color:#f0fbff;font-size:12px}
+.monster-boost-primary,.monster-boost-active button,.monster-boost-actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:9px;padding:12px 15px;font-size:12px;font-weight:800;color:#0b2e3b;background:#8fcbfa;border:1px solid #78b0e9;cursor:pointer}
+.monster-boost button:disabled{opacity:.48;cursor:not-allowed}
+.monster-boost-active{display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:12px 14px;border:1px solid #438d85;border-radius:11px;background:#113f45;font-size:12px;color:#c8f2e8}
+.monster-boost-active>svg{color:#90ebd8;flex:0 0 auto}
+.monster-boost-active span{flex:1}
+.monster-boost-plan{display:flex;flex-direction:column;gap:10px;border:1px solid #41828a;border-radius:12px;background:#113d48;padding:15px;font-size:11px;line-height:1.7}
+.monster-boost-plan strong{color:#e6fffa;font-size:13px}
+.monster-boost-plan p{margin:0;color:#b9d3df}
+.monster-boost-plan ul{margin:0;padding-left:20px;color:#cde7e9}
+.monster-boost-plan label{display:flex;align-items:flex-start;gap:9px;color:#d7f9ea}
+.monster-boost-plan label input{accent-color:#7cf3c8;width:17px;height:17px;flex:0 0 auto}
+.monster-boost-skip{color:#e6cb9e!important}
+.monster-boost-actions{display:flex;gap:9px;flex-wrap:wrap}
+.monster-boost-actions button+button{background:#19354b;color:#c3ecf4;border-color:#436c8d}
+.monster-boost-status{border:1px solid #417688;background:#113744;padding:11px 13px;border-radius:9px;font-size:11px;line-height:1.6;color:#bedae8;margin:0}
+.monster-boost-link{width:fit-content;cursor:pointer;border:0;background:transparent;color:#9bd9fb;text-align:left;text-decoration:underline;font-size:11px;padding:3px 0}
+.monster-boost button:focus-visible,.monster-boost input:focus-visible,.monster-boost select:focus-visible{outline:2px solid #9eece3;outline-offset:3px}
