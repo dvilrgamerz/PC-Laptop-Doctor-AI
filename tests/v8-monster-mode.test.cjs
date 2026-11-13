@@ -26,7 +26,7 @@ test('Monster Mode is initially off and preview has no side effects',async()=>{
  assert.equal(p.bytes,2048)
  assert.equal(f.configurations.length,0)
  assert.equal(f.cleaned.length,0)
- assert.match(p.caution,/not permanently delete/)
+ assert.match(p.caution,/Nothing is deleted permanently/)
 })
 test('one confirmed activation enables both automations and recycles old top-level tmp only',async()=>{
  const f=fixture(),service=f.make()
