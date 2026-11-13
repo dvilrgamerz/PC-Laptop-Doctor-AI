@@ -1,6 +1,6 @@
 # PC Laptop Doctor AI V7 — implementation and public beta gate
 
-**Version:** 7.0.0-beta.1 (Windows 10/11 x64). **Target audience:** willing early testers and friends who understand unsigned prereleases. Not certified stable software.
+**Version:** 7.1.0-beta.2 (Windows 10/11 x64). **Target audience:** willing early testers and friends who understand unsigned prereleases. Not certified stable software.
 
 ## The practical user experience
 
@@ -55,3 +55,15 @@ No head-to-head benchmark was performed. Never claim higher FPS, lower ping or c
 Automated CI must pass the Node test suite, Vite build, Electron source validation, Windows Setup/Portable x64 packaging and SHA-256 checksum generation.
 
 Before moving from beta to a stable release, complete [the Windows tester checklist](FRIEND_TESTING.md) on multiple machines; verify restoration after app exit/crash, recover selected files from Recycle Bin, review executable signing/reputation, and collect repeatable FPS data without cherry-picking.
+
+## V7.1 automation changes
+
+- [x] One-approval Boost & Play handoff for verified Steam/Epic titles, with rollback attempt if launch fails.
+- [x] Read-only Epic manifest discovery and validated launcher identifiers.
+- [x] Bulk recycling of eligible old user Temp files after one confirmation.
+- [x] Optional irreversible deletion of 30+ day top-level .tmp files, bounded and checked against scan metadata.
+- [x] Simpler screen and automatic game list refresh.
+- [ ] Game-process-specific auto-restore, universal launcher support or native FPS capture.
+- [ ] Code signing, independent device tests, head-to-head performance proof and stable certification.
+
+Recycle Bin moves are recoverable but do not reclaim space. The permanent option reclaims some space but has no undo.
