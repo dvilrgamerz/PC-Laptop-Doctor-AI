@@ -5,12 +5,11 @@ const os=require('node:os')
 const path=require('node:path')
 const {createAutopilot,loadPrefs,processExecutable,gameForProcesses,WEEK}=require('../electron/autopilot.cjs')
 
-function fixture(roots=[]){
+function fixture(roots=[],hasCustom=true){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'pc-autopilot-'))
  const stateFile=path.join(root,'auto.json'),customStoreFile=path.join(root,'games.json')
- fs.writeFileSync(customStoreFile,JSON.stringify({version:1,games:[
-  {id:'a'.repeat(24),name:'Chess Game',file:'D:\\Games\\Chess\\Chess.exe'}
- ]}))
+ fs.writeFileSync(customStoreFile,JSON.stringify({version:1,games:hasCustom?
+  [{id:'a'.repeat(24),name:'Chess Game',file:'D:\\Games\\Chess\\Chess.exe'}]:[]}))
  let now=Date.UTC(2026,10,12,12,0,0),active=false
  let processList=[]
  const calls=[],cleanCalls=[]
@@ -127,7 +126,7 @@ test('automatic maintenance skips games and manual Game Focus sessions',async()=
 })
 
 test('Steam/Epic auto boost works without manually adding an EXE, but requires exact installed folder',async()=>{
- const f=fixture([{root:'D:\\EpicGames\\Fortnite',name:'Fortnite',source:'Epic Games'}])
+ const f=fixture([{root:'D:\\EpicGames\\Fortnite',name:'Fortnite',source:'Epic Games'}],false)
  try{
   await f.agent.configure({autoBoost:true,weeklyCleanup:true})
   f.setProcesses([{name:'FortniteClient-Win64-Shipping.exe',path:'D:\\EpicGames\\Fortnite\\FortniteGame\\Binaries\\Win64'}])
