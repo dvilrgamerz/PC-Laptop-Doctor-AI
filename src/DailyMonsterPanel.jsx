@@ -44,6 +44,7 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
  const [confirmClear,setConfirmClear]=useState(false)
  const sample=useMemo(()=>sampleFromDiagnosis(data),[data])
  const current=metrics||sample
+ const hasReadings=!!current && [current.cpu,current.ram,current.gpu,current.disk,current.free].some(Number.isFinite)
  const alerts=useMemo(()=>findings(current),[current])
  const top=alerts.find(x=>x.severity==='critical')||alerts[0]
  const history=Array.isArray(prefs.days)?prefs.days.slice(-14):[]
@@ -103,9 +104,9 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
     <h2>Keep your PC ready for today.</h2>
     <p>One place for real resource pressure, gaming sessions and safe storage care. No fake FPS claims or hidden system tweaks.</p>
    </div>
-   <div className={'monster-status '+(top?.severity||'okay')}>
+   <div className={'monster-status '+(hasReadings?(top?.severity||'okay'):'unknown')}>
     {top?.severity==='critical'?<TriangleAlert size={17}/>:<ShieldCheck size={17}/>}
-    <strong>{top?.severity==='critical'?'Action needed':top?'Review suggestion':'No major threshold warning'}</strong>
+    <strong>{!hasReadings?'Awaiting readings':top?.severity==='critical'?'Action needed':top?'Review suggestion':'No major threshold warning'}</strong>
     <small>Snapshot, not a hardware health certification</small>
    </div>
   </div>
@@ -116,7 +117,8 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
    <Metric Icon={HardDrive} label="Free storage" current={value(current?.free,' GiB')} note="Main reported volume" accent={top?.id==='storage'?'warning':''}/>
   </div>
   <div className="monster-action-row">
-   {top?<div className="monster-advice"><TriangleAlert size={19}/><div><strong>{top.title}</strong><p>{top.detail}</p></div></div>:
+   {!hasReadings?<div className="monster-advice neutral"><Activity size={19}/><div><strong>Run a health check</strong><p>Sensor readings are not available yet. An unknown value is not evidence that your computer is healthy.</p></div></div>:
+   top?<div className="monster-advice"><TriangleAlert size={19}/><div><strong>{top.title}</strong><p>{top.detail}</p></div></div>:
     <div className="monster-advice neutral"><CheckCircle2 size={19}/><div><strong>Start with a real workload</strong><p>Play or work normally, then check whether CPU, memory or storage becomes a constraint.</p></div></div>}
    <div className="monster-buttons">
     <button type="button" className="monster-primary" onClick={()=>navigate(top?.target||'boost')}>
