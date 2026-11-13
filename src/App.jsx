@@ -3,6 +3,7 @@ import DiagnosticView from './DiagnosticView.jsx'
 import FixCenter from './FixCenter.jsx'
 import OptimizationStudio from './OptimizationStudio.jsx'
 import QuickControlCenter from './QuickControlCenter.jsx'
+import LiveMonitorPanel from './LiveMonitorPanel.jsx'
 import RoadmapHub from './RoadmapHub.jsx'
 import {appendHistory,isHistoryEnabled,makeHistoryEntry} from './history.mjs'
 import { buildSummaryReport, compareScans } from './report.mjs'
@@ -331,6 +332,7 @@ export default function App() {
           <div className="v7-home-buttons"><button type="button" onClick={()=>setActiveTab('boost')}><Rocket size={17}/> Game Boost & Cleanup <ArrowUpRight size={15}/></button>
             <button type="button" onClick={()=>setActiveTab('history')}><Activity size={17}/> Compare FPS</button></div>
         </section>
+        <LiveMonitorPanel demo={isDemoMode} data={data} onNavigate={setActiveTab}/>
         <section className="hero-grid">
           <div className="health-card">
             <div>
