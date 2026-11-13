@@ -77,3 +77,5 @@ Do not use irreversible cleanup on an important work PC until this build has bee
 - [ ] Repeat FPS tests on more than one physical computer. Record negative or zero improvements too.
 
 **Unsigned beta:** Friends who cannot independently verify the EXE should not bypass security warnings or install it. A completed CI build does not replace code signing, malware scanning or device-level testing.
+- [ ] Confirm Auto Game Focus recognizes a running Steam or Epic game by a full process path inside its verified installed-game folder, with no need to add the EXE manually.
+- [ ] A process under a similarly named folder outside the verified game installation must NOT trigger a boost.
