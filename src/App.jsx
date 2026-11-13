@@ -161,7 +161,7 @@ const NAV_ITEMS = [
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
 const ESSENTIAL_IDS = new Set(['dashboard','boost','performance','storage','battery','network'])
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.3'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.4'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
