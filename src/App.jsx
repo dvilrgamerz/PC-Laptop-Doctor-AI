@@ -5,6 +5,7 @@ import OptimizationStudio from './OptimizationStudio.jsx'
 import QuickControlCenter from './QuickControlCenter.jsx'
 import LiveMonitorPanel from './LiveMonitorPanel.jsx'
 import DailyMonsterPanel from './DailyMonsterPanel.jsx'
+import MonsterModePanel from './MonsterModePanel.jsx'
 import RoadmapHub from './RoadmapHub.jsx'
 import {appendHistory,isHistoryEnabled,makeHistoryEntry} from './history.mjs'
 import { buildSummaryReport, compareScans } from './report.mjs'
@@ -327,6 +328,7 @@ export default function App() {
         </div>
 
         {activeTab === 'dashboard' ? <>
+        <MonsterModePanel demo={isDemoMode}/>
         <DailyMonsterPanel demo={isDemoMode} data={data} onNavigate={setActiveTab} onRescan={runScan}/>
         <LiveMonitorPanel demo={isDemoMode} data={data} onNavigate={setActiveTab}/>
         <details className="monster-technical"><summary>Technical report, detailed hardware specs and scan comparison</summary>
