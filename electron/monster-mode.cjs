@@ -20,7 +20,7 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
    autoBoost:!!state.autoBoost,weeklyCleanup:!!state.weeklyCleanup,
    activeGame:state.activeGame||null,message:state.message||'',limits:'Works while PC Doctor is running. Only trusted installed games and old top-level Temp .tmp files are eligible.'}
  }
- async function preview(options={}){
+ async function preview(options={startWithWindows:false}){
   if(!options||typeof options!=='object'||Array.isArray(options)||typeof options.startWithWindows!=='boolean')
    return {ok:false,error:'Choose whether PC Doctor should start with Windows before previewing.'}
   if(options.startWithWindows&&!startupSupported)return {ok:false,error:'Windows startup registration is unavailable in this build.'}
