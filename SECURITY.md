@@ -64,7 +64,7 @@ A Windows process crash or machine power loss interrupts in-process timers; guar
 ## V7.3 background automation security boundaries
 
 - Both Autopilot options are OFF by default and require a separate affirmative checkbox before saving enabled status. Preferences live in a local atomic JSON file; no cloud account or upload is used.
-- Auto Game Focus compares Windows-reported **full executable paths** with executable paths previously selected using the native picker, rather than matching process names, commands or game-title strings alone. If paths are absent, no auto-start occurs.
+- Auto Game Focus compares Windows-reported **full executable paths** with either previously user-selected executable paths or containment within installed Steam/Epic game directories derived from read-only bounded launcher manifests. It does not match process names, commands or game-title strings alone. If paths are absent, no auto-start occurs.
 - The watcher never suspends/kills processes, downloads drivers, disables security services, reads game saves or modifies game config. It only invokes the already allowlisted temporary Game Mode service and uses its persistent restoration journal.
 - Weekly maintenance runs only with prior opt-in, every seven days while PC Doctor is open. It moves regular .tmp files older than 30 days from the top level of this Windows user's Temp directory to Recycle Bin, excludes folders/symlinks, and skips detected trusted running games.
 - The weekly cleaner owns a separate preview state so it cannot invalidate user-confirmed cleanup previews. It never permanently deletes files; Recycle Bin contents remain recoverable, but disk capacity is not reclaimed immediately.
