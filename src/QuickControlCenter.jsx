@@ -28,7 +28,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
  const [gameNotice,setGameNotice]=useState('')
  const [playAfterBoost,setPlayAfterBoost]=useState(false)
  const [permanentApprove,setPermanentApprove]=useState(false)
- const [autoCleaning,setAutoCleaning]=useState(false)
+ const [plannedGameId,setPlannedGameId]=useState('')
  const ageSummary=useMemo(()=>temp?.files?.filter(f=>selected.includes(f.id))||[],[temp,selected])
  const selectedBytes=ageSummary.reduce((n,f)=>n+f.sizeBytes,0)
  const permanentlyEligible=useMemo(()=>temp?.files?.filter(f=>f.name.toLowerCase().endsWith('.tmp')&&f.ageDays>=30)||[],[temp])
@@ -53,7 +53,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
  useEffect(()=>{status()},[desktop])
  async function preview(launchAfter=false){
   if(!desktop||busy)return
-  setBusy(true);setPlan(null);setApprove(false);setPlayAfterBoost(Boolean(launchAfter&&gameId));setNotice('')
+  setBusy(true);setPlan(null);setApprove(false);setPlayAfterBoost(Boolean(launchAfter&&gameId));setPlannedGameId(launchAfter?gameId:'');setNotice('')
   try{const r=await window.doctor.previewGameFocus(profile);if(r.ok)setPlan(r);else setNotice(r.error||'Could not preview.')}
   catch{setNotice('Windows preferences could not be inspected safely.')}
   finally{setBusy(false)}
@@ -63,8 +63,8 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
   setBusy(true);setNotice('');const p=plan;setPlan(null);setApprove(false)
   try{
    const r=await window.doctor.startGameFocus(p.profile,p.token)
-   if(r.ok && playAfterBoost && gameId){
-     const launch=await window.doctor.launchDetectedGame(gameId)
+   if(r.ok && playAfterBoost && plannedGameId){
+     const launch=await window.doctor.launchDetectedGame(plannedGameId)
      if(launch.ok)setNotice('Game Focus started and the game was sent to its launcher. Stop & Restore when finished, or close PC Doctor to restore.')
      else{
        const recovered=await window.doctor.stopGameFocus()
@@ -86,7 +86,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
   setCleanupBusy(true);setTemp(null);setSelected([]);setCleanupApprove(false);setCleanupNotice('')
   try{
    const r=await window.doctor.scanOldTempFiles()
-   if(r.ok){setTemp(r);setCleanupNotice(r.files.length?'Review the files and select only the ones you want to recycle.':'No eligible old .tmp / .log files found. Use Windows Storage for other cleanup.')}
+   if(r.ok){setTemp(r);setCleanupNotice(r.files.length?'You can approve automatic cleanup of all eligible candidates, or expand the advanced file list.':'No eligible old .tmp / .log files found. Use Windows Storage for other cleanup.')}
    else setCleanupNotice(r.error||'Windows user Temp was not readable.')
   }catch{setCleanupNotice('The temporary file preview failed. Nothing was changed.')}
   finally{setCleanupBusy(false)}
@@ -191,7 +191,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
      <button type="button" className="v7-secondary" disabled={!desktop||finding} onClick={addCustom}>+ Add a trusted installed game</button>
      {gameId.startsWith('custom:')&&<button type="button" className="v7-secondary" disabled={finding} onClick={removeCustom}>Remove from list</button>}</div>
      {!!games.length&&<div className="v7-game-select"><label htmlFor="v7-game">Installed games</label>
-      <select id="v7-game" value={gameId} onChange={e=>setGameId(e.target.value)}><option value="">Choose a game</option>{games.map(g=><option key={g.id} value={g.id}>{g.name} · {g.platform}</option>)}</select></div>}
+      <select id="v7-game" value={gameId} onChange={e=>{setGameId(e.target.value);setPlan(null);setApprove(false);setPlayAfterBoost(false)}}><option value="">Choose a game</option>{games.map(g=><option key={g.id} value={g.id}>{g.name} · {g.platform}</option>)}</select></div>}
      <div className="v7-actions"><button type="button" className="v7-primary" disabled={!desktop||finding||!gameId||busy}
        onClick={()=>{preview(true);document.getElementById('v7-game-focus')?.scrollIntoView({behavior:'smooth',block:'start'})}}>
        <Rocket size={16}/> Boost & play selected game</button>
