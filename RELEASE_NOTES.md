@@ -1,18 +1,17 @@
-# PC Laptop Doctor AI v7.2.0-beta.3 — Automatic Recovery and Quick Cleanup
+# PC Laptop Doctor AI v7.3.0-beta.4 — Autopilot and Bottleneck-First UI
 
-A public beta for Windows 10/11 x64 testers. The local-only optimizer is free to use. Builds remain unsigned.
+Public beta for Windows 10/11 x64 testers. Unsigned. No guaranteed FPS, latency, CPU or RAM improvement.
 
-## Changes
-- Game Focus can automatically restore its supported Windows preferences after **30 minutes, 1 hour, 2 hours (default), or 4 hours**. The timer never closes the game. It is a safety cutoff, **not** detection that the game has exited.
-- The session state persists the planned restore deadline and the app checks status while its Boost & Play page is open.
-- Closing PC Doctor normally and starting after an interrupted session already trigger guarded recovery. Users can also manually Stop & Restore earlier.
-- Opening Boost & Play automatically scans read-only Steam/Epic/custom game libraries and eligible old user Temp file candidates. The user still has to approve changing Windows preferences or cleaning files.
-- Auto-clean after approval moves only eligible old user Temp .tmp/.log files to Recycle Bin. Separate advanced permanent deletion of 30+ day .tmp files is irreversible, requires additional consent, and remains bounded.
-- Improved clear timers and test coverage, including injected fake timer tests for startup/stop/automatic restoration.
+## Added
+- Opt-in Auto Game Focus for exact full executable paths of personally added trusted games. Only Windows Game Mode in Standard profile; no process termination or service/antivirus changes.
+- Session automatically starts after two detections, attempts restore after three misses, and has a two-hour safety cutoff. Existing manual Stop & Restore and startup recovery remain.
+- Opt-in weekly Temp care: once every seven days, limited to top-level user Temp .tmp files at least 30 days old, moved only to Recycle Bin; skips recognized running trusted games. Separate cleaner instance preserves any user-created cleanup preview.
+- Home screen launches on Boost & Play with automatic read-only PC scan, high RAM/disk bottleneck alerts and a simplified Autopilot on/off interface.
+- Added automated regression tests for opt-in, process path matching, manual-session precedence, game exit and weekly cleanup frequency.
 
-## Important limits
-- **No guaranteed FPS improvement, universal auto game optimization or proven superiority to Razer Cortex and Hone.**
-- Games outside Steam/Epic still require using the native Windows executable chooser once; no automatic scan of arbitrary executable folders.
-- Do not close applications or disable Windows security to claim memory gains. PC Doctor never forces such actions.
-- Moving files to Recycle Bin does not reclaim space. Permanent old .tmp removal can reclaim a limited amount but is irreversible.
-- Windows installers are unsigned. These tests are source/build validation, not multiple physical Windows device or anti-cheat compatibility certification.
+## Honest limitations
+- Auto-Boost applies to exact personally added EXEs only, when Windows exposes their paths. Steam/Epic launcher games use the existing Boost & Play flow unless added as trusted EXEs.
+- Autopilot only works while this app is open. Closing the app normally triggers guarded Game Focus recovery.
+- Weekly recycling does NOT free disk space until Recycle Bin is emptied; irreversible deletion is not automated.
+- Does not promise increased game FPS or establish parity with Razer Cortex and Hone. Physical Windows tests, code signing, accessibility QA, anti-cheat compatibility, and an independent security audit remain unfinished.
+- Share links from the official GitHub release with SHA256SUMS.txt; do not disable Windows security protections.
