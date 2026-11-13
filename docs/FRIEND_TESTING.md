@@ -105,3 +105,20 @@ V7.4 remains an unsigned public beta pending real-device/security validation.
 - [ ] Confirm Recycle Bin moves do not count as free space in the dashboard. Compare C: free capacity in Windows Storage.
 - [ ] Test installer and Portable editions on two Windows 10/11 x64 devices with different CPUs/GPUs.
 - [ ] Record adverse effects, anti-cheat compatibility and security warnings; do not claim stable release or FPS gains until independent validation.
+
+
+## V8 Daily Monster beta evaluation
+
+- [ ] Open the Dashboard; verify CPU/RAM and C: drive free space against Task Manager/Windows Storage.
+- [ ] Confirm GPU utilization or CPU temperature reports **Unknown** if not supported, instead of displaying 0.
+- [ ] Open Daily monitoring. Both history and notifications should initially be **off**.
+- [ ] Enable local history, click Check now, verify a local sample was saved, and confirm no IP address, filenames, or process identifiers appear in daily history.
+- [ ] Turn on storage notifications only with separate approval. Check that alerts are not repeated more than once daily.
+- [ ] Disable history; verify further daily samples are not saved. Test the separate delete-history confirmation.
+- [ ] Navigate directly from a low-storage warning to Boost & Play and the Space Finder; verify the app never silently deletes Downloads or game files.
+- [ ] Use Boost & Play for a supported game; restore settings and confirm the original Windows values return.
+- [ ] Close PC Doctor and check that background collection stops.
+- [ ] On a smaller 1366×768 laptop display, check that dashboard, toggles, focus outlines and long metric values remain readable.
+- [ ] Log crashes, hardware sensor inaccuracies, incorrect warnings, untrusted prompts, or failed cleanup. Report negative benchmark outcomes.
+
+**Status:** Public beta, not signed/stable certification. Test on noncritical PCs before using irreversible advanced cleanup.
