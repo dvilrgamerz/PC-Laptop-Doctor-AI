@@ -136,7 +136,7 @@ See [V7 implementation and competitor audit](V7_RELEASE.md) and [testers' instru
 **Status:** V5 feature coverage is broad, but research and verification work remains incomplete. Publish as a preview rather than claiming certification.
 
 ## V7.3 — Opt-in Autopilot
-- [x] Exact full-path process matching for personally added trusted game executables, no arbitrary process-name boosting.
+- [x] Exact Windows process path matching for trusted added game EXEs or processes inside verified Steam/Epic installation directories; no process-name-only boosting.
 - [x] Standard Game Mode auto-start and three-check exit detection, with two-hour safety timeout, manual-session priority and guarded restore.
 - [x] Explicit off-by-default opt-in for weekly recoverable .tmp cleanup, once per seven days, 30+ days old, nonrecursive and bounded.
 - [x] Auto read-only diagnosis and bottleneck-first Boost & Play dashboard.
