@@ -106,9 +106,29 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
   if(!desktop||finding)return
   setFinding(true);setGameNotice('')
   try{const r=await window.doctor.scanAllGames();if(r.ok){
-   setGames(r.games||[]);setGameNotice(r.games?.length?r.games.length+' Steam/Epic games detected.':'No readable Steam or Epic game manifests found. Other launchers are not supported yet.')
+   setGames(r.games||[]);setGameNotice(r.games?.length?r.games.length+' games found in your local libraries.':'No installed games found automatically. Add a trusted game executable from another launcher.')
   }else setGameNotice(r.error||'No game library access.')}
   catch{setGameNotice('Could not inspect Steam manifests.')}
+  finally{setFinding(false)}
+ }
+ async function addCustom(){
+  if(!desktop||finding)return
+  setFinding(true)
+  try{
+   const r=await window.doctor.addCustomGame()
+   if(!r.cancelled)setGameNotice(r.message||r.error||'Unable to add this game.')
+   if(r.ok){const found=await window.doctor.scanAllGames();if(found.ok)setGames(found.games||[])}
+  }catch{setGameNotice('Could not add the selected game.')}
+  finally{setFinding(false)}
+ }
+ async function removeCustom(){
+  if(!desktop||finding||!gameId.startsWith('custom:'))return
+  setFinding(true)
+  try{
+   const r=await window.doctor.removeCustomGame(gameId)
+   setGameNotice(r.message||r.error)
+   if(r.ok){setGameId('');const found=await window.doctor.scanAllGames();if(found.ok)setGames(found.games||[])}
+  }catch{setGameNotice('Could not remove this entry.')}
   finally{setFinding(false)}
  }
  async function launch(){
@@ -166,8 +186,10 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
     <p className="v7-caption">After a normal app exit or restart, PC Doctor attempts to restore the saved settings. Unrecoverable changes are shown for manual review. Game Focus cannot guarantee a higher frame rate.</p>
    </Section>
    <div className="v7-pair">
-    <Section icon={Gamepad2} eyebrow="02 · GAMES" title="Your installed games" description="Steam and Epic Games Launcher titles are detected automatically from installed-game records. No game files are modified.">
-     <div className="v7-actions"><button type="button" className="v7-secondary" disabled={!desktop||finding} onClick={findGames}><RefreshCcw size={16}/>{finding?'Detecting…':'Refresh game library'}</button></div>
+    <Section icon={Gamepad2} eyebrow="02 · GAMES" title="Your installed games" description="Steam and Epic Games titles appear automatically. For other launchers, add a trusted installed game executable once. No game files are modified.">
+     <div className="v7-actions"><button type="button" className="v7-secondary" disabled={!desktop||finding} onClick={findGames}><RefreshCcw size={16}/>{finding?'Detecting…':'Refresh library'}</button>
+     <button type="button" className="v7-secondary" disabled={!desktop||finding} onClick={addCustom}>+ Add a trusted installed game</button>
+     {gameId.startsWith('custom:')&&<button type="button" className="v7-secondary" disabled={finding} onClick={removeCustom}>Remove from list</button>}</div>
      {!!games.length&&<div className="v7-game-select"><label htmlFor="v7-game">Installed games</label>
       <select id="v7-game" value={gameId} onChange={e=>setGameId(e.target.value)}><option value="">Choose a game</option>{games.map(g=><option key={g.id} value={g.id}>{g.name} · {g.platform}</option>)}</select></div>}
      <div className="v7-actions"><button type="button" className="v7-primary" disabled={!desktop||finding||!gameId||busy}
