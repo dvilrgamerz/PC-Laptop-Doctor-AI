@@ -33,3 +33,10 @@ test('Electron main process uses a single-instance lock for automatic care',()=>
  assert.match(source,/app\.requestSingleInstanceLock\(\)/)
  assert.match(source,/app\.on\('second-instance'/)
 })
+
+test('Portable login autostart uses persistent launcher path, not temporary extraction',()=>{
+ const source=fsSingle.readFileSync(pathSingle.join(__dirname,'../electron/main.cjs'),'utf8')
+ assert.match(source,/PORTABLE_EXECUTABLE_FILE/)
+ assert.match(source,/getLoginItemSettings\(\{path:startupExecutable\}\)/)
+ assert.match(source,/setLoginItemSettings\(\{openAtLogin:enabled===true,path:startupExecutable\}\)/)
+})
