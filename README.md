@@ -5,9 +5,9 @@
 
 # PC & Laptop Doctor AI
 
-**Simple, local-first Windows PC diagnostics with a real Game Focus session, selected temporary-file cleanup, Steam launching and measurable game performance experiments. Free and open source.**
+**Simple, local-first Windows diagnostics and gaming tools with Boost & Play, Steam/Epic detection, trusted custom games, optional automatic temporary-file cleanup, and reproducible performance comparisons. Free and open source.**
 
-## Download V7 Game Focus — public beta (Windows x64)
+## Download V7.1 Boost & Play — public beta (Windows x64)
 
 [**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.1.0-beta.2)
 
@@ -21,10 +21,10 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 ### Three steps to start
 
 1. Install the Windows Setup edition or run Portable. Keep Windows security protections enabled.
-2. Click **Run Full Diagnosis**, then open **Game Boost & Cleanup** from the sidebar.
-3. Preview Game Focus settings or old temporary files, confirm exactly what should change, and use **Stop & Restore** after gaming.
+2. Click **Run Full Diagnosis**, then open **Boost & Play**. Steam and Epic titles are discovered automatically; other trusted installed games can be added once using the file picker.
+3. Choose a game and **Boost & Play**. Review the Game Focus plan and approve once. For cleanup, scan old Temp files and approve the scoped automatic cleanup. Use **Stop & Restore** after gaming or close PC Doctor normally.
 
-Game Focus uses supported Windows Game Mode and optional standard High performance on AC power. It does **not** close background apps, edit game files, or guarantee FPS gains. The cleaner only moves selected stale top-level user Temp `.tmp`/`.log` files to Recycle Bin; space is not reclaimed until you empty the bin.
+Game Focus uses supported Windows Game Mode and optional standard High performance on AC power. It does **not** close background apps, edit game files, or guarantee FPS gains. The recoverable automatic cleaner moves stale top-level user Temp `.tmp`/`.log` files to Recycle Bin; space is not reclaimed until you empty the bin. An optional **irreversible** advanced action deletes only older `.tmp` candidates to reclaim some space.
 
 **[Testing guide for friends](docs/FRIEND_TESTING.md)** · **[Submit a bug report](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/issues/new?template=bug_report.yml)** · **[V7 feature/status details](docs/V7_RELEASE.md)**
 
