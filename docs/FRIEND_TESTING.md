@@ -62,3 +62,18 @@ Do not use irreversible cleanup on an important work PC until this build has bee
 - [ ] Test a simulated interruption and reopen PC Doctor; confirm startup recovery returns supported preferences without overwriting unrelated user changes.
 - [ ] Keep an important game session running past the selected limit and confirm it continues, even though Game Focus ends.
 - [ ] Confirm permanent cleanup remains explicitly approved, irreversible and scoped to old user Temp files only.
+
+## V7.3 Autopilot public testing
+- [ ] On first launch, verify the main Boost & Play page appears and the system diagnosis starts automatically without editing Windows settings.
+- [ ] Confirm both Autopilot switches default OFF. Leave them off and verify no background Game Focus or cleanup is initiated.
+- [ ] Add a trusted disposable game .exe. Opt in to Auto Game Focus; check that Game Mode starts only after the exact game process is detected. Stop the game; verify supported Windows preferences restore.
+- [ ] Test an executable with the same filename in a different folder; it must NOT trigger Autopilot.
+- [ ] Verify manual Game Focus takes precedence over Autopilot.
+- [ ] Verify a hidden/unavailable process path causes no automatic boost.
+- [ ] Opt into weekly Temp care on a throwaway Windows account with old .tmp fixtures, and verify only 30+ day top-level .tmp files go to Recycle Bin.
+- [ ] Confirm recycling does not decrease disk usage until Recycle Bin is emptied, and verify protected folders/documents/game files are never touched.
+- [ ] Test disabling automatic Game Focus while an owned session is running: PC Doctor should attempt restoration immediately.
+- [ ] Test session timeout, normal exit, interrupted startup and Windows power-plan changes using a disposable device before distributing broadly.
+- [ ] Repeat FPS tests on more than one physical computer. Record negative or zero improvements too.
+
+**Unsigned beta:** Friends who cannot independently verify the EXE should not bypass security warnings or install it. A completed CI build does not replace code signing, malware scanning or device-level testing.
