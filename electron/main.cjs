@@ -15,6 +15,7 @@ const {createCustomGames} = require('./custom-games.cjs')
 const {createNetworkPath} = require('./network-path.cjs')
 const {createGameFocus} = require('./game-focus.cjs')
 const {createTempCleaner} = require('./temp-cleaner.cjs')
+const {createAutopilot} = require('./autopilot.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -244,6 +245,11 @@ app.whenReady().then(async () => {
   const tempCleaner=createTempCleaner({
     trashItem:(target)=>shell.trashItem(target)
   })
+  // Separate independent preview state prevents background Auto Care from
+  // invalidating a user's cleanup approval token.
+  const autoTempCleaner=createTempCleaner({
+    trashItem:(target)=>shell.trashItem(target)
+  })
   const localDoctor = createLocalDoctor()
   const inspector = createHardwareInspector({si})
   const maintenance = createMaintenance({
@@ -260,7 +266,18 @@ app.whenReady().then(async () => {
       return result.canceled?null:result.filePaths?.[0]||null},
     openFile:file=>shell.openPath(file)})
   const networkPath=createNetworkPath({si})
+  const autopilot=createAutopilot({
+    stateFile:path.join(app.getPath('userData'),'autopilot-prefs-v1.json'),
+    customStoreFile:path.join(app.getPath('userData'),'user-added-games.json'),
+    gameFocus,
+    processes:async()=>(await si.processes()).list||[],
+    tempCleaner:autoTempCleaner
+  })
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v8-auto-status', event=>guard(event)
+    ? autopilot.status():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-auto-config', (event,options)=>guard(event)
+    ? autopilot.configure(options):{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v7-boost-status', event=>guard(event)
     ? gameFocus.state() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v7-boost-preview', (event,profile,stopAfterMinutes)=>guard(event)
@@ -353,8 +370,10 @@ app.whenReady().then(async () => {
   // A prior crash could leave app-managed Windows preferences in effect.
   // Never overwrite external changes: the existing fix service verifies state before restoring.
   try { await gameFocus.stop() } catch { /* Recovery remains visible in the app. */ }
+  autopilot.start()
   let quitting=false
   app.on('before-quit',event=>{
+    autopilot.stop()
     if(quitting)return
     event.preventDefault()
     quitting=true
