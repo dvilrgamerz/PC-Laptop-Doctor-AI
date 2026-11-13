@@ -7,9 +7,9 @@
 
 **Local-first Windows PC diagnosis, Boost & Play, installed game discovery, opt-in hands-off Game Focus, recurring recoverable Temp care and evidence-based performance comparisons. Free and open source.**
 
-## Download V7.4 PC Monitor + Boost & Play — public beta (Windows x64)
+## Download V7.5 Space Finder + GPU Monitor — public beta (Windows x64)
 
-[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.4.0-beta.5)
+[**Get PC Laptop Doctor AI for Windows — GitHub Releases**](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.5.0-beta.6)
 
 Two 64-bit Windows editions are produced by the verified build pipeline:
 
@@ -17,6 +17,18 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 | --- | --- | --- |
 | Guided setup | PC-Laptop-Doctor-AI-Setup-7.4.0-beta.5-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
 | Portable | PC-Laptop-Doctor-AI-Portable-7.4.0-beta.5-x64.exe | Run without installing |
+
+## New in V7.5 — find real storage pressure and add GPU monitoring
+
+- **Large Downloads Space Finder:** The Windows app can list the 60 largest qualifying top-level Downloads files over 100 MiB, without reading their content, entering subfolders, or uploading file names. It never deletes Downloads automatically.
+- **Approve and recycle selected files:** Review specific filenames, confirm a single Recycle Bin operation, and PC Doctor safely moves up to 20 selected files (20 GiB max). Each file is rechecked for size, timestamp, type and identity before moving; changed files are skipped. It does **not** permanently delete downloads or empty Recycle Bin.
+- **GPU usage when available:** Adds an optional GPU load card to the existing live CPU/RAM/storage/temperature/network monitor. Unknown GPU readings are shown as unavailable; high GPU load during a game is not inherently a fault.
+- **Low-storage shortcut:** The live storage warning jumps directly to Space Finder. The existing approved old Temp cleanup and opt-in weekly Autopilot are preserved.
+- **Simple interface:** Primary Boost & Play view is oriented around live resource pressure, automatic game focus, recoverable cleanup and straightforward file review rather than hundreds of ambiguous tweak buttons.
+
+**Important:** Moving files to Recycle Bin does *not* reclaim SSD capacity until Recycle Bin is emptied. Only uninstalling unused apps, clearing supported temporary files, or deliberately removing unneeded large data will recover significant storage space. The tool does not guess which personal files are expendable.
+
+**Release status:** Public **beta**, unsigned Windows x64. Automated tests and Windows packaging validate the code and the executables—not actual performance gains on the user's machine or independent security certification. Broad testing is still required before promoting to stable.
 
 ## New in V7.4 — Live PC Monitor and simpler Autopilot
 
