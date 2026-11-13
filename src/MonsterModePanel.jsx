@@ -10,6 +10,7 @@ export default function MonsterModePanel({demo}){
  const [plan,setPlan]=useState(null)
  const [busy,setBusy]=useState(false)
  const [startWithWindows,setStartWithWindows]=useState(true)
+ const [boostOnAC,setBoostOnAC]=useState(false)
  const [message,setMessage]=useState('')
  const [error,setError]=useState('')
  async function refresh(){
@@ -22,7 +23,7 @@ export default function MonsterModePanel({demo}){
   if(!supported||busy)return
   setBusy(true);setPlan(null);setError('');setMessage('Inspecting only safe old temporary files and current gaming state…')
   try{
-   const r=await window.doctor.previewMonsterMode({startWithWindows:startWithWindows&&current?.startupSupported===true})
+   const r=await window.doctor.previewMonsterMode({startWithWindows:startWithWindows&&current?.startupSupported===true,boostOnAC})
    if(r.ok){setPlan(r);setMessage('Preview ready. Nothing has changed yet.')}
    else{setMessage('');setError(r.error||'Could not make a safe plan.')}
   }catch{setError('The preview failed. No changes were approved.')}
@@ -64,10 +65,15 @@ export default function MonsterModePanel({demo}){
       <input type="checkbox" checked={startWithWindows} onChange={e=>{setStartWithWindows(e.target.checked);setPlan(null);setMessage('Startup preference changed. Preview again before approving.')}}/>
       <span><strong>Start PC Doctor with Windows</strong><small>Recommended for automatic care after sign-in. This is optional and can be disabled here.</small></span>
      </label>}
+     {!enabled&&<label className="monster-login-option">
+       <input type="checkbox" checked={boostOnAC} onChange={e=>{setBoostOnAC(e.target.checked);setPlan(null);setMessage('Power option changed. Preview again before approval.')}}/>
+       <span><strong>Allow High Performance power mode on AC while gaming</strong><small>Optional, off by default. Only attempts the supported Windows power plan when the laptop is plugged in. Higher heat, fan noise and power consumption are possible. Previous mode is restored after a game.</small></span>
+     </label>}
      {enabled&&<div className="monster-live-grid" aria-label="Live automation status">
       <div><small>Game Focus</small><strong>{current?.autoBoost?'Watching for trusted games':'Off'}</strong></div>
       <div><small>Gaming session</small><strong>{current?.activeGame||'No detected game'}</strong></div>
       <div><small>Weekly safe care</small><strong>{current?.weeklyCleanup?'Active':'Off'}</strong></div>
+      <div><small>Optional AC power plan</small><strong>{current?.boostOnAC?'Allowed if supported':'Unchanged'}</strong></div>
       <div><small>Starts with Windows</small><strong>{current?.startupSupported===false?'Not available':current?.startWithWindows===true?'On':current?.startWithWindows===false?'Off':'Not verified'}</strong></div>
       <div><small>Last Temp care</small><strong>{current?.lastCleanupAt?new Date(current.lastCleanupAt).toLocaleDateString():'Not run yet'}</strong></div>
       <div><small>Files recycled last run</small><strong>{current?.lastCleanupCount??0}</strong></div>
