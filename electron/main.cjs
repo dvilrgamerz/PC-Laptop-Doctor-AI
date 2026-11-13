@@ -306,10 +306,21 @@ if(!hasSingleInstanceLock){
   const monsterMode=createMonsterMode({
     autopilot,tempCleaner:monsterCareCleaner,gameFocus,
     // Only packaged Windows builds may register themselves on login.
-    loginStartup:process.platform==='win32'&&app.isPackaged?{
-      get:()=>app.getLoginItemSettings().openAtLogin===true,
-      set:enabled=>app.setLoginItemSettings({openAtLogin:enabled===true})
-    }:null
+    loginStartup:process.platform==='win32'&&app.isPackaged?(()=>{
+      // electron-builder portable EXEs unpack to a temporary location. Register
+      // the persistent original launcher, not the short-lived extracted child.
+      const portableLauncher=process.env.PORTABLE_EXECUTABLE_FILE
+      const startupExecutable=typeof portableLauncher==='string'&&
+        path.win32.isAbsolute(portableLauncher)&&/\\.exe$/i.test(portableLauncher)
+        ?portableLauncher:process.execPath
+      return {
+        get:()=>{
+          const state=app.getLoginItemSettings({path:startupExecutable})
+          return state.openAtLogin===true&&state.executableWillLaunchAtLogin!==false
+        },
+        set:enabled=>app.setLoginItemSettings({openAtLogin:enabled===true,path:startupExecutable})
+      }
+    })():null
   })
   const guard = (event) => trustedDoctorFrame(event)
   ipcMain.handle('doctor:v8-monster-status', event=>guard(event)
