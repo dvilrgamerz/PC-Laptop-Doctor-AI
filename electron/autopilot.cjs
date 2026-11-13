@@ -39,16 +39,24 @@ function processExecutable(proc){
  if(typeof proc.name!=='string'||!/^[^\\/:*?"<>|]{1,160}\.exe$/i.test(proc.name))return null
  return cleanWinPath(path.win32.join(proc.path,proc.name))
 }
-function gameForProcesses(processes,games){
+function gameForProcesses(processes,games,roots=[]){
  const known=new Map(games.filter(x=>typeof x.file==='string'&&typeof x.name==='string')
    .map(g=>[cleanWinPath(g.file),g]).filter(([k])=>k!==null))
  for(const proc of processes){
   const exe=processExecutable(proc)
-  if(exe&&known.has(exe))return {file:exe,name:known.get(exe).name.slice(0,90)}
+  if(!exe)continue
+  if(known.has(exe))return {key:exe,file:exe,name:known.get(exe).name.slice(0,90),source:'User-added game'}
+  // For installed Steam/Epic games, match a process **inside** the exact
+  // launcher-reported installation folder. Never match a title/process name.
+  for(const game of roots){
+   const root=cleanWinPath(game?.root)
+   if(root&&exe.startsWith(root+'\\')&&typeof game.name==='string')
+    return {key:root,file:exe,name:game.name.slice(0,90),source:game.source}
+  }
  }
  return null
 }
-function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempCleaner,
+function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempCleaner,installedRoots=async()=>[],
  platform=process.platform,now=()=>Date.now(),schedule=fn=>setInterval(fn,INTERVAL),
  cancel=timer=>clearInterval(timer)}={}){
  if(!stateFile||!customStoreFile||!gameFocus||typeof processes!=='function'||!tempCleaner)throw Error('Missing Autopilot dependencies')
@@ -59,7 +67,7 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   return {ok:true,supported:platform==='win32',autoBoost:v.autoBoost,weeklyCleanup:v.weeklyCleanup,
    lastCleanupAt:v.lastCleanupAt||null,lastCleanupCount:v.lastCleanupCount,activeGame:owner?.name||null,
    running:working,message,
-   limits:'Auto-Boost detects only personally added trusted EXEs with exact Windows process paths. Weekly cleanup moves only old .tmp files to Recycle Bin; it does not free disk space.'}
+   limits:'Auto-Boost recognizes exact user-added EXEs or running processes inside verified Steam/Epic game install folders. Weekly cleanup moves old .tmp files to Recycle Bin; it does not immediately free disk space.'}
  }
  async function configure(options){
   if(platform!=='win32')return {ok:false,error:'Windows desktop only.'}
@@ -88,15 +96,16 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   let snapshot
   try{snapshot=await processes()}catch{message='Process inventory was unavailable; no automatic setting changes.';return}
   if(!Array.isArray(snapshot))return
-  const found=gameForProcesses(snapshot,games)
+  const roots=await installedRoots().catch(()=>[])
+  const found=gameForProcesses(snapshot,games,Array.isArray(roots)?roots:[])
   if(!found){
    if(!owner){blockedFile=null;seenFile=null;seenCount=0;return}
    misses++
    if(misses>=3){
     const active=await gameFocus.state()
-    if(!active.session){blockedFile=owner.file;owner=null;misses=0;return}
+    if(!active.session){blockedFile=owner.key;owner=null;misses=0;return}
     const r=await gameFocus.stop()
-    if(r.ok){message='Trusted game exited; Auto-Boost restored the Windows preferences.';blockedFile=owner.file;owner=null;misses=0}
+    if(r.ok){message='Trusted game exited; Auto-Boost restored the Windows preferences.';blockedFile=owner.key;owner=null;misses=0}
     else message='Automatic restore was incomplete; use Stop & Restore in Boost & Play.'
    }
    return
@@ -104,12 +113,12 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   misses=0
   if(owner){
    const state=await gameFocus.state()
-   if(!state.session){blockedFile=owner.file;owner=null}
+   if(!state.session){blockedFile=owner.key;owner=null}
    return
   }
-  if(found.file===blockedFile)return
-  if(seenFile===found.file)seenCount++
-  else{seenFile=found.file;seenCount=1}
+  if(found.key===blockedFile)return
+  if(seenFile===found.key)seenCount++
+  else{seenFile=found.key;seenCount=1}
   if(seenCount<2)return
   const state=await gameFocus.state()
   if(state.session)return // Manual Game Focus takes precedence.
@@ -117,9 +126,9 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   if(!p.ok){message='Auto-Boost skipped: '+String(p.error||'Windows settings unavailable').slice(0,110);return}
   const r=await gameFocus.start('standard',p.token)
   if(r.ok){
-   owner={file:found.file,name:found.name}
+   owner={file:found.file,key:found.key,name:found.name}
    message='Auto-Boost activated for '+owner.name+'. It restores after the game exits or the two-hour safety limit.'
-  }else{blockedFile=found.file;message='Auto-Boost could not start. No game was modified.'}
+  }else{blockedFile=found.key;message='Auto-Boost could not start. No game was modified.'}
  }
  async function handleCleanup(prefs){
   if(!prefs.weeklyCleanup||platform!=='win32'||(prefs.lastCleanupAt&&now()-prefs.lastCleanupAt<WEEK))return
@@ -128,7 +137,8 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   // If we can see a trusted game running but have not yet enabled Game Focus,
   // avoid interfering with its temporary files. If enumeration fails, skip.
   try{
-   const active=gameForProcesses(await processes(),readStore(customStoreFile))
+   const roots=await installedRoots().catch(()=>[])
+   const active=gameForProcesses(await processes(),readStore(customStoreFile),Array.isArray(roots)?roots:[])
    if(active)return
   }catch{return}
   // Separate cleaner instance: cannot invalidate user-created file previews.
