@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+<title id="title">PC Monster gaming laptop illustration</title><desc id="desc">Original neon laptop with system pulse and performance-themed lights; purely decorative, no performance claims.</desc>
+<defs>
+<radialGradient id="glow" cx="50%" cy="48%" r="52%"><stop stop-color="#21f3cb" stop-opacity=".47"/><stop offset=".55" stop-color="#1689ed" stop-opacity=".17"/><stop offset="1" stop-color="#050d1a" stop-opacity="0"/></radialGradient>
+<linearGradient id="frame" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c8f8ff"/><stop offset=".28" stop-color="#438ecb"/><stop offset="1" stop-color="#0f2b51"/></linearGradient>
+<linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0a2b45"/><stop offset=".57" stop-color="#07111f"/><stop offset="1" stop-color="#123966"/></linearGradient>
+<linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b3eaff"/><stop offset=".35" stop-color="#2b78a1"/><stop offset="1" stop-color="#0a1b39"/></linearGradient>
+<filter id="blur"><feGaussianBlur stdDeviation="16"/></filter>
+<filter id="small"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<ellipse cx="328" cy="197" rx="254" ry="189" fill="url(#glow)"/>
+<ellipse cx="328" cy="363" rx="217" ry="25" fill="#19f8cc" opacity=".35" filter="url(#blur)"/>
+<g stroke="#28deda" fill="none" opacity=".32">
+<path d="M70 270 137 235m-9-81 34 20M502 90l48-35M520 280l70 25M106 330l-45 28"/>
+<circle cx="66" cy="271" r="4"/><circle cx="549" cy="55" r="4"/><circle cx="587" cy="305" r="3"/>
+<path d="M85 200c-1-108 92-170 185-171M471 343c93-35 130-129 104-226" stroke-width="3" stroke-dasharray="9 15"/>
+</g>
+<g transform="translate(93 61)">
+<path d="M78 10 423 2q16 0 15 16l-23 237-370 1L59 28Q61 10 78 10Z" fill="#0c233a" stroke="url(#frame)" stroke-width="8"/>
+<path d="M86 23 423 17 402 241 62 241Z" fill="url(#screen)"/>
+<path d="M96 180h67l18-35 23 62 27-101 24 66 30-31 20 39 20-12h58" stroke="#21ffcc" stroke-linejoin="round" stroke-linecap="round" stroke-width="5" fill="none"/>
+<path d="M96 180h67l18-35 23 62 27-101 24 66 30-31 20 39 20-12h58" stroke="#2ffaff" stroke-width="12" fill="none" opacity=".5" filter="url(#small)"/>
+<g fill="#49d6ff" opacity=".25"><rect x="87" y="43" width="78" height="7" rx="3"/><rect x="87" y="57" width="48" height="5" rx="2"/><rect x="333" y="45" width="59" height="7" rx="3"/><rect x="355" y="59" width="36" height="5" rx="2"/></g>
+<circle cx="241" cy="17" r="3" fill="#8efbe3"/>
+<path d="M45 255 419 255 501 309q4 7-20 8L6 319q-13-2-5-10Z" fill="url(#base)" stroke="#64f6db" stroke-width="3"/>
+<path d="M62 266h342l44 28H26Z" fill="#122943" stroke="#316d89" stroke-width="2"/>
+<g stroke="#31bfe2" stroke-width="3" opacity=".45"><path d="M84 277h314M68 289h358"/><path d="m135 269-14 28m48-28-8 28m43-28-3 28m37-28v28m42-28 7 28m42-28 12 28"/></g>
+<path d="M200 299h92l15 12H187Z" fill="#0c2c41" stroke="#4bded8" stroke-width="2"/>
+<path d="M10 317h475" stroke="#9ffff2" opacity=".7" stroke-width="3"/>
+</g>
+<g>
+<circle cx="112" cy="92" r="25" fill="#0e4051" stroke="#1ff6cb" stroke-width="2"/>
+<path d="M100 92h24m-12-12v24" stroke="#bfffee" stroke-width="5" stroke-linecap="round"/>
+<circle cx="523" cy="115" r="27" fill="#12284c" stroke="#51c9ff" stroke-width="2"/>
+<path d="M511 124v-18m12 18V99m12 25v-26" stroke="#92e7ff" stroke-width="5" stroke-linecap="round"/>
+<circle cx="535" cy="329" r="24" fill="#113e47" stroke="#26fdcd" stroke-width="2"/>
+<path d="m524 329 7 7 15-17" stroke="#baffeb" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g>
+</svg>
