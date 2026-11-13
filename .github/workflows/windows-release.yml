@@ -55,6 +55,9 @@ jobs:
           node --check electron/live-monitor.cjs
           node --check electron/daily-monster.cjs
           node --check electron/monster-mode.cjs
+          node --check electron/boost-policy.cjs
+          node --check electron/background-boost.cjs
+          node --check electron/windows-eco-qos.cjs
           node --check electron/space-finder.cjs
           node --check electron/installed-game-roots.cjs
           node --check electron/epic-library.cjs
