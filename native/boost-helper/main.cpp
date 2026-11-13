@@ -11,6 +11,9 @@
 #include <limits>
 #include <string>
 #include <algorithm>
+#include <vector>
+#include <winsvc.h>
+#pragma comment(lib, "advapi32.lib")
 
 namespace {
 struct Handle {
@@ -40,7 +43,7 @@ bool parse(const wchar_t* input,std::uint64_t limit,std::uint64_t& value){
  return true;
 }
 std::wstring lower(std::wstring s){
- std::transform(s.begin(),s.end(),s.begin(),[](wchar_t c){return std::towlower(c);});
+ std::transform(s.begin(),s.end(),s.begin(),[](wchar_t c){return static_cast<wchar_t>(std::towlower(c));});
  return s;
 }
 bool prefix(const std::wstring& s,const std::wstring& p){
@@ -63,6 +66,30 @@ bool protectedImage(const std::wstring& p){
   L"explorer.exe",L"steam.exe",L"steamwebhelper",L"epicgameslauncher",
   L"riotclient",L"beservice",L"nvcontainer",L"onedrive.exe",L"dropbox.exe"};
  for(const wchar_t* s:sensitive)if(filename.find(s)!=std::wstring::npos)return true;
+ return false;
+}
+// Fail closed if the process belongs to a service or another Windows logon session.
+bool forbiddenServiceOrSession(DWORD pid){
+ DWORD ours=0,theirs=0;
+ if(!ProcessIdToSessionId(GetCurrentProcessId(),&ours) ||
+    !ProcessIdToSessionId(pid,&theirs) || ours!=theirs) return true;
+ SC_HANDLE scm=OpenSCManagerW(nullptr,nullptr,SC_MANAGER_ENUMERATE_SERVICE);
+ if(!scm)return true;
+ DWORD required=0,returned=0,resume=0;
+ const BOOL initial=EnumServicesStatusExW(scm,SC_ENUM_PROCESS_INFO,SERVICE_WIN32,
+  SERVICE_STATE_ALL,nullptr,0,&required,&returned,&resume,nullptr);
+ if(!initial && GetLastError()!=ERROR_MORE_DATA){CloseServiceHandle(scm);return true;}
+ if(initial&&required==0){CloseServiceHandle(scm);return false;}
+ std::vector<BYTE> buffer(static_cast<std::size_t>(required)+4096);
+ required=0;returned=0;resume=0;
+ const BOOL ok=EnumServicesStatusExW(scm,SC_ENUM_PROCESS_INFO,SERVICE_WIN32,
+  SERVICE_STATE_ALL,buffer.data(),static_cast<DWORD>(buffer.size()),&required,&returned,&resume,nullptr);
+ CloseServiceHandle(scm);
+ if(!ok || resume!=0)return true;
+ const auto services=reinterpret_cast<const ENUM_SERVICE_STATUS_PROCESSW*>(buffer.data());
+ for(DWORD i=0;i<returned;++i){
+  if(services[i].ServiceStatusProcess.dwProcessId==pid)return true;
+ }
  return false;
 }
 bool identicalPath(const std::wstring& a,const std::wstring& b){
@@ -138,6 +165,9 @@ int wmain(int argc,wchar_t** argv){
  std::wstring actual;
  if(!processPath(h.h,actual)){fail("Cannot verify process executable",GetLastError());return 0;}
  if(protectedImage(actual)){fail("Protected process denied");return 0;}
+ if((inspect||apply) && forbiddenServiceOrSession(pid)){
+  fail("Windows service or cross-session process denied");return 0;
+ }
  std::uint64_t ticks=0;
  if(!creationTicks(h.h,ticks)){fail("Cannot verify process creation time",GetLastError());return 0;}
  const bool same=identicalPath(actual,expected) && (inspect||ticks==start);
