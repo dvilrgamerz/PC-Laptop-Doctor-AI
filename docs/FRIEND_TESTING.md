@@ -53,3 +53,12 @@ Until these are completed, **do not describe this build as verified safe for eve
 Do not use irreversible cleanup on an important work PC until this build has been tested with disposable files. This is a public beta, not certified stable software.
 
 - [ ] Test Add a trusted installed game using a disposable known-safe game EXE. Confirm it appears without showing its directory, opens only after a click, and Remove deletes only the entry.
+
+## V7.2 timed recovery checks
+
+- [ ] Confirm the Boost & Play page automatically scans installed games and eligible Temp candidates (read-only).
+- [ ] Test 30-minute and 120-minute Game Focus time limit behavior on a disposable Windows test PC and confirm the saved Windows preferences are restored without closing the game.
+- [ ] Confirm manual Stop & Restore cancels the time limit.
+- [ ] Test a simulated interruption and reopen PC Doctor; confirm startup recovery returns supported preferences without overwriting unrelated user changes.
+- [ ] Keep an important game session running past the selected limit and confirm it continues, even though Game Focus ends.
+- [ ] Confirm permanent cleanup remains explicitly approved, irreversible and scoped to old user Temp files only.
