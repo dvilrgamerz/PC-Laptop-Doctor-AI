@@ -146,19 +146,19 @@ function MetricCard({ icon: Icon, label, value, sub, warning }) {
 
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', Icon: Gauge },
-  { id: 'boost', label: 'Game Boost & Cleanup', Icon: Rocket },
+  { id: 'boost', label: 'Boost & Play', Icon: Rocket },
   { id: 'performance', label: 'Performance', Icon: Cpu },
   { id: 'storage', label: 'Storage', Icon: HardDrive },
   { id: 'battery', label: 'Battery', Icon: Battery },
   { id: 'network', label: 'Network', Icon: Network },
   { id: 'fixes', label: 'Fix & Gaming', Icon: Wrench },
-  { id: 'optimize', label: 'Optimization Studio', Icon: SlidersHorizontal },
+  { id: 'optimize', label: 'Advanced tuning', Icon: SlidersHorizontal },
   { id: 'assistant', label: 'Ask Doctor', Icon: BookOpen },
   { id: 'advisor', label: 'Upgrade Advisor', Icon: MonitorUp },
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
 const ESSENTIAL_IDS = new Set(['dashboard','boost','performance','storage','battery','network'])
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.0.0-beta.1'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.1.0-beta.2'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -279,7 +279,7 @@ export default function App() {
           ))}
         </nav>}
         <div className="sidebar-install">
-          <p className="eyebrow">WINDOWS APP · V7</p>
+          <p className="eyebrow">WINDOWS APP · V7.1</p>
           <strong>Private diagnostics without subscriptions</strong>
           <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
             Get Windows installer <ArrowUpRight size={15}/>
@@ -291,7 +291,7 @@ export default function App() {
       <main>
         <header>
           <div>
-            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V7</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V7.1</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
             <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history','optimize','boost'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
@@ -400,7 +400,7 @@ export default function App() {
 
         </> : activeTab === 'boost' ? <QuickControlCenter demo={isDemoMode} data={data} onNavigate={setActiveTab} onScan={runScan} scanning={scanning}/> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : activeTab === 'optimize' ? <OptimizationStudio data={data} demo={isDemoMode} onNavigate={setActiveTab}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V7 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V7.1 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )
