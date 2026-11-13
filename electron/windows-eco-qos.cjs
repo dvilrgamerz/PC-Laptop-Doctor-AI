@@ -4,7 +4,7 @@
 const {execFile}=require('node:child_process')
 const {promisify}=require('node:util')
 const run=promisify(execFile)
-const PS=String.raw\`
+const PS=String.raw`
 $ErrorActionPreference='Stop'
 try {
  $q=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('__PAYLOAD__')) | ConvertFrom-Json
@@ -56,11 +56,11 @@ public static class EcoNative {
 } catch {
  @{ok=$false;error=[string]$_.Exception.Message} | ConvertTo-Json -Compress
 }
-\`
+`
 function validate(op,payload){
  if(!['inspect','apply','restore'].includes(op))throw Error('Unknown EcoQoS operation')
  if(!payload||!Number.isSafeInteger(payload.pid)||payload.pid<=4||
-  typeof payload.exe!=='string'||payload.exe.length>1024||!/^[a-z]:\\\\/i.test(payload.exe)||!/[.]exe$/i.test(payload.exe))
+  typeof payload.exe!=='string'||payload.exe.length>1024||!/^[a-z]:\\/i.test(payload.exe)||!/[.]exe$/i.test(payload.exe))
   throw Error('Invalid Windows process identity')
  if(op!=='inspect'&&(!/^[0-9]{1,21}$/.test(String(payload.startTicks||''))||!payload.before||
   !Number.isSafeInteger(payload.before.controlMask)||!Number.isSafeInteger(payload.before.stateMask)))
@@ -77,7 +77,7 @@ function createWindowsEcoQos({platform=process.platform,execute=run}={}){
    const encoded=Buffer.from(PS.replace('__PAYLOAD__',data),'utf16le').toString('base64')
    const {stdout}=await execute('powershell.exe',['-NoProfile','-NonInteractive','-EncodedCommand',encoded],
     {windowsHide:true,timeout:12000,maxBuffer:65536})
-   const line=String(stdout||'').trim().split(/\\r?\\n/).filter(Boolean).at(-1)
+   const line=String(stdout||'').trim().split(/\r?\n/).filter(Boolean).at(-1)
    const result=JSON.parse(line||'null')
    if(!result||typeof result.ok!=='boolean')throw Error('PowerShell returned no valid result')
    return result
