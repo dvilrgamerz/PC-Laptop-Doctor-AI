@@ -6,7 +6,7 @@ const fs=require('node:fs')
 const path=require('node:path')
 const {readStore}=require('./custom-games.cjs')
 const WEEK=7*24*60*60*1000
-const INTERVAL=15000
+const INTERVAL=5000
 const VERSION=1
 
 function loadPrefs(file){
@@ -198,6 +198,8 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   if(platform!=='win32'||timer)return
   timer=schedule(()=>{void tick()})
   timer?.unref?.()
+  // Reconcile immediately at startup; subsequent 5-second snapshots confirm identity.
+  void tick()
  }
  function stop(){if(timer){cancel(timer);timer=null}}
  return {status,configure,recordApprovedCleanup,tick,start,stop}
