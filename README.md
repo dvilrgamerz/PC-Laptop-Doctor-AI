@@ -18,6 +18,16 @@ Two 64-bit Windows editions are produced by the verified build pipeline:
 | Guided setup | PC-Laptop-Doctor-AI-Setup-8.1.0-beta.2-x64.exe | NSIS setup wizard; choose an installation directory; Start menu/desktop shortcuts; uninstall via Windows |
 | Portable | PC-Laptop-Doctor-AI-Portable-8.1.0-beta.2-x64.exe | Run without installing |
 
+## New in V8.1 — PC Monster One-Review Safe Care
+
+**New in-app automation:** The Dashboard opens PC Monster by default. Select **Inspect & prepare Safe Care** to scan eligible old files in the standard Windows user Temp folder and preview this app's own HTTP cache. After reviewing and approving the scope once, PC Doctor executes the selected cleanup **inside the app** and reports each action's actual outcome. You are never sent to another settings screen for this workflow.
+
+**Safe default:** Move eligible top-level `.tmp` and `.log` files older than 14 days to the Windows Recycle Bin, where they remain recoverable. **This does not immediately reclaim disk space.** For users who separately approve irreversible deletion, an advanced option removes only top-level `.tmp` files older than 30 days, rechecks each file before deletion and reports the bytes actually removed. The tool cannot safely decide whether Downloads, installed games, documents or other personal files are expendable, so it will not delete them automatically.
+
+**New original artwork:** A scalable DVILR PC Monster chip-and-performance illustration is included in both the desktop dashboard and the Boost & Play hero. The UI opens to the simpler Dashboard instead of starting in the advanced gaming controls.
+
+**Important:** The app completes approved, narrowly supported operations itself. It does not claim that every issue can be fixed automatically, that all gaming performance will improve, or that cleanup requires no review. Unattended destructive file deletion is intentionally unavailable.
+
 ## New in V8.1 — measurable storage recovery goal
 
 PC Monster now calculates how much space should be recovered to reach a practical free-space maintenance target (15% of disk capacity, or 20 GiB on smaller drives, capped by the drive's size). The target appears beside the storage warning and links to existing safe cleanup tools. No data is deleted automatically and no FPS gain is promised. The calculation uses real drive capacity; if capacity is unknown, the app does not invent a target.
