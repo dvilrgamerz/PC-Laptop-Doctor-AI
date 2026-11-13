@@ -17,11 +17,12 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
   return {ok:!!state.ok,enabled:!!(state.autoBoost&&state.weeklyCleanup),
    startupSupported,startWithWindows:startupState(),
    lastCleanupAt:state.lastCleanupAt||null,lastCleanupCount:state.lastCleanupCount||0,working:!!state.running,
-   autoBoost:!!state.autoBoost,weeklyCleanup:!!state.weeklyCleanup,
+   autoBoost:!!state.autoBoost,weeklyCleanup:!!state.weeklyCleanup,boostOnAC:!!state.boostOnAC,
    activeGame:state.activeGame||null,message:state.message||'',limits:'Works while PC Doctor is running. Only trusted installed games and old top-level Temp .tmp files are eligible.'}
  }
- async function preview(options={startWithWindows:false}){
-  if(!options||typeof options!=='object'||Array.isArray(options)||typeof options.startWithWindows!=='boolean')
+ async function preview(options={startWithWindows:false,boostOnAC:false}){
+  if(!options||typeof options!=='object'||Array.isArray(options)||typeof options.startWithWindows!=='boolean'||
+   (options.boostOnAC!==undefined&&typeof options.boostOnAC!=='boolean'))
    return {ok:false,error:'Choose whether PC Doctor should start with Windows before previewing.'}
   if(options.startWithWindows&&!startupSupported)return {ok:false,error:'Windows startup registration is unavailable in this build.'}
   if(platform!=='win32')return {ok:false,error:'Monster Mode requires the Windows app.'}
@@ -36,10 +37,12 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
    const bytes=files.reduce((n,x)=>n+x.sizeBytes,0)
    const key=token()
    pending={key,expires:now()+LIMIT_MS,scanToken:scan.token,ids:files.map(x=>x.id),count:files.length,bytes,
-     startWithWindows:options.startWithWindows}
+     startWithWindows:options.startWithWindows,boostOnAC:options.boostOnAC===true}
    return {ok:true,token:key,count:files.length,bytes,expiresInSeconds:60,startWithWindows:options.startWithWindows,
+     boostOnAC:options.boostOnAC===true,
      actions:[
       'Enable automatic Game Focus for verified running Steam/Epic/user-added games while PC Doctor is open',
+      options.boostOnAC===true?'Allow temporary High Performance power plan only on AC when supported (higher heat/fan use)':'Leave AC power plan unchanged during automatic games',
       'Enable weekly recycling of safe top-level user-Temp .tmp files aged 30+ days',
       'Immediately move '+files.length+' matching temporary files to Windows Recycle Bin (not permanently delete)',
       options.startWithWindows?'Start PC Doctor automatically when you sign into Windows':'Do not start PC Doctor automatically with Windows'
@@ -57,7 +60,7 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
   try{
    const focus=await gameFocus.state()
    if(focus?.session)return {ok:false,error:'A gaming session is active. No automation settings changed.'}
-   const result=await autopilot.configure({autoBoost:true,weeklyCleanup:true})
+   const result=await autopilot.configure({autoBoost:true,weeklyCleanup:true,boostOnAC:p.boostOnAC})
    if(!result?.ok)return {ok:false,error:'Could not enable automatic care: '+String(result?.error||'unknown').slice(0,130)}
    let startupWarning=null
    if(startupSupported){
@@ -74,7 +77,7 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
     const recorded=await autopilot.recordApprovedCleanup(cleanup.movedCount||0)
     if(!recorded?.ok)cleanupRecordWarning='Cleanup ran, but its time could not be saved; automatic care may check again soon.'
    }
-   return {ok:true,enabled:true,autoBoost:true,weeklyCleanup:true,
+   return {ok:true,enabled:true,autoBoost:true,weeklyCleanup:true,boostOnAC:p.boostOnAC,
     recycledFiles:cleanup.movedCount||0,failedFiles:cleanup.failedCount||0,
     bytesMoved:cleanup.movedBytes||0,
     startWithWindows:startupState(),
@@ -88,7 +91,7 @@ function createMonsterMode({autopilot,tempCleaner,gameFocus,loginStartup=null,pl
   if(busy)return {ok:false,error:'Monster Mode is busy.'}
   pending=null;busy=true
   try{
-   const r=await autopilot.configure({autoBoost:false,weeklyCleanup:false})
+   const r=await autopilot.configure({autoBoost:false,weeklyCleanup:false,boostOnAC:false})
    if(!r?.ok)return {ok:false,error:r?.error||'Unable to disable automation'}
    let warning=r.warning||null
    if(startupSupported){
