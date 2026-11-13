@@ -41,7 +41,7 @@ No repetitive Windows Settings instructions are required for the supported Monst
 | --- | --- | --- |
 | PC dashboard | Read-only live resource and diagnostic snapshots, heuristic warnings | Missing sensors show unknown; a score is not a medical-grade hardware diagnosis |
 | Monster Mode | Explicit approval for trusted-game Auto-Boost and weekly recoverable Temp cleanup | Requires app running and verified game process; does not promise more FPS |
-| Sign-in automation | Opt-in, reversible Windows launch-at-login registration | Works in packaged Windows build only; Windows startup preferences can override it |
+| Sign-in automation | Opt-in, reversible Windows launch-at-login registration | Works in packaged Windows build only; keep the Portable EXE in its original location after enabling; Windows startup preferences can override it |
 | Game Focus | Temporarily manages available Windows Game Mode; power profile is a separate, reviewed option | Respects unsupported settings and recovery; no arbitrary process closing |
 | Safe Care | In-app review and execution for PC Doctor HTTP cache and eligible old user-Temp files | Recycle Bin moves do **not** immediately free disk space |
 | Storage / games | Find candidates; detected Steam/Epic launchers; optional user-selected game EXEs | No game-file, anti-cheat or registry-cleaner hacks |
