@@ -51,7 +51,7 @@ test('approved session schedules 2-hour restoration and invokes existing rollbac
   assert.ok(load(f.file).expiresAt)
   await f.queued[0].fn()
   // The scheduler callback intentionally uses Promise.resolve; flush microtasks.
-  for(let i=0;i<15&&f.view().enabled;i++)await new Promise(resolve=>setImmediate(resolve))
+  for(let i=0;i<20&&load(f.file)!==null;i++)await new Promise(resolve=>setImmediate(resolve))
   assert.equal(f.view().enabled,0)
   assert.equal(f.view().managed,false)
   assert.equal(load(f.file),null)
