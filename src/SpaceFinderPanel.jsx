@@ -34,7 +34,7 @@ export default function SpaceFinderPanel({demo}){
   finally{setWorking(false)}
  }
  const toggle=id=>{setApproval(false);setSelected(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id])}
- return <section className="panel space-panel" aria-label="Find large files in Downloads">
+ return <section id="space-finder" className="panel space-panel" aria-label="Find large files in Downloads">
   <div className="space-head">
    <div className="space-symbol"><FileSearch size={22}/></div>
    <div><p className="eyebrow">SMART STORAGE · FILES YOU CHOOSE</p>
