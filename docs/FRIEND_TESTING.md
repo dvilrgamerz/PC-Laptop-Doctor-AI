@@ -92,3 +92,16 @@ Do not use irreversible cleanup on an important work PC until this build has bee
 - [ ] Report hardware-specific readings, crashes, false positives and any gaming slowdowns; do not discard negative results.
 
 V7.4 remains an unsigned public beta pending real-device/security validation.
+
+## V7.5 checks — GPU and Downloads review
+
+- [ ] Compare live GPU utilization (where available) with Task Manager on an actual Windows PC; unavailable sensors must stay unavailable, not read as zero.
+- [ ] Test empty Downloads and a Downloads folder containing normal, oversized, partial, and subfolder-only files.
+- [ ] Confirm Space Finder lists only top-level files >=100 MiB and never modifies anything during scanning.
+- [ ] Select two *disposable* large files, approve moving to Recycle Bin and confirm no unselected files moved. Restore a test file.
+- [ ] Modify a selected test file after scanning and confirm the app refuses to move it.
+- [ ] Check that Downloads symlinks and redirected directories are not followed.
+- [ ] Verify no file content or absolute Downloads path is uploaded or included in the routine report.
+- [ ] Confirm Recycle Bin moves do not count as free space in the dashboard. Compare C: free capacity in Windows Storage.
+- [ ] Test installer and Portable editions on two Windows 10/11 x64 devices with different CPUs/GPUs.
+- [ ] Record adverse effects, anti-cheat compatibility and security warnings; do not claim stable release or FPS gains until independent validation.

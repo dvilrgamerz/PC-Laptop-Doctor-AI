@@ -20,7 +20,7 @@ test('summarize returns sanitized bounded numeric data and no private metadata',
  assert.equal(serialized.includes('SECRET'),false)
  assert.equal(serialized.includes('C:'),false)
  assert.deepEqual(Object.keys(metrics).sort(),[
- 'at','cpuPercent','diskFreeGiB','diskPercent','diskTotalGiB','networkDownKib','networkUpKib','ramAvailableGiB','ramPercent','ramTotalGiB','temperatureC'
+ 'at','cpuPercent','gpuPercent','diskFreeGiB','diskPercent','diskTotalGiB','networkDownKib','networkUpKib','ramAvailableGiB','ramPercent','ramTotalGiB','temperatureC'
  ].sort())
 })
 test('severe storage pressure is first and never presented as verified gaming repair',()=>{
@@ -77,6 +77,19 @@ test('concurrent requests share one sample; individual sensor errors do not cras
  assert.equal(a.metrics.cpuPercent,null)
  assert.equal(a.metrics.temperatureC,null)
  assert.deepEqual(a.metrics,b.metrics)
+})
+test('GPU load appears only when a usable adapter reading is available',async()=>{
+ const report=summarize({...reading,graphics:{controllers:[
+  {model:'Secret graphics model',utilizationGpu:73.5},
+  {model:'Second adapter',utilizationGpu:null}
+ ]}})
+ assert.equal(report.gpuPercent,73.5)
+ assert.equal(JSON.stringify(report).includes('Secret graphics model'),false)
+ assert.equal(summarize({...reading,graphics:{controllers:[{utilizationGpu:undefined}]}}).gpuPercent,null)
+ const si={currentLoad:async()=>reading.load,mem:async()=>reading.mem,fsSize:async()=>reading.disks,
+  graphics:async()=>({controllers:[{utilizationGpu:57.2}]})}
+ const result=await createLiveMonitor({si}).sample()
+ assert.equal(result.metrics.gpuPercent,57.2)
 })
 test('read service requires actual systeminformation dependencies',()=>{
  assert.throws(()=>createLiveMonitor({si:{}}),/Missing local hardware collector/)

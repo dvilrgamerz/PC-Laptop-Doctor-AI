@@ -23,6 +23,8 @@ contextBridge.exposeInMainWorld('doctor', {
   previewGameFocus: (profile,minutes) => ipcRenderer.invoke('doctor:v7-boost-preview',profile,minutes),
   startGameFocus: (profile,token) => ipcRenderer.invoke('doctor:v7-boost-start',profile,token),
   stopGameFocus: () => ipcRenderer.invoke('doctor:v7-boost-stop'),
+  scanLargeDownloads: () => ipcRenderer.invoke('doctor:v7-space-scan'),
+  recycleSelectedDownloads: (token,ids) => ipcRenderer.invoke('doctor:v7-space-recycle',token,ids),
   scanOldTempFiles: () => ipcRenderer.invoke('doctor:v7-temp-scan'),
   recycleOldTempFiles: (token,ids) => ipcRenderer.invoke('doctor:v7-temp-recycle',token,ids),
   autoRecycleOldTemp: token => ipcRenderer.invoke('doctor:v7-temp-auto-recycle',token),

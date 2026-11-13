@@ -1,6 +1,7 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import AutopilotPanel from './AutopilotPanel.jsx'
 import LiveMonitorPanel from './LiveMonitorPanel.jsx'
+import SpaceFinderPanel from './SpaceFinderPanel.jsx'
 import {Activity,CheckCircle2,ChevronRight,Download,ExternalLink,Gamepad2,HardDrive,Info,Play,RefreshCcw,RotateCcw,Rocket,ShieldCheck,Trash2,TriangleAlert,Wifi,Zap} from 'lucide-react'
 
 const size=bytes=>bytes>=1073741824?(bytes/1073741824).toFixed(2)+' GiB':
@@ -252,6 +253,7 @@ export default function QuickControlCenter({demo,onNavigate,onScan,scanning,data
       <p className="v7-caption">PC Doctor avoids Downloads, documents, Windows directories, game saves and all folders. Use Windows Storage Sense for broader system cleanup. <a target="_blank" rel="noopener noreferrer" href="https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/manage-drive-space-with-storage-sense">Microsoft's Storage Sense guide</a>.</p>
     </Section>
    </div>
+   <SpaceFinderPanel demo={demo}/>
    <section className="v7-outro"><ShieldCheck size={23}/><div><h3>Made for people who want results, not risky tweak packs.</h3><p>Your settings stay under your control. No forced app termination, overclocking, driver modification, Defender disabling or claims of universal FPS gains. Measure games before and after a change.</p></div><button type="button" onClick={()=>onNavigate('history')}>Open performance lab <ChevronRight size={16}/></button></section>
  </div>
 }
