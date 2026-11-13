@@ -26,6 +26,8 @@ contextBridge.exposeInMainWorld('doctor', {
   freeOldTempNow: token => ipcRenderer.invoke('doctor:v7-temp-free-now',token),
   scanAllGames: () => ipcRenderer.invoke('doctor:v7-all-games'),
   launchDetectedGame: id => ipcRenderer.invoke('doctor:v7-launch-detected',id),
+  addCustomGame: () => ipcRenderer.invoke('doctor:v7-add-custom-game'),
+  removeCustomGame: id => ipcRenderer.invoke('doctor:v7-remove-custom-game',id),
   launchSteamGame: appid => ipcRenderer.invoke('doctor:v7-launch-steam',appid),
   previewMaintenance: action => ipcRenderer.invoke('doctor:maintenance-preview', action),
   applyMaintenance: (action, token) => ipcRenderer.invoke('doctor:maintenance-apply', action, token),
