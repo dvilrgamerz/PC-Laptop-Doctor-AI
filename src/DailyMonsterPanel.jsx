@@ -1,5 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import OneClickCare from './OneClickCare.jsx'
+import MonsterModePanel from './MonsterModePanel.jsx'
 import monsterArt from '../assets/pc-monster-core.svg'
 import {Activity,ArrowRight,Bell,CheckCircle2,ClipboardCheck,Cpu,Gamepad2,HardDrive,MemoryStick,RefreshCcw,ShieldCheck,Trash2,TriangleAlert} from 'lucide-react'
 
@@ -108,7 +109,7 @@ export default function DailyMonsterPanel({demo,data,onNavigate,onRescan}){
    // The in-app Space Finder is on Boost & Play; user reviews and approves deletion.
   }
  }
- return <><section className="monster-panel" aria-label="Daily Monster performance overview">
+ return <><MonsterModePanel demo={demo}/><section className="monster-panel" aria-label="Daily Monster performance overview">
   <div className="monster-top">
    <div><p className="eyebrow"><Activity size={15}/> DVILR PC MONSTER · DAILY CONTROL CENTER</p>
     <h2>Keep your PC ready for today.</h2>
