@@ -2,6 +2,7 @@
 // Does NOT stop services, terminate processes, suspend threads or change privileges.
 // All requested process identity and original-state values are rechecked in Win32.
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <windows.h>
 #include <processthreadsapi.h>
 #include <cstdint>
