@@ -57,8 +57,8 @@ export default function AutopilotPanel({demo,onNavigate}){
    <label className={'v8-auto-choice '+(options.autoBoost?'selected':'')}>
     <input type="checkbox" checked={options.autoBoost} disabled={!desktop||busy} onChange={e=>change('autoBoost',e.target.checked)}/>
     <span className="v8-auto-choice-content"><span className="v8-auto-choice-title"><Gamepad2 size={18}/> Auto Game Focus</span>
-      <small>When a game you personally added is detected running, enable supported Windows Game Mode automatically. Restore after it exits or at the two-hour safety limit.</small>
-      <span className="v8-auto-fine">Exact executable match required. Steam/Epic games use manual Boost & Play unless you add their trusted game EXE.</span></span>
+      <small>When an installed Steam/Epic game or a personally added trusted EXE is detected running, enable supported Windows Game Mode automatically. Restore after it exits or at the two-hour safety limit.</small>
+      <span className="v8-auto-fine">Matches exact added EXEs or processes inside verified Steam/Epic game folders. Unreadable process paths are safely skipped.</span></span>
    </label>
    <label className={'v8-auto-choice '+(options.weeklyCleanup?'selected':'')}>
     <input type="checkbox" checked={options.weeklyCleanup} disabled={!desktop||busy} onChange={e=>change('weeklyCleanup',e.target.checked)}/>
@@ -81,7 +81,7 @@ export default function AutopilotPanel({demo,onNavigate}){
    </div>
   </div>}
   {!desktop&&<p className="v7-demo">Autopilot requires the Windows desktop app; browser demo changes no settings.</p>}
-  <p className="v8-auto-bottom"><ShieldCheck size={15}/> Automatic gains are not guaranteed. A game that hides its process path will be skipped safely. Game files and anti-cheat are never modified.
+  <p className="v8-auto-bottom"><ShieldCheck size={15}/> Automatic gains are not guaranteed. Games that hide executable paths or use unsupported launchers may be skipped safely. Game files and anti-cheat are never modified.
     <button type="button" onClick={()=>onNavigate('boost')}>Open Boost & Play</button></p>
   {message&&<p className="v7-notice" role="status">{message}</p>}
  </section>
