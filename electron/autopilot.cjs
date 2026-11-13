@@ -57,7 +57,7 @@ function gameForProcesses(processes,games,roots=[]){
  return null
 }
 function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempCleaner,installedRoots=async()=>[],
- platform=process.platform,now=()=>Date.now(),schedule=fn=>setInterval(fn,INTERVAL),
+ platform=process.platform,backgroundBoost=null,now=()=>Date.now(),schedule=fn=>setInterval(fn,INTERVAL),
  cancel=timer=>clearInterval(timer)}={}){
  if(!stateFile||!customStoreFile||!gameFocus||typeof processes!=='function'||!tempCleaner)throw Error('Missing Autopilot dependencies')
  let timer=null,working=false,owner=null,misses=0,seenFile=null,seenCount=0,blockedFile=null
@@ -81,9 +81,13 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
    seenFile=null;seenCount=0;blockedFile=null
    if(owner){
     const current=owner
+    const background=backgroundBoost?await backgroundBoost.restore():{ok:true}
     const r=await gameFocus.stop()
-    if(r.ok){owner=null;misses=0;message='Autopilot disabled and its Game Focus preferences restored.'}
-    else{restoreWarning='Autopilot disabled but '+current.name+' could not be fully restored. Open Boost & Play and use Stop & Restore.';message=restoreWarning}
+    if(r.ok&&background.ok){owner=null;misses=0;message='Autopilot disabled and its game preferences/background QoS restored.'}
+    else{restoreWarning='Autopilot disabled but '+current.name+' could not be fully restored. Use Restore in Game Boost and Stop & Restore in Boost & Play.';message=restoreWarning}
+   } else if(backgroundBoost){
+    const background=await backgroundBoost.restore()
+    if(!background.ok){restoreWarning='Background QoS could not be fully restored. Use Restore in Game Boost.';message=restoreWarning}
    }
   }
   if(!next.weeklyCleanup)message='Weekly cleanup disabled. No background cleanup will run.'
@@ -116,17 +120,21 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
    misses++
    if(misses>=3){
     const active=await gameFocus.state()
-    if(!active.session){blockedFile=owner.key;owner=null;misses=0;return}
-    const r=await gameFocus.stop()
-    if(r.ok){message='Trusted game exited; Auto-Boost restored the Windows preferences.';blockedFile=owner.key;owner=null;misses=0}
-    else message='Automatic restore was incomplete; use Stop & Restore in Boost & Play.'
+    const background=backgroundBoost?await backgroundBoost.restore():{ok:true}
+    const r=active.session?await gameFocus.stop():{ok:true}
+    if(r.ok&&background.ok){message='Trusted game exited; game preferences and background QoS restored.';blockedFile=owner.key;owner=null;misses=0}
+    else message='Automatic restore was incomplete. Use Restore in Game Boost and Boost & Play.'
    }
    return
   }
   misses=0
   if(owner){
    const state=await gameFocus.state()
-   if(!state.session){blockedFile=owner.key;owner=null}
+   if(!state.session){
+    const restored=backgroundBoost?await backgroundBoost.restore():{ok:true}
+    if(!restored.ok){message='Game session ended but background QoS restore needs attention.';return}
+    blockedFile=owner.key;owner=null
+   }
    return
   }
   if(found.key===blockedFile)return
@@ -140,7 +148,11 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   const r=await gameFocus.start('standard',p.token)
   if(r.ok){
    owner={file:found.file,key:found.key,name:found.name}
-   message='Auto-Boost activated for '+owner.name+'. It restores after the game exits or the two-hour safety limit.'
+   const background=backgroundBoost?await backgroundBoost.begin(found):{ok:true,modifiedCount:0}
+   message='Auto-Boost activated for '+owner.name+'. '+(background.ok?
+    background.modifiedCount+' approved background process adjustments attempted.':
+    'Background QoS unavailable: '+String(background.error||'Unknown error').slice(0,135))+
+    ' Restoration is attempted after the game exits, on quit or at next launch.'
   }else{blockedFile=found.key;message='Auto-Boost could not start. No game was modified.'}
  }
  async function handleCleanup(prefs){

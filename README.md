@@ -5,9 +5,9 @@
 
 # PC & Laptop Doctor AI — PC Monster
 
-**Version: v8.2.0-beta.4 | Windows 10/11 x64 | Public tester beta (unsigned)**
+**Version: v9.0.0-beta.1 | Windows 10/11 x64 | Public tester beta (unsigned)**
 
-PC Monster is an actual Windows Electron desktop app, not a browser-only mockup. It measures CPU, RAM, GPU, battery, storage, temperature (when hardware reports it) and gaming-relevant conditions. Its **Monster Mode** performs a narrowly scoped, user-approved sequence inside the app and can keep working automatically.
+PC Monster is an actual Windows Electron desktop app, not a browser-only mockup. It measures CPU, RAM, GPU, battery, storage, temperature (when hardware reports it) and gaming-relevant conditions. **Monster Mode** performs reviewed automation, and **V9 Background Boost** adds an opt-in process-scoped Windows EcoQoS session optimizer. No background applications are force-closed.
 
 <p align="center">
   <img src="./assets/monster-machine.svg" width="46%" alt="Original neon PC Monster laptop illustration" />
@@ -17,21 +17,30 @@ PC Monster is an actual Windows Electron desktop app, not a browser-only mockup.
 
 ## Download Windows app
 
-**[Latest PC Monster public tester release](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.4)**
+**[Latest PC Monster public tester release](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.1)**
 
-- **[Setup EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v8.2.0-beta.4/PC-Laptop-Doctor-AI-Setup-8.2.0-beta.4-x64.exe)** — guided install, Start menu shortcuts, uninstall.
-- **[Portable EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v8.2.0-beta.4/PC-Laptop-Doctor-AI-Portable-8.2.0-beta.4-x64.exe)** — run without installing.
-- **[SHA-256 checksum list](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v8.2.0-beta.4/SHA256SUMS.txt)** — verify installer integrity before sharing.
+- **[Setup EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.1/PC-Laptop-Doctor-AI-Setup-8.2.0-beta.4-x64.exe)** — guided install, Start menu shortcuts, uninstall.
+- **[Portable EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.1/PC-Laptop-Doctor-AI-Portable-8.2.0-beta.4-x64.exe)** — run without installing.
+- **[SHA-256 checksum list](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.1/SHA256SUMS.txt)** — verify installer integrity before sharing.
 
-These links become available when the tagged Windows GitHub Actions release build succeeds. Until then, [v8.2.0-beta.3](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.3) is the last confirmed published beta. **Do not share a version whose EXEs have not finished building.**
+These links become available when the tagged Windows GitHub Actions release build succeeds. Until V9 artifacts are published and checked, [v8.2.0-beta.4](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v8.2.0-beta.4) is the previous confirmed public beta. **Do not share a version whose EXEs have not finished building.**
+
+### V9 Game Session Engine — first beta implementation
+
+**Implemented:** verified game detection, one-time per-executable approval of `Reduce during games`, automatic reversible EcoQoS requests for up to four approved eligible running processes when a trusted game starts, disk-backed write-ahead state, process executable/creation-time verification, automatic restoration on game exit, startup and quit, and a visible `Restore original QoS` control. Microsoft documents the [Windows process power-throttling API](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setprocessinformation).
+
+**Important restrictions:** unknown, unverified, Windows system, anti-cheat, security, launcher, game, and PC Doctor processes are kept by default. Only exact executable identities that you select in the desktop UI can be reduced. The helper does not force terminate or suspend apps, disable services, edit registry keys, elevate Electron or alter your files. Windows 10 and older Windows 11 builds may not support reading the prior EcoQoS state; those processes must be skipped safely rather than changed without a reversible snapshot. Some third-party apps will also deny access. No 2×–10× performance or guaranteed FPS benefit is claimed.
+
+**Not implemented in this beta:** auto-closing apps/relaunching their working state, event-driven game detection, PresentMon FPS/1%-low capture, signed installer, multi-device Windows validation, or game-specific graphics presets. See [V9 implementation and test gates](docs/V9_GAME_SESSION_BETA_TEST_PLAN.md).
 
 ### Do this once; then let supported automation run
 
 1. Download the real Windows EXE, launch it and check the **Dashboard**. Diagnostics start automatically and are read-only.
 2. In **PC Monster**, choose whether to start the app automatically when you sign into Windows (packaged Windows edition only).
 3. Select **Power up Monster Mode**, review the exact changes and click **Approve and automate**.
-4. Once enabled, PC Doctor monitors verified installed Steam/Epic or personally added game processes. When supported games run, it can temporarily manage Windows Game Mode and restore its own changes afterward. Every week it inspects eligible old Temp files and moves qualifying files to the Recycle Bin. **The app must be running**; enabling start-with-Windows helps with that.
-5. Check the live status tiles for startup setting, active game, last cleanup date and number of files recycled. **Turn off automation** disables both modes and attempts to remove its own startup registration.
+4. Optionally select **Inspect running applications** in **V9 Background Boost** and approve **Reduce during games** for each eligible user app. Those opt-ins are saved locally. This does not close the apps or modify them immediately.
+5. Once enabled, PC Doctor watches verified Steam/Epic or personally added game processes. During supported games, it can temporarily manage Windows Game Mode and request EcoQoS for only your eligible, approved apps. After the game, it attempts restoration. Weekly old-Temp recycling remains separate. **The app must be running**; start-with-Windows helps.
+6. Check the live status tiles for startup setting, active game, last cleanup date and number of files recycled. **Turn off automation** disables both modes and attempts to remove its own startup registration.
 
 No repetitive Windows Settings instructions are required for the supported Monster Mode actions. Some activities (driver updates, deleting personal downloads, uninstalling programs, modifying hardware, elevated or risky system changes) deliberately remain outside automatic care.
 
@@ -41,6 +50,7 @@ No repetitive Windows Settings instructions are required for the supported Monst
 | --- | --- | --- |
 | PC dashboard | Read-only live resource and diagnostic snapshots, heuristic warnings | Missing sensors show unknown; a score is not a medical-grade hardware diagnosis |
 | Monster Mode | Explicit approval for trusted-game Auto-Boost and weekly recoverable Temp cleanup | Requires app running and verified game process; does not promise more FPS |
+| V9 Background Boost | Per-executable, opt-in EcoQoS during trusted game sessions, with lifetime verification and durable restore journal | Does not close apps; older Windows builds or protected processes may be unsupported; Windows physical QA pending |
 | Sign-in automation | Opt-in, reversible Windows launch-at-login registration | Works in packaged Windows build only; keep the Portable EXE in its original location after enabling; Windows startup preferences can override it |
 | Game Focus | Temporarily manages available Windows Game Mode; power profile is a separate, reviewed option | Respects unsupported settings and recovery; no arbitrary process closing |
 | Safe Care | In-app review and execution for PC Doctor HTTP cache and eligible old user-Temp files | Recycle Bin moves do **not** immediately free disk space |
@@ -54,7 +64,7 @@ No repetitive Windows Settings instructions are required for the supported Monst
 
 - Off by default for mutating background automation; explicit reviewed approval precedes enabling it.
 - Limited old top-level user Temp `.tmp` files are recycled, with age and path checks. Nothing in personal folders is silently deleted.
-- Game preference changes have an undo journal and recovery flow; failed reversals are reported, not silently called successful.
+- Game preferences and V9 Background Boost have independent local undo journals; failed reversals are reported, not silently called successful.
 - System readings are processed locally. A requested network check may contact a public ping endpoint; this is not an uploaded scan report.
 - No purchased subscription, account, or remote server is required for local diagnostics.
 - **Unsigned beta.** Building the EXE in CI is not equivalent to a Windows certification, code-signing validation, malware audit, or multi-device QA. Only share releases after checking the GitHub workflow and SHA-256 sums.

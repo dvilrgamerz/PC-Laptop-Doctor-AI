@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react'
 import {Check,CheckCircle2,Clock3,RefreshCw,ShieldCheck,Sparkles,StopCircle,TriangleAlert,Zap} from 'lucide-react'
 import machineArt from '../assets/monster-machine.svg'
 import autopilotArt from '../assets/monster-autopilot.svg'
+import BackgroundBoostPanel from './BackgroundBoostPanel.jsx'
 
 export default function MonsterModePanel({demo}){
  const supported=!demo&&!!window.doctor?.getMonsterStatus&&!!window.doctor?.previewMonsterMode
@@ -52,9 +53,10 @@ export default function MonsterModePanel({demo}){
    <div className="monster-mode-content">
      <div className="monster-mode-kicker"><Sparkles size={15}/> PC MONSTER · SMART CARE</div>
      <h2>Make your PC a Monster. Keep the changes safe.</h2>
-     <p>One reviewed setup handles trusted-game Game Focus, weekly recoverable Temp care, and an immediate eligible-file pass. No Windows Settings hopping, no fake RAM boosts, no forced app closing.</p>
+     <p>One reviewed setup handles trusted-game Game Focus, optional V9 background EcoQoS for your approved apps, weekly recoverable Temp care, and an immediate eligible-file pass. No Windows Settings hopping, no fake RAM boosts, no forced app closing.</p>
      <div className="monster-mode-points">
        <span><Check size={15}/> Automatic Game Focus for recognized games</span>
+       <span><Check size={15}/> Opt-in background app EcoQoS</span>
        <span><Check size={15}/> Safe weekly Temp care</span>
        <span><Check size={15}/> Game settings restored when supported games close</span>
      </div>
@@ -91,5 +93,6 @@ export default function MonsterModePanel({demo}){
       <button type="button" disabled={busy} onClick={()=>{setPlan(null);setMessage('No changes made.')}}>Cancel</button>
     </div>
    </div>}
+  <BackgroundBoostPanel demo={demo}/>
  </section>
 }

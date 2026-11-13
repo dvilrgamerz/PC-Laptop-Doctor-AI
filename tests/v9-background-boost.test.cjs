@@ -1,0 +1,129 @@
+const test=require('node:test')
+const assert=require('node:assert/strict')
+const fs=require('node:fs')
+const os=require('node:os')
+const path=require('node:path')
+const {classify,protectedReason}=require('../electron/boost-policy.cjs')
+const {createBackgroundBoost,loadJournal}=require('../electron/background-boost.cjs')
+const {createWindowsEcoQos,validate}=require('../electron/windows-eco-qos.cjs')
+const game={pid:911,name:'Game.exe',path:'D:\\Games\\Example',cpu:70,memRss:400000000}
+const chrome={pid:222,name:'chrome.exe',path:'D:\\Apps\\Browser',cpu:15,memRss:210000000}
+const security={pid:555,name:'EasyAntiCheat.exe',path:'D:\\Games\\Example'}
+const osProc={pid:432,name:'MsMpEng.exe',path:'C:\\ProgramData\\Microsoft\\Windows Defender'}
+const exe='d:\\apps\\browser\\chrome.exe'
+function fixture(){
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'boost-v9-'))
+ const calls=[],list=[game,chrome,security,osProc]
+ const adapter={
+  async inspect(i){calls.push(['inspect',i]);return {ok:true,...i,startTicks:'638664000000000000',controlMask:0,stateMask:0}},
+  async apply(record){calls.push(['apply',record]);return {ok:true,controlMask:1,stateMask:1}},
+  async restore(record){calls.push(['restore',record]);return {ok:true}}
+ }
+ const files={rulesFile:path.join(dir,'rules.json'),journalFile:path.join(dir,'journal.json')}
+ const service=()=>createBackgroundBoost({...files,processes:async()=>list,adapter,platform:'win32',appExe:'C:\\Program Files\\PC Doctor\\doctor.exe'})
+ return {files,adapter,service,calls,list,clean:()=>fs.rmSync(dir,{recursive:true,force:true})}
+}
+test('V9 protects Windows, security, anti-cheat, launcher, current game and unverified paths',()=>{
+ assert.match(protectedReason({pid:80,path:'C:\\Windows\\System32\\svchost.exe',name:'svchost.exe'}),/Windows/)
+ assert.match(protectedReason(security),/Security|anti-cheat/)
+ assert.match(protectedReason(osProc),/Security|anti-cheat/)
+ assert.match(protectedReason(game,{gameExe:'D:\\Games\\Example\\Game.exe'}),/game/i)
+ assert.equal(classify({pid:3,path:'D:\\Tools',name:'tool.exe'}).status,'protected')
+ assert.equal(classify({pid:400,path:'D:\\Tools',name:'tool.exe'}).status,'eligible')
+ assert.equal(classify({pid:400,path:'',name:'tool.exe'}).status,'protected')
+})
+test('default mode is observation-only; explicit consent must match live eligible exact executable',async()=>{
+ const f=fixture()
+ try{
+  const s=f.service()
+  assert.equal((await s.status()).approvedCount,0)
+  assert.equal((await s.inventory()).ok,true)
+  assert.equal((await s.begin({file:'D:\\Games\\Example\\Game.exe',name:'Game'})).modifiedCount,0)
+  assert.equal(f.calls.length,0)
+  assert.equal((await s.setRule('c:\\windows\\system32\\svchost.exe','reduce')).ok,false)
+  assert.equal((await s.setRule('d:\\evil\\chrome.exe','reduce')).ok,false)
+  assert.equal((await s.setRule(exe,'close')).ok,false)
+  assert.equal((await s.setRule(exe,'reduce')).ok,true)
+  assert.equal((await s.status()).approvedCount,1)
+  assert.equal((await s.setRule(exe,'keep')).ok,true)
+  assert.equal((await s.status()).approvedCount,0)
+ }finally{f.clean()}
+})
+test('write-ahead journal records identity and exact original QoS; restored on game exit',async()=>{
+ const f=fixture()
+ try{
+  const s=f.service()
+  assert.equal((await s.setRule(exe,'reduce')).ok,true)
+  const start=await s.begin({file:'D:\\Games\\Example\\Game.exe',key:'D:\\Games\\Example',name:'Game'})
+  assert.equal(start.ok,true)
+  assert.equal(start.modifiedCount,1)
+  const journal=loadJournal(f.files.journalFile)
+  assert.equal(journal.actions.length,1)
+  assert.equal(journal.actions[0].exe,exe)
+  assert.deepEqual(journal.actions[0].before,{controlMask:0,stateMask:0})
+  assert.deepEqual(journal.actions[0].applied,{controlMask:1,stateMask:1})
+  assert.deepEqual(f.calls.map(c=>c[0]),['inspect','apply'])
+  assert.equal((await s.status()).needsRecovery,true)
+  const result=await s.restore()
+  assert.equal(result.ok,true)
+  assert.equal(result.remaining,0)
+  assert.equal(fs.existsSync(f.files.journalFile),false)
+  assert.deepEqual(f.calls.map(c=>c[0]),['inspect','apply','restore'])
+ }finally{f.clean()}
+})
+test('new app instance repairs a prior crash from the persisted transaction',async()=>{
+ const f=fixture()
+ try{
+  await f.service().setRule(exe,'reduce')
+  await f.service().begin({file:'D:\\Games\\Example\\Game.exe',name:'Game'})
+  assert.ok(fs.existsSync(f.files.journalFile))
+  const rebooted=f.service()
+  assert.equal((await rebooted.restore()).ok,true)
+  assert.equal(fs.existsSync(f.files.journalFile),false)
+ }finally{f.clean()}
+})
+test('failed rollback retains journal and reports error, retry succeeds',async()=>{
+ const f=fixture()
+ try{
+  await f.service().setRule(exe,'reduce')
+  const s=f.service()
+  await s.begin({file:'D:\\Games\\Example\\Game.exe',name:'Game'})
+  const original=f.adapter.restore
+  f.adapter.restore=async()=>({ok:false,error:'Win32 access denied'})
+  const fail=await s.restore()
+  assert.equal(fail.ok,false)
+  assert.equal(fail.remaining,1)
+  assert.ok(fs.existsSync(f.files.journalFile))
+  f.adapter.restore=original
+  assert.equal((await s.restore()).ok,true)
+ }finally{f.clean()}
+})
+test('Windows helper refuses arbitrary commands, PID 4, paths and missing snapshots',async()=>{
+ for(const pid of [0,4,-4,NaN])assert.throws(()=>validate('inspect',{pid,exe}),/invalid/i)
+ assert.throws(()=>validate('kill',{pid:100,exe}),/unknown/i)
+ assert.throws(()=>validate('inspect',{pid:100,exe:'powershell.exe;exit'}),/invalid/i)
+ assert.throws(()=>validate('apply',{pid:100,exe,startTicks:'1'}),/snapshot/i)
+ assert.doesNotThrow(()=>validate('inspect',{pid:100,exe}))
+ let called=0
+ const bridge=createWindowsEcoQos({platform:'win32',execute:async(file,args)=>{
+  called++
+  assert.equal(file,'powershell.exe')
+  assert.deepEqual(args.slice(0,3),['-NoProfile','-NonInteractive','-EncodedCommand'])
+  const script=Buffer.from(args[3],'base64').toString('utf16le')
+  assert.match(script,/GetProcessInformation/)
+  assert.match(script,/Process lifetime changed/)
+  return {stdout:'{"ok":true,"pid":100,"startTicks":"123","controlMask":0,"stateMask":0}'}
+ }})
+ assert.equal((await bridge.inspect({pid:100,exe})).ok,true)
+ assert.equal(called,1)
+})
+test('renderer gets restricted IPC calls; no arbitrary process-termination primitive',()=>{
+ const main=fs.readFileSync(path.join(__dirname,'../electron/main.cjs'),'utf8')
+ const preload=fs.readFileSync(path.join(__dirname,'../electron/preload.cjs'),'utf8')
+ const mode=fs.readFileSync(path.join(__dirname,'../src/BackgroundBoostPanel.jsx'),'utf8')
+ assert.match(main,/doctor:v9-background-rule/)
+ assert.match(main,/trustedDoctorFrame/)
+ assert.match(preload,/setBackgroundBoostRule/)
+ assert.doesNotMatch(preload,/terminateProcess|suspendProcess|disableService/)
+ assert.match(mode,/Reduce during games/)
+})
