@@ -42,6 +42,7 @@ public static class EcoNative {
  if($handle -eq [IntPtr]::Zero){throw 'Unable to open process for QoS; permission denied'}
  try {
   $original=New-Object PowerThrottling
+  $original.Version=1
   if(-not [EcoNative]::GetProcessInformation($handle,4,[ref]$original,12)){throw ('Unable to query EcoQoS: '+[Runtime.InteropServices.Marshal]::GetLastWin32Error())}
   if($q.op -eq 'inspect'){
    @{ok=$true;pid=$pidValue;exe=$exe;startTicks=$ticks;controlMask=[int64]$original.ControlMask;stateMask=[int64]$original.StateMask} | ConvertTo-Json -Compress
