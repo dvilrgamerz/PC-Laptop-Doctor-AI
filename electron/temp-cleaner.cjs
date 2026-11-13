@@ -32,6 +32,12 @@ function createTempCleaner({platform=process.platform,root=os.tmpdir(),read=fs,t
   if(busy)return {ok:false,error:'A cleanup operation is still running.'}
   busy=true
   try{
+   // Refuse redirected user Temp roots (junctions/symlinks) outside the expected scope.
+   if(!allowTestRoot){
+    const real=await read.realpath(root)
+    if(!safeRoot(real.replace(/^\\\\\?\\/,''),platform))
+     return {ok:false,error:'Windows user Temp resolves outside the expected folder.'}
+   }
    const entries=await read.readdir(root,{withFileTypes:true})
    const items=[]
    let skipped=0,totalBytes=0
@@ -90,6 +96,40 @@ function createTempCleaner({platform=process.platform,root=os.tmpdir(),read=fs,t
      message:'Moved '+moved.length+' old temporary files to the Windows Recycle Bin. Their disk space is NOT reclaimed until the bin is emptied. You can restore files from Recycle Bin.'}
   }finally{busy=false}
  }
- return {scan,recycle}
+ async function autoRecycle(token){
+  if(!snapshot||snapshot.token!==token)return {ok:false,error:'Scan and confirm cleanup first.'}
+  const ids=snapshot.items.map(x=>x.id)
+  if(!ids.length)return {ok:true,movedCount:0,failedCount:0,movedBytes:0,message:'No old temporary files to recycle.'}
+  return recycle(token,ids)
+ }
+ async function freeOldTmp(token){
+  if(platform!=='win32')return {ok:false,error:'Windows desktop only.'}
+  if(busy||!snapshot||snapshot.token!==token||clock()>snapshot.expires)
+   return {ok:false,error:'Scan and confirm this cleanup first.'}
+  const candidates=snapshot.items.filter(x=>/\.tmp$/i.test(x.name)&&x.ageDays>=30)
+  if(candidates.reduce((n,x)=>n+x.sizeBytes,0)>MAX_TOTAL_BYTES)
+   return {ok:false,error:'Cleanup exceeds the 1 GiB limit.'}
+  snapshot=null;busy=true
+  const deleted=[],failed=[]
+  try{
+   for(const item of candidates){
+    try{
+     const full=path.join(root,item.name)
+     const st=await read.lstat(full)
+     if(!st.isFile()||st.isSymbolicLink()||st.size!==item.verify.size||
+        st.mtimeMs!==item.verify.mtimeMs||st.ino!==item.verify.ino||
+        st.dev!==item.verify.dev||clock()-st.mtimeMs<30*86400000)
+       throw Error('Changed after preview; skipped')
+     await read.unlink(full)
+     deleted.push({name:item.name,sizeBytes:item.sizeBytes})
+    }catch(e){failed.push({name:item.name,reason:String(e.message||e).slice(0,100)})}
+   }
+   const freed=deleted.reduce((n,x)=>n+x.sizeBytes,0)
+   return {ok:failed.length===0,deletedCount:deleted.length,failedCount:failed.length,
+    freedBytes:freed,failed,irreversible:true,
+    message:'Permanently removed '+deleted.length+' old .tmp files ('+miB(freed)+' MiB). This cannot be undone. '+failed.length+' files were skipped.'}
+  }finally{busy=false}
+ }
+ return {scan,recycle,autoRecycle,freeOldTmp}
 }
 module.exports={createTempCleaner,safeRoot,MIN_AGE_DAYS,MAX_FILES,MAX_TOTAL_BYTES,miB}

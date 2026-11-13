@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check electron/main.cjs && node --check electron/preload.cjs && node --check electron/security.cjs && node --check electron/local-llm.cjs && node --check electron/hardware.cjs && node --check electron/disk-check.cjs && node --check electron/maintenance.cjs && node --check electron/network-quality.cjs && node --check electron/optimizer-v6.cjs && node --check electron/game-library.cjs && node --check electron/network-path.cjs && node --check electron/game-focus.cjs && node --check electron/temp-cleaner.cjs && node --check electron/fixes.cjs
+      - run: node --check electron/main.cjs && node --check electron/preload.cjs && node --check electron/security.cjs && node --check electron/local-llm.cjs && node --check electron/hardware.cjs && node --check electron/disk-check.cjs && node --check electron/maintenance.cjs && node --check electron/network-quality.cjs && node --check electron/optimizer-v6.cjs && node --check electron/game-library.cjs && node --check electron/network-path.cjs && node --check electron/game-focus.cjs && node --check electron/temp-cleaner.cjs && node --check electron/epic-library.cjs && node --check electron/custom-games.cjs && node --check electron/fixes.cjs
       - run: npm test
       - run: npm install --no-audit --no-fund
       - run: npm run build
