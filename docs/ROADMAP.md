@@ -1,4 +1,4 @@
-# PC Laptop Doctor AI — V1 to V7 implementation audit
+# PC Laptop Doctor AI — V1 to V8 implementation audit
 
 **Current target: V7.0.0-beta.1 public tester release.** Every main roadmap area has a user-facing workflow, but “complete” does not mean certified autonomous repairs, fully verified upgrades, or hardware-independent benchmark accuracy.
 
@@ -144,3 +144,18 @@ See [V7 implementation and competitor audit](V7_RELEASE.md) and [testers' instru
 - [ ] Credible stable public release: Windows signing, independent device tests, security review and controlled FPS studies.
 
 Details: [V7.3 Autopilot](V7_3_AUTOPILOT.md).
+
+## V8.0 — Daily Monster PC monitor and actionable simplicity
+
+- [x] Compact daily homepage with CPU, GPU, RAM and main-drive space, prioritized finding and direct action.
+- [x] Optional local health history, at most one stored sample per 30 minutes while PC Doctor is open, rolling maximum 30 local days.
+- [x] Opt-in native low-disk notification limited to one per local day, separate consent from history recording.
+- [x] Clear saved history independently, preserve existing live monitor and collapse technical report by default.
+- [x] Security and data-minimization regression tests.
+- [ ] OS code-signing certificate/SmartScreen reputation and verified safe auto-updates.
+- [ ] Real-world gaming comparisons vs Razer Cortex/Hone under standardized controlled loads.
+- [ ] Independent Windows 10/11 laptop hardware matrix and external security review.
+- [ ] Verify actual physical-space savings and rollback safety on distinct Windows devices.
+- [ ] Certify stable consumer distribution after the above validation; current release remains unsigned beta.
+
+**Competitor claims:** Razer and Hone advertise additional per-game optimization and process management. PC Doctor's new daily history cannot establish superior game FPS or full feature parity.
