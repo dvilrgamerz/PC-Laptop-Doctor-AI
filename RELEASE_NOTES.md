@@ -1,21 +1,16 @@
-# PC Laptop Doctor AI v7.4.0-beta.5 — Live PC Monitor & Simpler Auto Care
+# PC Laptop Doctor AI v7.5.0-beta.6 — Space Finder and Live GPU Monitoring
 
-Public beta for Windows 10/11 x64 testers. Unsigned; no guaranteed gaming FPS or latency improvement.
+Public Windows 10/11 x64 beta. Unsigned binaries. No claimed gaming FPS gain.
 
-## Improvements over V7.3
-- **Live PC Monitor:** New main Boost & Play panel shows CPU, RAM, system drive usage/free space, CPU temperature if available, and OS-reported network transfer rates. Short trends are only in memory. No cloud transfer or persistent hardware logs.
-- **Better triage:** High-priority low-storage alerts appear for disks at 95%+ usage or less than 10 GiB free; 90%+ RAM and 95%+ CPU use also prompt relevant local troubleshooting.
-- **Performance limits:** Live sampling every ~8 seconds while the panel is open, 5.5-second backend cache and coalesced sensor reads. No repeated ping, startup-app scanning or file changes in the monitor.
-- **Simplified Autopilot setup:** One button can prepare both existing safe automation modes. Explicit consent and Save remain mandatory before either mode activates. The Turn Both Off shortcut makes disabling easy.
-- **Interface:** Compact, higher-contrast monitor cards and trend indicators replace stale one-shot metric cards on the Boost & Play page.
+## Additions
+- On-demand **Large Downloads Space Finder**, limited to ordinary files at the top level of the current Windows user's default Downloads folder. Only files >=100 MiB are listed, top 60, with fixed scan limit. No recursive crawling or private file-content reads.
+- Explicit selected-file Recycle Bin operation after consent, limited to 20 files and 20 GiB, with metadata revalidation and no permanent-delete fallback. Files moved to Recycle Bin do **not** release disk space until emptied.
+- New numeric-only **GPU utilization** card in the 8-second live PC monitor, if the graphics subsystem makes it available. Values may be unknown on some hardware. UI remains local and does not upload system data.
+- Critical storage alert now jumps to the in-app Space Finder.
+- Existing Steam/Epic/custom-game detection, opt-in Game Focus Autopilot, weekly recoverable Temp cleanup and external FPS testing are retained.
 
-## Preserved
-- Existing read-only Steam/Epic/custom-game detection and launcher handoff, reversible Game Focus, opt-in background Auto Focus, weekly *recoverable* Temp care, optional manual cleanup, network tools and FPS CSV comparison.
-
-## Honest limitations
-- No independent evidence of better FPS than Hone or Razer Cortex; no automatic game-specific performance injection.
-- CPU temperature can be unavailable. Network throughput is adapter data, not internet speed.
-- Auto Temp care moves eligible items to Recycle Bin and does **not** free space immediately.
-- Windows builds are unsigned beta binaries; physical device testing, code signing, independent security/anti-cheat audit and comprehensive accessibility QA remain incomplete.
-
-Please share the official GitHub release page and SHA256SUMS.txt with testers. See docs/V7_4_MONITOR.md.
+## Public tester warnings
+- A near-full drive often requires uninstalling unnecessary apps or reviewing large personal files. The app cannot safely delete personal data without review.
+- The portable and installer EXEs are unsigned. Do not weaken Windows security protections. Use SHA256SUMS.txt and obtain binaries only from this repository's release.
+- Physical Windows hardware testing, anti-cheat tests, professional code signing and verified FPS improvements are not complete. Do not call this an independently certified stable release or superior to other optimizers.
+- See docs/V7_5_SPACE_FINDER.md and docs/FRIEND_TESTING.md.
