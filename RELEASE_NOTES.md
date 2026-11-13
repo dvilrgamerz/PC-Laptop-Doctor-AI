@@ -3,7 +3,7 @@
 Unsigned public beta for friends and willing Windows 10/11 x64 testers.
 
 ## New in V7.1
-- Installed Steam and Epic Games Launcher discovery from read-only manifests; fresh validation before launching.
+- Installed Steam and Epic Games Launcher discovery from read-only manifests; fresh validation before launching. Other launchers and standalone games can be added once using a native Windows executable picker, with local private storage and no arbitrary remote path or UI-injected command.
 - One approved Boost & Play workflow: apply supported reversible Game Focus preferences, hand off to selected launcher, attempt rollback on failed launch.
 - Auto-clean scoped old temporary files to Windows Recycle Bin, without individually selecting each candidate.
 - Optional immediate disk-space reclamation limited to 30+ day top-level .tmp files (max 300 candidates / 1 GiB). This is permanent deletion, requires extra consent and has no undo.
