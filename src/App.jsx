@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import DiagnosticView from './DiagnosticView.jsx'
 import FixCenter from './FixCenter.jsx'
 import OptimizationStudio from './OptimizationStudio.jsx'
@@ -158,10 +158,11 @@ const NAV_ITEMS = [
   { id: 'history', label: 'History & Bench', Icon: History },
 ]
 const ESSENTIAL_IDS = new Set(['dashboard','boost','performance','storage','battery','network'])
-const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.2.0-beta.3'
+const INSTALL_URL = 'https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v7.3.0-beta.4'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab, setActiveTab] = useState('boost')
+  const didInitialScan=useRef(false)
   const [advancedOpen,setAdvancedOpen] = useState(false)
   useEffect(()=>{if(!ESSENTIAL_IDS.has(activeTab))setAdvancedOpen(true)},[activeTab])
   const [data, setData] = useState(null)
@@ -247,6 +248,12 @@ export default function App() {
     setScanning(false)
   }
 
+  useEffect(()=>{
+    if(didInitialScan.current)return
+    didInitialScan.current=true
+    void runScan() // Read-only: open the main control center with actual PC evidence.
+  },[])
+
   const ram = data?.memory?.total ? (data.memory.used / data.memory.total) * 100 : 0
   const mainDisk = data?.storage?.[0]
   const gpu = data?.graphics?.[0]
@@ -279,7 +286,7 @@ export default function App() {
           ))}
         </nav>}
         <div className="sidebar-install">
-          <p className="eyebrow">WINDOWS APP · V7.2</p>
+          <p className="eyebrow">WINDOWS APP · V7.3</p>
           <strong>Private diagnostics without subscriptions</strong>
           <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">
             Get Windows installer <ArrowUpRight size={15}/>
@@ -291,7 +298,7 @@ export default function App() {
       <main>
         <header>
           <div>
-            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V7.2</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
+            <p className="eyebrow">DVILR / SYSTEM WORKSPACE <span className="version-pill">V7.3</span> {isDemoMode && <span className="demo-badge">WEB PREVIEW · SAMPLE DATA</span>}</p>
             <h1>{activeTab === 'dashboard' ? 'PC & Laptop Doctor AI' : activeTab === 'fixes' ? 'Fix & Gaming Center' : ['assistant','advisor','history','optimize','boost'].includes(activeTab) ? NAV_ITEMS.find(item => item.id===activeTab)?.label : NAV_ITEMS.find(item => item.id === activeTab)?.label + ' diagnostics'}</h1>
             <p>{isDemoMode ? 'Explore an interactive sample or download the Windows installer for real hardware readings.' : 'Understand the current state of your computer. Read-only, local-first, and under your control.'}</p>
           </div>
@@ -400,7 +407,7 @@ export default function App() {
 
         </> : activeTab === 'boost' ? <QuickControlCenter demo={isDemoMode} data={data} onNavigate={setActiveTab} onScan={runScan} scanning={scanning}/> : activeTab === 'fixes' ? <FixCenter data={data} demo={isDemoMode}/> : activeTab === 'optimize' ? <OptimizationStudio data={data} demo={isDemoMode} onNavigate={setActiveTab}/> : ['assistant','advisor','history'].includes(activeTab) ? <RoadmapHub section={activeTab} data={data} analysis={analysis} demo={isDemoMode}/> : <DiagnosticView tab={activeTab} data={data} analysis={analysis} demo={isDemoMode}/>}
 
-        <footer>PC Doctor AI V7.2 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
+        <footer>PC Doctor AI V7.3 · Offline advice, opt-in history & safe repair · {isDemoMode ? 'Sample data, not real hardware' : 'Read-only Windows diagnostics'} · <a href={INSTALL_URL} target="_blank" rel="noopener noreferrer">Windows downloads</a></footer>
       </main>
     </div>
   )

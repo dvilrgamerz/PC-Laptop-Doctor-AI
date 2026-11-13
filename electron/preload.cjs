@@ -16,6 +16,8 @@ contextBridge.exposeInMainWorld('doctor', {
   confirmV6: (id,mode,token) => ipcRenderer.invoke('doctor:v6-confirm',id,mode,token),
   scanSteamLibrary: () => ipcRenderer.invoke('doctor:v6-games'),
   runV6NetworkPath: () => ipcRenderer.invoke('doctor:v6-network-path'),
+  getAutopilotStatus: () => ipcRenderer.invoke('doctor:v8-auto-status'),
+  configureAutopilot: options => ipcRenderer.invoke('doctor:v8-auto-config', options),
   getGameFocusStatus: () => ipcRenderer.invoke('doctor:v7-boost-status'),
   previewGameFocus: (profile,minutes) => ipcRenderer.invoke('doctor:v7-boost-preview',profile,minutes),
   startGameFocus: (profile,token) => ipcRenderer.invoke('doctor:v7-boost-start',profile,token),

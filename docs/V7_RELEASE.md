@@ -79,3 +79,15 @@ Recycle Bin moves are recoverable but do not reclaim space. The permanent option
 - [ ] Game process-exit detection, guaranteed immediate rollback after Windows process termination, complete launcher support, code signing, independent Windows QA and real FPS evidence.
 
 The timer only runs while PC Doctor is running; after a crash, reopening it initiates session recovery. The chosen time limit does not affect the game process itself.
+
+## V7.3 — Autopilot with opt-in background behavior
+- [x] Add off-by-default Auto Game Focus for personally added trusted Windows game executable paths.
+- [x] Two process detections to start Standard Game Mode; three misses to restore, plus two-hour timeout and existing recovery.
+- [x] Add opt-in, non-destructive weekly Temp care: .tmp files 30+ days old, top-level user Temp only, to Recycle Bin.
+- [x] Existing file previews remain independent of the scheduled maintenance service.
+- [x] Open directly on Boost & Play with automatic read-only hardware diagnosis and severity-based RAM/disk alerts.
+- [x] Add automated unit tests for narrow process matching, restore and seven-day scheduling.
+- [ ] No guaranteed FPS gain, no third-party GPU/CPU tuning, no automatic boost of unsupported or unreadable launchers, no verified stable release.
+- [ ] Code signing, physical Windows device matrix and independent comparative benchmarks remain open.
+
+See [V7.3 Autopilot design](V7_3_AUTOPILOT.md).
