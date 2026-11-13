@@ -1,17 +1,18 @@
-# PC Laptop Doctor AI v7.1.0-beta.2 — Boost & Play and Automatic Temp Cleanup
+# PC Laptop Doctor AI v7.2.0-beta.3 — Automatic Recovery and Quick Cleanup
 
-Unsigned public beta for friends and willing Windows 10/11 x64 testers.
+A public beta for Windows 10/11 x64 testers. The local-only optimizer is free to use. Builds remain unsigned.
 
-## New in V7.1
-- Installed Steam and Epic Games Launcher discovery from read-only manifests; fresh validation before launching. Other launchers and standalone games can be added once using a native Windows executable picker, with local private storage and no arbitrary remote path or UI-injected command.
-- One approved Boost & Play workflow: apply supported reversible Game Focus preferences, hand off to selected launcher, attempt rollback on failed launch.
-- Auto-clean scoped old temporary files to Windows Recycle Bin, without individually selecting each candidate.
-- Optional immediate disk-space reclamation limited to 30+ day top-level .tmp files (max 300 candidates / 1 GiB). This is permanent deletion, requires extra consent and has no undo.
-- Simpler primary UI with advanced actions collapsed; improved tests and tester instructions.
+## Changes
+- Game Focus can automatically restore its supported Windows preferences after **30 minutes, 1 hour, 2 hours (default), or 4 hours**. The timer never closes the game. It is a safety cutoff, **not** detection that the game has exited.
+- The session state persists the planned restore deadline and the app checks status while its Boost & Play page is open.
+- Closing PC Doctor normally and starting after an interrupted session already trigger guarded recovery. Users can also manually Stop & Restore earlier.
+- Opening Boost & Play automatically scans read-only Steam/Epic/custom game libraries and eligible old user Temp file candidates. The user still has to approve changing Windows preferences or cleaning files.
+- Auto-clean after approval moves only eligible old user Temp .tmp/.log files to Recycle Bin. Separate advanced permanent deletion of 30+ day .tmp files is irreversible, requires additional consent, and remains bounded.
+- Improved clear timers and test coverage, including injected fake timer tests for startup/stop/automatic restoration.
 
-## Limitations
-- Game Focus does not guarantee better FPS or automatically detect when every game process closes. Stop & Restore or close PC Doctor to return to prior settings.
-- Recycle Bin moves do not free disk space. Real space reclamation is narrow and irreversible.
-- Other game launchers, specific in-game settings, GPU overclock, service termination or antivirus changes are not supported.
-- Installer is unsigned; independent Windows hardware, anti-cheat, accessibility and security testing are outstanding. Keep preview/prerelease status.
-- See docs/FRIEND_TESTING.md and docs/V7_RELEASE.md for test instructions and scope.
+## Important limits
+- **No guaranteed FPS improvement, universal auto game optimization or proven superiority to Razer Cortex and Hone.**
+- Games outside Steam/Epic still require using the native Windows executable chooser once; no automatic scan of arbitrary executable folders.
+- Do not close applications or disable Windows security to claim memory gains. PC Doctor never forces such actions.
+- Moving files to Recycle Bin does not reclaim space. Permanent old .tmp removal can reclaim a limited amount but is irreversible.
+- Windows installers are unsigned. These tests are source/build validation, not multiple physical Windows device or anti-cheat compatibility certification.
