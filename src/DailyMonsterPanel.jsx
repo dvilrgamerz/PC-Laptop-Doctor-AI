@@ -8,7 +8,7 @@ const sampleFromDiagnosis=data=>{
  const gb=n=>typeof n==='number'&&Number.isFinite(n)?Math.round(n/(1024**3)*10)/10:null
  const temperature=data.temperature?.main>0?data.temperature.main:data.temperature?.max>0?data.temperature.max:null
  return {cpu:data.cpu?.load??null,ram:data.memory?.total>0?Math.round(data.memory.used/data.memory.total*100):null,
-  gpu:data.graphics?.[0]?.utilizationGpu??null,disk:disk?.use??null,free:gb(disk?.available),temperature}
+  gpu:data.graphics?.[0]?.utilizationGpu??null,disk:disk?.use??null,free:gb(disk?.available),total:gb(disk?.size),temperature}
 }
 function findings(m){
  if(!m)return []
@@ -39,11 +39,19 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
  const supported=!demo&&!!window.doctor?.getDailyStatus&&!!window.doctor?.checkDailyHealth
  const [prefs,setPrefs]=useState({enabled:false,notify:false,days:[]})
  const [metrics,setMetrics]=useState(null)
+ const [reportedGoal,setReportedGoal]=useState(null)
  const [busy,setBusy]=useState(false)
  const [status,setStatus]=useState('')
  const [confirmClear,setConfirmClear]=useState(false)
  const sample=useMemo(()=>sampleFromDiagnosis(data),[data])
  const current=metrics||sample
+ const goal=useMemo(()=>{
+  if(reportedGoal&&Number.isFinite(reportedGoal.additionalGiB))return reportedGoal
+  const free=sample?.free,total=sample?.total
+  if(!Number.isFinite(free)||!Number.isFinite(total)||total<=0||free<0||free>total)return null
+  const target=Math.min(total,Math.max(20,total*0.15))
+  return {additionalGiB:Math.round(Math.max(0,target-free)*10)/10,targetFreeGiB:Math.round(target*10)/10}
+ },[reportedGoal,sample])
  const hasReadings=!!current && [current.cpu,current.ram,current.gpu,current.disk,current.free].some(Number.isFinite)
  const alerts=useMemo(()=>findings(current),[current])
  const top=alerts.find(x=>x.severity==='critical')||alerts[0]
@@ -54,7 +62,7 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
   try{
    const [p,r]=await Promise.all([window.doctor.getDailyStatus(),window.doctor.checkDailyHealth()])
    if(p.ok)setPrefs(p)
-   if(r.ok)setMetrics(r.metrics)
+   if(r.ok){setMetrics(r.metrics);setReportedGoal(r.storageGoal||null)}
    if(!r.ok)setStatus(r.error||'Could not read current sensors.')
   }catch{setStatus('Local daily health information is temporarily unavailable.')}
  }
@@ -64,7 +72,7 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
   setBusy(true);setStatus('Reading current CPU, GPU, memory and storage…')
   try{
    const [r,p]=await Promise.all([window.doctor.checkDailyHealth(),window.doctor.getDailyStatus()])
-   if(r.ok){setMetrics(r.metrics);setStatus(r.recorded?'New opt-in health snapshot saved locally.':'Checked. History is disabled or the sampling interval has not elapsed.')}
+   if(r.ok){setMetrics(r.metrics);setReportedGoal(r.storageGoal||null);setStatus(r.recorded?'New opt-in health snapshot saved locally.':'Checked. History is disabled or the sampling interval has not elapsed.')}
    else setStatus(r.error||'Could not check health.')
    if(p.ok)setPrefs(p)
   }catch{setStatus('Could not update health readings. No settings were changed.')}
@@ -76,7 +84,7 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
   try{
    const r=await window.doctor.configureDailyHealth({enabled,notify})
    if(r.ok){setPrefs(r);setStatus(enabled?'Local daily monitoring enabled. Readings are collected only while this app is open.':'Daily history monitoring disabled. Old summaries remain until deleted.')
-     if(enabled){const check=await window.doctor.checkDailyHealth();if(check.ok)setMetrics(check.metrics);const next=await window.doctor.getDailyStatus();if(next.ok)setPrefs(next)}
+     if(enabled){const check=await window.doctor.checkDailyHealth();if(check.ok){setMetrics(check.metrics);setReportedGoal(check.storageGoal||null)}const next=await window.doctor.getDailyStatus();if(next.ok)setPrefs(next)}
    }else setStatus(r.error||'Could not update daily monitoring.')
   }catch{setStatus('Monitoring settings were not saved.')}
   finally{setBusy(false)}
@@ -121,6 +129,9 @@ export default function DailyMonsterPanel({demo,data,onNavigate}){
    top?<div className="monster-advice"><TriangleAlert size={19}/><div><strong>{top.title}</strong><p>{top.detail}</p></div></div>:
     <div className="monster-advice neutral"><CheckCircle2 size={19}/><div><strong>Start with a real workload</strong><p>Play or work normally, then check whether CPU, memory or storage becomes a constraint.</p></div></div>}
    <div className="monster-buttons">
+    {top?.id==='storage'&&goal&&goal.additionalGiB>0&&
+      <div className="monster-storage-goal" role="note"><strong>Storage goal: free about {value(goal.additionalGiB,' GiB')}</strong>
+       <small>Target: {value(goal.targetFreeGiB,' GiB')} available. A maintenance guideline, not an FPS guarantee. Review files before removal.</small></div>}
     <button type="button" className="monster-primary" onClick={()=>navigate(top?.target||'boost')}>
      {top?<ClipboardCheck size={17}/>:<Gamepad2 size={17}/>} {top?.action||'Boost & Play'} <ArrowRight size={15}/>
     </button>
