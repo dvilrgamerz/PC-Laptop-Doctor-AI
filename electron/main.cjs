@@ -24,6 +24,7 @@ const {createInstalledGameRoots} = require('./installed-game-roots.cjs')
 const {createBackgroundBoost} = require('./background-boost.cjs')
 const {createWindowsEcoQos} = require('./windows-eco-qos.cjs')
 const {createBenchmarkService} = require('./presentmon-bench.cjs')
+const {createGameEventWatcher} = require('./game-events.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -318,6 +319,10 @@ if(!hasSingleInstanceLock){
     installedRoots:()=>installedRoots.list(),
     tempCleaner:autoTempCleaner
   })
+  const gameEvents=createGameEventWatcher({
+    helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-game-events.exe'):path.join(__dirname,'../native/build/game-events.exe'),
+    onChange:()=>autopilot.tick()
+  })
   const monsterCareCleaner=createTempCleaner({trashItem:target=>shell.trashItem(target)})
   const monsterMode=createMonsterMode({
     autopilot,tempCleaner:monsterCareCleaner,gameFocus,
@@ -357,10 +362,18 @@ if(!hasSingleInstanceLock){
     ? monsterMode.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-monster-preview', (event,options)=>guard(event)
     ? monsterMode.preview(options):{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-monster-activate', (event,token)=>guard(event)
-    ? monsterMode.activate(token):{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-monster-disable', event=>guard(event)
-    ? monsterMode.disable():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-monster-activate',async(event,token)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    const r=await monsterMode.activate(token)
+    if(r.ok&&r.autoBoost)gameEvents.start()
+    return r
+  })
+  ipcMain.handle('doctor:v8-monster-disable',async event=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    const r=await monsterMode.disable()
+    if(r.ok)gameEvents.stop()
+    return r
+  })
   ipcMain.handle('doctor:v8-daily-status', event=>guard(event)
     ? dailyMonster.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-daily-check', event=>guard(event)
@@ -373,8 +386,12 @@ if(!hasSingleInstanceLock){
     ? liveMonitor.sample():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-auto-status', event=>guard(event)
     ? autopilot.status():{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-auto-config', (event,options)=>guard(event)
-    ? autopilot.configure(options):{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-auto-config',async(event,options)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    const r=await autopilot.configure(options)
+    if(r.ok){if(r.autoBoost)gameEvents.start();else gameEvents.stop()}
+    return r
+  })
   ipcMain.handle('doctor:v7-boost-status', event=>guard(event)
     ? gameFocus.state() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v7-boost-preview', (event,profile,stopAfterMinutes)=>guard(event)
@@ -473,10 +490,12 @@ if(!hasSingleInstanceLock){
   try { await backgroundBoost.restore() } catch { /* QoS recovery remains visible in the app. */ }
   try { await gameFocus.stop() } catch { /* Recovery remains visible in the app. */ }
   autopilot.start()
+  if((await autopilot.status()).autoBoost)gameEvents.start()
   dailyMonster.start()
   let quitting=false
   app.on('before-quit',event=>{
     autopilot.stop()
+    gameEvents.stop()
     dailyMonster.stop()
     if(quitting)return
     event.preventDefault()
