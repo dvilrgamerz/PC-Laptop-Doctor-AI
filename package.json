@@ -1,6 +1,6 @@
 {
   "name": "pc-laptop-doctor-ai",
-  "version": "9.0.0-beta.2",
+  "version": "9.0.0-beta.3",
   "private": true,
   "description": "Windows PC Monster with automatic safe gaming care, daily hardware dashboard, in-app cleanup and local privacy",
   "main": "electron/main.cjs",
@@ -75,6 +75,10 @@
       {
         "from": "native/build/boost-helper.exe",
         "to": "bin/pcdoctor-boost-helper.exe"
+      },
+      {
+        "from": "native/build/game-events.exe",
+        "to": "bin/pcdoctor-game-events.exe"
       }
     ]
   }
