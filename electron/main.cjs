@@ -298,11 +298,14 @@ if(!hasSingleInstanceLock){
     openFile:file=>shell.openPath(file)})
   const networkPath=createNetworkPath({si})
   const installedRoots=createInstalledGameRoots()
+  const nativeBooster=createWindowsEcoQos({
+    helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-boost-helper.exe'):path.join(__dirname,'../native/build/boost-helper.exe')
+  })
   const backgroundBoost=createBackgroundBoost({
     rulesFile:path.join(app.getPath('userData'),'background-boost-rules-v1.json'),
     journalFile:path.join(app.getPath('userData'),'background-boost-session-v1.json'),
     processes:async()=>(await si.processes()).list||[],
-    adapter:createWindowsEcoQos({helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-boost-helper.exe'):path.join(__dirname,'../native/build/boost-helper.exe')}),appExe:process.execPath
+    adapter:nativeBooster,appExe:process.execPath
   })
   const benchmark=createBenchmarkService({choose:async()=>{
     const chosen=await dialog.showOpenDialog({
@@ -344,6 +347,36 @@ if(!hasSingleInstanceLock){
     })():null
   })
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v9-manual-close',async(event,exe)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    if(typeof exe!=='string'||exe.length>1024||!/^[a-z]:\\/i.test(exe))
+      return {ok:false,error:'Invalid application path'}
+    const game=autopilot.currentGame()
+    if(!game)return {ok:false,error:'Start a verified Monster Mode game before requesting app closure.'}
+    const root=(game.key&&game.key!==game.file)?game.key:path.win32.dirname(game.file)
+    const normalized=path.win32.normalize(exe).toLowerCase()
+    if(normalized===game.file||normalized.startsWith(path.win32.normalize(root).toLowerCase()+'\\'))
+      return {ok:false,error:'Active game and game installation processes are protected.'}
+    const first=await backgroundBoost.inventory()
+    const target=first.ok?first.items.find(p=>p.exe===exe):null
+    if(!target)return {ok:false,error:'App is not an approved, eligible running process.'}
+    const response=await dialog.showMessageBox({
+      type:'warning',title:'Review graceful app-close request',
+      message:'Request that '+path.win32.basename(exe)+' close while gaming?',
+      detail:'Windows cannot prove whether third-party applications contain unsaved work. Save your work first. The target app may show its own Save/Cancel prompt. PC Doctor will not force-terminate it, and cannot restore unsaved in-memory state or reopen the app automatically.',
+      buttons:['Cancel — Keep running','Request graceful close'],defaultId:0,cancelId:0,noLink:true
+    })
+    if(response.response!==1)return {ok:false,canceled:true,error:'No app-close request sent.'}
+    const latest=await backgroundBoost.inventory()
+    const current=latest.ok?latest.items.find(p=>p.exe===exe&&p.pid===target.pid):null
+    if(!current)return {ok:false,error:'The app changed while approval was open; close canceled.'}
+    const before=await nativeBooster.inspect({pid:current.pid,exe:current.exe})
+    if(!before.ok)return {ok:false,error:'Could not verify target: '+String(before.error).slice(0,120)}
+    const result=await nativeBooster.requestClose({pid:current.pid,exe:current.exe,startTicks:String(before.startTicks)})
+    return result.ok?{ok:true,requested:true,closed:false,
+      message:'WM_CLOSE requested. The app may ask to save or cancel; PC Doctor did not terminate it or confirm its exit.'}:
+      {ok:false,error:'Graceful close not sent: '+String(result.error||'Windows refused').slice(0,160)}
+  })
   ipcMain.handle('doctor:v9-benchmark-status',event=>guard(event)
     ? benchmark.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v9-benchmark-import',(event,mode)=>guard(event)
