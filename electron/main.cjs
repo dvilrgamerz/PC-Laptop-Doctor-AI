@@ -23,6 +23,7 @@ const {createMonsterMode} = require('./monster-mode.cjs')
 const {createInstalledGameRoots} = require('./installed-game-roots.cjs')
 const {createBackgroundBoost} = require('./background-boost.cjs')
 const {createWindowsEcoQos} = require('./windows-eco-qos.cjs')
+const {createBenchmarkService} = require('./presentmon-bench.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -302,6 +303,13 @@ if(!hasSingleInstanceLock){
     processes:async()=>(await si.processes()).list||[],
     adapter:createWindowsEcoQos({helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-boost-helper.exe'):path.join(__dirname,'../native/build/boost-helper.exe')}),appExe:process.execPath
   })
+  const benchmark=createBenchmarkService({choose:async()=>{
+    const chosen=await dialog.showOpenDialog({
+      title:'Import local Intel PresentMon CSV frame capture',
+      properties:['openFile'],filters:[{name:'PresentMon CSV',extensions:['csv']}]
+    })
+    return chosen.canceled?null:chosen.filePaths?.[0]||null
+  }})
   const autopilot=createAutopilot({
     stateFile:path.join(app.getPath('userData'),'autopilot-prefs-v1.json'),
     customStoreFile:path.join(app.getPath('userData'),'user-added-games.json'),
@@ -331,6 +339,12 @@ if(!hasSingleInstanceLock){
     })():null
   })
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v9-benchmark-status',event=>guard(event)
+    ? benchmark.status():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v9-benchmark-import',(event,mode)=>guard(event)
+    ? benchmark.import(mode):{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v9-benchmark-reset',event=>guard(event)
+    ? benchmark.reset():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v9-background-status',event=>guard(event)
     ? backgroundBoost.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v9-background-inventory',event=>guard(event)
