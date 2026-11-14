@@ -64,6 +64,8 @@ bool protectedImage(const std::wstring& p){
   L"vgk",L"anticheat",L"msmpeng",L"securityhealth",L"defender",L"crowdstrike",
   L"sentinelone",L"bitdefender",L"kaspersky",L"malwarebytes",L"windefend",
   L"lsass.exe",L"svchost.exe",L"winlogon.exe",L"csrss.exe",L"dwm.exe",
+  L"chrome.exe",L"firefox.exe",L"msedge.exe",L"winword.exe",L"excel.exe",L"powerpnt.exe",
+  L"outlook.exe",L"notepad.exe",L"code.exe",L"devenv.exe",
   L"explorer.exe",L"steam.exe",L"steamwebhelper",L"epicgameslauncher",
   L"riotclient",L"beservice",L"nvcontainer",L"onedrive.exe",L"dropbox.exe"};
  for(const wchar_t* s:sensitive)if(filename.find(s)!=std::wstring::npos)return true;
@@ -116,6 +118,15 @@ bool creationTicks(HANDLE h,std::uint64_t& out){
  out=u.QuadPart+504911232000000000ULL;
  return true;
 }
+struct WindowCandidate { DWORD pid; HWND hwnd; int count; };
+BOOL CALLBACK FindMainWindow(HWND hwnd,LPARAM lParam){
+ auto* choice=reinterpret_cast<WindowCandidate*>(lParam);
+ DWORD pid=0;
+ GetWindowThreadProcessId(hwnd,&pid);
+ if(pid!=choice->pid || !IsWindowVisible(hwnd) || GetWindow(hwnd,GW_OWNER)!=nullptr)return TRUE;
+ choice->hwnd=hwnd;choice->count++;
+ return TRUE;
+}
 void emitState(DWORD pid,std::uint64_t ticks,const PROCESS_POWER_THROTTLING_STATE& state){
  std::cout<<"{\"ok\":true,\"pid\":"<<pid<<",\"startTicks\":\""<<ticks
   <<"\",\"controlMask\":"<<state.ControlMask<<",\"stateMask\":"<<state.StateMask<<"}\n";
@@ -128,9 +139,9 @@ int wmain(int argc,wchar_t** argv){
  // restore <pid> <full.exe> <originalStartTicks> <beforeControl> <beforeState> <appliedControl> <appliedState>
  if(argc<4){fail("Invalid fixed command");return 0;}
  const std::wstring op=argv[1];
- const bool inspect=op==L"inspect",probe=op==L"probe",apply=op==L"apply",restore=op==L"restore";
+ const bool inspect=op==L"inspect",probe=op==L"probe",apply=op==L"apply",restore=op==L"restore",requestClose=op==L"request-close";
  if((inspect&&argc!=4)||(probe&&argc!=5)||(apply&&argc!=7)||(restore&&argc!=9)||
-  (!inspect&&!probe&&!apply&&!restore)){fail("Unknown or incomplete command");return 0;}
+   (requestClose&&argc!=5)||(!inspect&&!probe&&!apply&&!restore&&!requestClose)){fail("Unknown or incomplete command");return 0;}
  std::uint64_t requested=0;
  if(!parse(argv[2],std::numeric_limits<DWORD>::max(),requested)||requested<=4){
   fail("Invalid or protected process ID");return 0;
@@ -166,7 +177,7 @@ int wmain(int argc,wchar_t** argv){
  std::wstring actual;
  if(!processPath(h.h,actual)){fail("Cannot verify process executable",GetLastError());return 0;}
  if(protectedImage(actual)){fail("Protected process denied");return 0;}
- if((inspect||apply) && forbiddenServiceOrSession(pid)){
+ if((inspect||apply||requestClose) && forbiddenServiceOrSession(pid)){
   fail("Windows service or cross-session process denied");return 0;
  }
  std::uint64_t ticks=0;
@@ -177,6 +188,22 @@ int wmain(int argc,wchar_t** argv){
   return 0;
  }
  if(!same){fail("Executable or process lifetime changed");return 0;}
+ if(requestClose){
+  // Only one visible unowned top-level window may receive WM_CLOSE.
+  // Never send WM_QUIT/TerminateProcess or simulate a confirmation dialog.
+  WindowCandidate selected{pid,nullptr,0};
+  if(!EnumWindows(FindMainWindow,reinterpret_cast<LPARAM>(&selected))){
+   fail("Could not inspect the target application's windows");return 0;
+  }
+  if(selected.count!=1 || !selected.hwnd){
+   fail("Requires exactly one visible main window; no close request sent");return 0;
+  }
+  if(!PostMessageW(selected.hwnd,WM_CLOSE,0,0)){
+   fail("Windows refused the graceful close message",GetLastError());return 0;
+  }
+  success(",\"requested\":true,\"closed\":false");
+  return 0;
+ }
  PROCESS_POWER_THROTTLING_STATE state{};
  state.Version=PROCESS_POWER_THROTTLING_CURRENT_VERSION;
  if(!GetProcessInformation(h.h,ProcessPowerThrottling,&state,sizeof(state))){
