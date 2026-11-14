@@ -977,3 +977,10 @@ footer a{color:#85e7eb;text-decoration:none}
 .performance-compare-results p{margin:4px 0 0;color:#b9d6df;font-size:10px;line-height:1.65}
 .performance-compare-error{color:#ffe4dc;background:#57343b;padding:10px;border-radius:8px;font-size:11px;display:flex;gap:7px}
 @media(max-width:700px){.performance-capture-grid{grid-template-columns:1fr}.performance-comparison{padding:13px}}
+
+
+/* Manual graceful-close is deliberately separate from the automatic EcoQoS opt-in. */
+.background-process-actions{display:flex;flex-direction:column;gap:5px;flex:0 0 auto;max-width:165px}
+.background-boost .background-manual-close{font-size:10px;border:1px solid #916d60;background:#563b3c;color:#ffebdd;white-space:normal;line-height:1.35}
+.background-boost .background-manual-close:hover:not(:disabled){background:#704e4c}
+@media(max-width:650px){.background-process-actions{width:100%;max-width:none}}
