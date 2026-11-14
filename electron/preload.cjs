@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('doctor', {
   inspectBackgroundApps: () => ipcRenderer.invoke('doctor:v9-background-inventory'),
   setBackgroundBoostRule: (exe,mode) => ipcRenderer.invoke('doctor:v9-background-rule',exe,mode),
   restoreBackgroundBoost: () => ipcRenderer.invoke('doctor:v9-background-restore'),
+  requestGracefulAppClose: (exe) => ipcRenderer.invoke('doctor:v9-manual-close',exe),
   previewMonsterMode: options => ipcRenderer.invoke('doctor:v8-monster-preview',options),
   activateMonsterMode: token => ipcRenderer.invoke('doctor:v8-monster-activate',token),
   disableMonsterMode: () => ipcRenderer.invoke('doctor:v8-monster-disable'),
