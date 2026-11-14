@@ -15,6 +15,7 @@
 #include <vector>
 #include <winsvc.h>
 #pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "user32.lib")
 
 namespace {
 struct Handle {
