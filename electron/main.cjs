@@ -23,6 +23,8 @@ const {createMonsterMode} = require('./monster-mode.cjs')
 const {createInstalledGameRoots} = require('./installed-game-roots.cjs')
 const {createBackgroundBoost} = require('./background-boost.cjs')
 const {createWindowsEcoQos} = require('./windows-eco-qos.cjs')
+const {createBenchmarkService} = require('./presentmon-bench.cjs')
+const {createGameEventWatcher} = require('./game-events.cjs')
 const si = require('systeminformation')
 
 // Windows taskbar identity should match the packaged product.
@@ -296,12 +298,22 @@ if(!hasSingleInstanceLock){
     openFile:file=>shell.openPath(file)})
   const networkPath=createNetworkPath({si})
   const installedRoots=createInstalledGameRoots()
+  const nativeBooster=createWindowsEcoQos({
+    helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-boost-helper.exe'):path.join(__dirname,'../native/build/boost-helper.exe')
+  })
   const backgroundBoost=createBackgroundBoost({
     rulesFile:path.join(app.getPath('userData'),'background-boost-rules-v1.json'),
     journalFile:path.join(app.getPath('userData'),'background-boost-session-v1.json'),
     processes:async()=>(await si.processes()).list||[],
-    adapter:createWindowsEcoQos({helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-boost-helper.exe'):path.join(__dirname,'../native/build/boost-helper.exe')}),appExe:process.execPath
+    adapter:nativeBooster,appExe:process.execPath
   })
+  const benchmark=createBenchmarkService({choose:async()=>{
+    const chosen=await dialog.showOpenDialog({
+      title:'Import local Intel PresentMon CSV frame capture',
+      properties:['openFile'],filters:[{name:'PresentMon CSV',extensions:['csv']}]
+    })
+    return chosen.canceled?null:chosen.filePaths?.[0]||null
+  }})
   const autopilot=createAutopilot({
     stateFile:path.join(app.getPath('userData'),'autopilot-prefs-v1.json'),
     customStoreFile:path.join(app.getPath('userData'),'user-added-games.json'),
@@ -309,6 +321,10 @@ if(!hasSingleInstanceLock){
     processes:async()=>(await si.processes()).list||[],
     installedRoots:()=>installedRoots.list(),
     tempCleaner:autoTempCleaner
+  })
+  const gameEvents=createGameEventWatcher({
+    helperPath:app.isPackaged?path.join(process.resourcesPath,'bin','pcdoctor-game-events.exe'):path.join(__dirname,'../native/build/game-events.exe'),
+    onChange:()=>autopilot.tick()
   })
   const monsterCareCleaner=createTempCleaner({trashItem:target=>shell.trashItem(target)})
   const monsterMode=createMonsterMode({
@@ -331,6 +347,42 @@ if(!hasSingleInstanceLock){
     })():null
   })
   const guard = (event) => trustedDoctorFrame(event)
+  ipcMain.handle('doctor:v9-manual-close',async(event,exe)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    if(typeof exe!=='string'||exe.length>1024||!/^[a-z]:\\/i.test(exe))
+      return {ok:false,error:'Invalid application path'}
+    const game=autopilot.currentGame()
+    if(!game)return {ok:false,error:'Start a verified Monster Mode game before requesting app closure.'}
+    const root=(game.key&&game.key!==game.file)?game.key:path.win32.dirname(game.file)
+    const normalized=path.win32.normalize(exe).toLowerCase()
+    if(normalized===game.file||normalized.startsWith(path.win32.normalize(root).toLowerCase()+'\\'))
+      return {ok:false,error:'Active game and game installation processes are protected.'}
+    const first=await backgroundBoost.inventory()
+    const target=first.ok?first.items.find(p=>p.exe===exe):null
+    if(!target)return {ok:false,error:'App is not an approved, eligible running process.'}
+    const response=await dialog.showMessageBox({
+      type:'warning',title:'Review graceful app-close request',
+      message:'Request that '+path.win32.basename(exe)+' close while gaming?',
+      detail:'Windows cannot prove whether third-party applications contain unsaved work. Save your work first. The target app may show its own Save/Cancel prompt. PC Doctor will not force-terminate it, and cannot restore unsaved in-memory state or reopen the app automatically.',
+      buttons:['Cancel — Keep running','Request graceful close'],defaultId:0,cancelId:0,noLink:true
+    })
+    if(response.response!==1)return {ok:false,canceled:true,error:'No app-close request sent.'}
+    const latest=await backgroundBoost.inventory()
+    const current=latest.ok?latest.items.find(p=>p.exe===exe&&p.pid===target.pid):null
+    if(!current)return {ok:false,error:'The app changed while approval was open; close canceled.'}
+    const before=await nativeBooster.inspect({pid:current.pid,exe:current.exe})
+    if(!before.ok)return {ok:false,error:'Could not verify target: '+String(before.error).slice(0,120)}
+    const result=await nativeBooster.requestClose({pid:current.pid,exe:current.exe,startTicks:String(before.startTicks)})
+    return result.ok?{ok:true,requested:true,closed:false,
+      message:'WM_CLOSE requested. The app may ask to save or cancel; PC Doctor did not terminate it or confirm its exit.'}:
+      {ok:false,error:'Graceful close not sent: '+String(result.error||'Windows refused').slice(0,160)}
+  })
+  ipcMain.handle('doctor:v9-benchmark-status',event=>guard(event)
+    ? benchmark.status():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v9-benchmark-import',(event,mode)=>guard(event)
+    ? benchmark.import(mode):{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v9-benchmark-reset',event=>guard(event)
+    ? benchmark.reset():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v9-background-status',event=>guard(event)
     ? backgroundBoost.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v9-background-inventory',event=>guard(event)
@@ -343,10 +395,18 @@ if(!hasSingleInstanceLock){
     ? monsterMode.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-monster-preview', (event,options)=>guard(event)
     ? monsterMode.preview(options):{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-monster-activate', (event,token)=>guard(event)
-    ? monsterMode.activate(token):{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-monster-disable', event=>guard(event)
-    ? monsterMode.disable():{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-monster-activate',async(event,token)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    const r=await monsterMode.activate(token)
+    if(r.ok&&r.autoBoost)gameEvents.start()
+    return r
+  })
+  ipcMain.handle('doctor:v8-monster-disable',async event=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    const r=await monsterMode.disable()
+    if(r.ok)gameEvents.stop()
+    return r
+  })
   ipcMain.handle('doctor:v8-daily-status', event=>guard(event)
     ? dailyMonster.status():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-daily-check', event=>guard(event)
@@ -359,8 +419,12 @@ if(!hasSingleInstanceLock){
     ? liveMonitor.sample():{ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v8-auto-status', event=>guard(event)
     ? autopilot.status():{ok:false,error:'Untrusted renderer'})
-  ipcMain.handle('doctor:v8-auto-config', (event,options)=>guard(event)
-    ? autopilot.configure(options):{ok:false,error:'Untrusted renderer'})
+  ipcMain.handle('doctor:v8-auto-config',async(event,options)=>{
+    if(!guard(event))return {ok:false,error:'Untrusted renderer'}
+    const r=await autopilot.configure(options)
+    if(r.ok){if(r.autoBoost)gameEvents.start();else gameEvents.stop()}
+    return r
+  })
   ipcMain.handle('doctor:v7-boost-status', event=>guard(event)
     ? gameFocus.state() : {ok:false,error:'Untrusted renderer'})
   ipcMain.handle('doctor:v7-boost-preview', (event,profile,stopAfterMinutes)=>guard(event)
@@ -459,10 +523,12 @@ if(!hasSingleInstanceLock){
   try { await backgroundBoost.restore() } catch { /* QoS recovery remains visible in the app. */ }
   try { await gameFocus.stop() } catch { /* Recovery remains visible in the app. */ }
   autopilot.start()
+  if((await autopilot.status()).autoBoost)gameEvents.start()
   dailyMonster.start()
   let quitting=false
   app.on('before-quit',event=>{
     autopilot.stop()
+    gameEvents.stop()
     dailyMonster.stop()
     if(quitting)return
     event.preventDefault()

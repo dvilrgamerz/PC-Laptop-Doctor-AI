@@ -12,13 +12,25 @@ The Windows x64 C++ helper is built with MSVC and packaged as a fixed-command, n
 
 Optional **High Performance on AC** is now available in Monster Mode's reviewed preview, off by default. Game Focus checks that the battery/AC conditions and Windows plan availability permit it and stores a reversible journal; no temperature-adaptive rollback is claimed.
 
+## Beta.3 additions requiring physical Windows tests
+
+1. **WMI wakeups and fallback:** start PC Doctor and enable Monster Mode. Launch/exit a verified game without opening it from PC Doctor. Measure detection and restoration time; repeat with the event watcher blocked or unavailable to confirm the 5-second polling fallback. WMI events **never** authorize an unknown executable.
+2. **Manual graceful close:** with a verified game running, choose an eligible disposable test application, click **Request graceful close**, inspect the explicit Windows dialog and cancel first. On second attempt confirm; the app must receive `WM_CLOSE` (not a forced termination). Test one visible window, multiple windows, hung windows, protected processes, wrong PID, PID reuse and cross-session processes. A Save/Cancel prompt must remain under the app's own control. Closed apps **do not** automatically reopen.
+3. **PresentMon import:** capture a real game baseline and boosted CSV via Intel PresentMon; verify the two imported files refer to the same executable and frame-time column, and confirm averages/lows/99th-percentile calculations. Do not report one A/B pair as proven improvement. Run repeated A/B/A/B with identical graphics, FPS cap, scenes, temperatures, and power.
+4. **Crash/restart:** while EcoQoS has applied to an explicitly approved disposable process, force close PC Doctor, reopen, inspect its journal and ensure QoS is restored or the failure remains visible. A crash does **not** magically restore state before PC Doctor restarts.
+5. **Release trust:** verify both Setup and Portable versions, native helper and watcher files, their SHA-256 checksums, and the signed/unsigned status. Beta.3 is currently unsigned and must not be labeled stable.
+
+## Remaining after beta.3
+
+Automatic unattended app closing/reopening, reliable unsaved-work preservation, OEM-specific thermal controls, built-in PresentMon live capture, game profiles for more launchers, multi-PC compatibility testing, anti-cheat test matrix, and trusted code signing are still outstanding.
+
 ## Windows and security limits
 
 1. Never approve antivirus, EDR, encryption, accessibility, anti-cheat, game executables, game launchers, hardware driver services or PC Doctor itself. The classifier has a defense-in-depth denylist but cannot know every third-party security program. Unsupported and unknown processes stay on Keep.
 2. No administrator privilege escalation, Windows services manipulation or registry changes in this feature.
 3. The process identity is checked again by full executable path and creation timestamp before modification. A journal is written before each attempted action. Restore only happens when the current state matches the applied state; if a different process now owns the PID, the old record can be discarded.
 4. On older Windows 10/11 builds, GetProcessInformation's query for PowerThrottling may not be available. The feature is designed to skip rather than apply a change without capturing the original state. See [Microsoft's API](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocessinformation).
-5. Auto-Boost still polls every 15 seconds and must see a game twice. This beta is not yet event-driven. It does not identify every game executable/launcher.
+5. Auto-Boost polls every 5 seconds and still requires two trusted sightings; beta.3 additionally uses read-only native WMI process events as wakeups. Polling remains the fallback if WMI fails. It does not identify every game executable/launcher.
 
 ## Noncritical-PC test sequence
 

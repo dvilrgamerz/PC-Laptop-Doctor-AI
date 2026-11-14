@@ -5,7 +5,7 @@
 
 # PC & Laptop Doctor AI — PC Monster
 
-**Version: v9.0.0-beta.2 | Windows 10/11 x64 | Public tester beta (unsigned)**
+**Version: v9.0.0-beta.3 | Windows 10/11 x64 | Public tester beta (unsigned)**
 
 PC Monster is an actual Windows Electron desktop app, not a browser-only mockup. It measures CPU, RAM, GPU, battery, storage, temperature (when hardware reports it) and gaming-relevant conditions. **Monster Mode** performs reviewed automation, and **V9 Background Boost** adds an opt-in process-scoped Windows EcoQoS session optimizer. No background applications are force-closed.
 
@@ -17,13 +17,20 @@ PC Monster is an actual Windows Electron desktop app, not a browser-only mockup.
 
 ## Download Windows app
 
-**[Latest PC Monster public tester release](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.2)**
+**[Latest PC Monster public tester release](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.3)**
 
-- **[Setup EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.2/PC-Laptop-Doctor-AI-Setup-9.0.0-beta.2-x64.exe)** — guided install, Start menu shortcuts, uninstall.
-- **[Portable EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.2/PC-Laptop-Doctor-AI-Portable-9.0.0-beta.2-x64.exe)** — run without installing.
-- **[SHA-256 checksum list](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.2/SHA256SUMS.txt)** — verify installer integrity before sharing.
+- **[Setup EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.3/PC-Laptop-Doctor-AI-Setup-9.0.0-beta.3-x64.exe)** — guided install, Start menu shortcuts, uninstall.
+- **[Portable EXE (Windows x64)](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.3/PC-Laptop-Doctor-AI-Portable-9.0.0-beta.3-x64.exe)** — run without installing.
+- **[SHA-256 checksum list](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/download/v9.0.0-beta.3/SHA256SUMS.txt)** — verify installer integrity before sharing.
 
-These links become available when the tagged Windows GitHub Actions release build succeeds. Until the beta.2 artifacts are published and checked, [v9.0.0-beta.1](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.1) is the last confirmed downloadable beta. **Do not share a version whose EXEs have not finished building.**
+These links become available only when the tagged Windows GitHub Actions release build succeeds. Until beta.3 artifacts are verified, [v9.0.0-beta.2](https://github.com/dvilrgamerz/PC-Laptop-Doctor-AI/releases/tag/v9.0.0-beta.2) is the previous confirmed downloadable beta. **Do not share a version whose EXEs have not finished building.**
+
+### V9 Beta.3 — event detection, real frame-time comparisons and manual graceful close
+
+- **Native game-event notifications:** a separate read-only WMI watcher wakes game detection on process start and stop. Only the existing trusted Steam/Epic/manual path matching can activate Auto-Boost; the 5-second polling fallback remains if the watcher cannot start.
+- **Real benchmark comparison:** import two local Intel PresentMon CSV captures through Windows file selection—one with Monster Mode off and another on. PC Doctor computes average presented FPS, 1%/0.1% lows, 95th/99th-percentile frame time and sample counts for one game process/swap chain. A single A/B pair does **not** prove causality; repeat A/B/A/B with the same route and settings. The app does not yet launch PresentMon or record frame traces itself. No CSV contents are uploaded.
+- **Manual graceful close, never automatic:** during a trusted game, an eligible app may be selected for an **explicit confirmation dialog**. The helper re-verifies its executable and creation time, excludes services, Windows/security/game processes, requires exactly one visible main window and posts Windows `WM_CLOSE`. It does **not** force-terminate or guarantee the app exits. It cannot guarantee unsaved data preservation and does not automatically reopen closed apps. Save work before approving.
+- **Not done:** safe unattended closing/reopening of third-party apps, reliable unsaved-data detection, automatic thermal/power rollbacks based on OEM-specific limits, signed release binaries, multi-PC/anti-cheat certification and guaranteed FPS improvement.
 
 ### V9 Game Session Engine — beta.2 native helper and recovery
 
@@ -31,7 +38,7 @@ Beta.2 replaces the per-process PowerShell/C# EcoQoS bridge with a locally compi
 
 Monster Mode also offers an **optional AC-only High Performance power profile**, OFF by default and bound to the short-lived approval preview. On battery or if the plan is unsupported, Game Focus skips the power change. The previous plan is restored on game exit or recovery; more fan noise, heat and energy use are possible. There is not yet thermal-throttling-aware automatic power rollback.
 
-The journal now records a unique session ID, durable written intent, and separate **confirmed vs attempted** counts. Revoking consent during an active game requests immediate restoration. Protected/unverifiable processes are shown in a read-only explanation list without exposing their executable paths. Game monitoring polls at 5-second intervals (two consistent sightings to activate); event-driven detection is **not yet implemented**.
+The journal now records a unique session ID, durable written intent, and separate **confirmed vs attempted** counts. Revoking consent during an active game requests immediate restoration. Protected/unverifiable processes are shown in a read-only explanation list without exposing their executable paths. The beta.2 detector introduced 5-second polling; beta.3 also adds a WMI event watcher with polling fallback.
 
 **Caution:** A non-elevated helper is not the same as a digitally signed helper. The beta.2 installer and helper remain unsigned until a trusted signing certificate and independent QA are available. The build compiles the helper from the repository C++ source using MSVC; no prebuilt binary is downloaded.
 
@@ -41,7 +48,7 @@ The journal now records a unique session ID, durable written intent, and separat
 
 **Important restrictions:** unknown, unverified, Windows system, anti-cheat, security, launcher, game, and PC Doctor processes are kept by default. Only exact executable identities that you select in the desktop UI can be reduced. The helper does not force terminate or suspend apps, disable services, edit registry keys, elevate Electron or alter your files. Windows 10 and older Windows 11 builds may not support reading the prior EcoQoS state; those processes must be skipped safely rather than changed without a reversible snapshot. Some third-party apps will also deny access. No 2×–10× performance or guaranteed FPS benefit is claimed.
 
-**Not implemented in this beta:** auto-closing apps/relaunching their working state, event-driven game detection, PresentMon FPS/1%-low capture, signed installer/native helper, multi-device Windows validation, or game-specific graphics presets. See [V9 implementation and test gates](docs/V9_GAME_SESSION_BETA_TEST_PLAN.md).
+**Not implemented:** automatic closing/relaunch, one-click PresentMon capture, signed installer/native helper, verified thermal control, multi-device Windows validation, or game-specific graphics presets. See [V9 implementation and test gates](docs/V9_GAME_SESSION_BETA_TEST_PLAN.md).
 
 ### Do this once; then let supported automation run
 

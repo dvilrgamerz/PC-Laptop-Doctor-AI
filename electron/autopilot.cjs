@@ -207,6 +207,7 @@ function createAutopilot({stateFile,customStoreFile,gameFocus,processes,tempClea
   void tick()
  }
  function stop(){if(timer){cancel(timer);timer=null}}
- return {status,configure,recordApprovedCleanup,tick,start,stop}
+ return {status,configure,recordApprovedCleanup,tick,start,stop,
+  currentGame:()=>owner?{...owner}:null}
 }
 module.exports={createAutopilot,loadPrefs,savePrefs,processExecutable,gameForProcesses,WEEK,INTERVAL}

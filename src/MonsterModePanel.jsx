@@ -3,6 +3,7 @@ import {Check,CheckCircle2,Clock3,RefreshCw,ShieldCheck,Sparkles,StopCircle,Tria
 import machineArt from '../assets/monster-machine.svg'
 import autopilotArt from '../assets/monster-autopilot.svg'
 import BackgroundBoostPanel from './BackgroundBoostPanel.jsx'
+import PerformanceComparison from './PerformanceComparison.jsx'
 
 export default function MonsterModePanel({demo}){
  const supported=!demo&&!!window.doctor?.getMonsterStatus&&!!window.doctor?.previewMonsterMode
@@ -100,5 +101,6 @@ export default function MonsterModePanel({demo}){
     </div>
    </div>}
   <BackgroundBoostPanel demo={demo}/>
+  <PerformanceComparison demo={demo}/>
  </section>
 }

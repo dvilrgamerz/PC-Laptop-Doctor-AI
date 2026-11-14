@@ -127,7 +127,8 @@ test('renderer gets restricted IPC calls; no arbitrary process-termination primi
 
 test('Windows installation bundles the same locally compiled native helper used by the desktop bridge',()=>{
  const pkg=require('../package.json')
- assert.deepEqual(pkg.build.extraResources,[{from:'native/build/boost-helper.exe',to:'bin/pcdoctor-boost-helper.exe'}])
+ assert.ok(pkg.build.extraResources.some(x=>x.from==='native/build/boost-helper.exe'&&x.to==='bin/pcdoctor-boost-helper.exe'))
+ assert.ok(pkg.build.extraResources.some(x=>x.from==='native/build/game-events.exe'&&x.to==='bin/pcdoctor-game-events.exe'))
  assert.match(pkg.scripts['dist:win'],/build:helper/)
  const main=fs.readFileSync(path.join(__dirname,'../electron/main.cjs'),'utf8')
  assert.match(main,/process[.]resourcesPath/)
@@ -185,4 +186,21 @@ test('native helper protects service and cross-session PIDs without process term
  assert.match(cpp,/QueryFullProcessImageNameW/)
  assert.match(cpp,/SetProcessInformation/)
  assert.doesNotMatch(cpp,/TerminateProcess\s*\(|SuspendThread\s*\(|OpenSCManagerW\([^)]*,[^)]*,SC_MANAGER_ALL_ACCESS/)
+})
+
+test('manual request-close cannot be forged into process termination or service disabling',()=>{
+ const {argsFor}=require('../electron/windows-eco-qos.cjs')
+ assert.deepEqual(argsFor('request-close',{pid:700,exe,startTicks:'638664000000000000'}),
+  ['request-close','700',exe,'638664000000000000'])
+ assert.throws(()=>argsFor('request-close',{pid:0,exe,startTicks:'638664000000000000'}),/invalid/i)
+ assert.throws(()=>argsFor('request-close',{pid:700,exe,startTicks:'bad'}),/creation time/i)
+ const native=fs.readFileSync(path.join(__dirname,'../native/boost-helper/main.cpp'),'utf8')
+ assert.match(native,/PostMessageW\(selected[.]hwnd,WM_CLOSE/)
+ assert.match(native,/forbiddenServiceOrSession\(pid\)/)
+ assert.doesNotMatch(native,/TerminateProcess\s*\(|SuspendThread\s*\(|PostMessageW\s*\([^,]+,\s*WM_QUIT/)
+ const main=fs.readFileSync(path.join(__dirname,'../electron/main.cjs'),'utf8')
+ assert.match(main,/doctor:v9-manual-close/)
+ assert.match(main,/dialog[.]showMessageBox/)
+ assert.match(main,/currentGame\(\)/)
+ assert.match(main,/requestClose\(/)
 })

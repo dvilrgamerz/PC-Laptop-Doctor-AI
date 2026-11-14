@@ -32,6 +32,16 @@ export default function BackgroundBoostPanel({demo}){
   }catch{setError('Could not update the selected background application.')}
   finally{setBusy(false)}
  }
+ async function requestClose(exe){
+  if(!supported||busy||!window.doctor?.requestGracefulAppClose)return
+  setBusy(true);setError('');setMessage('')
+  try{
+   const r=await window.doctor.requestGracefulAppClose(exe)
+   if(r.ok){setMessage(r.message||'Graceful close requested.');const snapshot=await window.doctor.inspectBackgroundApps();if(snapshot.ok)setInventory(snapshot)}
+   else if(!r.canceled)setError(r.error||'No close request was sent.')
+  }catch{setError('Could not request graceful app closure.')}
+  finally{setBusy(false)}
+ }
  async function restore(){
   if(!supported||busy)return
   setBusy(true);setError('');setMessage('')
@@ -43,7 +53,7 @@ export default function BackgroundBoostPanel({demo}){
    <div className="background-boost-head">
     <div className="background-boost-symbol"><Zap size={24}/></div>
     <div><p className="eyebrow">V9 GAME BOOST ENGINE · OPT-IN BETA</p><h3>Background Boost</h3>
-     <p>Automatically reduce the power and scheduling impact of applications you explicitly approve while a trusted game is detected. Windows EcoQoS is reversible. Beta.2 uses a Windows-native process helper (no PowerShell). It does not close apps, stop services or promise FPS gains.</p></div>
+     <p>Automatically reduce the power and scheduling impact of applications you explicitly approve while a trusted game is detected. Windows EcoQoS is reversible. Beta.3 supports approved EcoQoS reductions and separate, user-confirmed WM_CLOSE requests while gaming. It never force-kills processes or claims FPS gains.</p></div>
    </div>
    <div className="background-boost-summary">
     <span><ShieldCheck size={15}/> System, anti-cheat and game processes protected</span>
@@ -61,14 +71,19 @@ export default function BackgroundBoostPanel({demo}){
    </div>
    {!supported&&<p className="background-boost-hint">App control is unavailable in the web demo. Open the Windows app to inspect your own processes.</p>}
    {inventory?.items?.length>0&&<>
-     <p className="background-boost-hint">Pick <strong>Reduce during games</strong> only for programs you are comfortable running at lower background efficiency. No active process changes until a future trusted-game Auto-Boost session. {inventory.shownCount} of {inventory.eligibleCount} eligible apps shown, sorted by observed resource usage. Protected and unverifiable apps are not selectable.</p>
+     <p className="background-boost-hint">Pick <strong>Reduce during games</strong> only for programs you are comfortable running at lower background efficiency. EcoQoS changes occur during a future trusted game. A manual close request requires a currently detected Monster Mode game and an additional Windows confirmation; it never force-kills. {inventory.shownCount} of {inventory.eligibleCount} eligible apps shown, sorted by observed resource usage. Protected and unverifiable apps are not selectable.</p>
      <div className="background-boost-list">
       {inventory.items.slice(0,18).map(p=><div className="background-boost-process" key={p.exe}>
        <div><strong>{p.name||p.exe.split('\\').pop()}</strong><small>{p.cpu}% CPU · {p.memMB===null?'RAM unknown':p.memMB+' MB RAM'}</small></div>
-       <button type="button" disabled={busy||!supported} className={p.mode==='reduce'?'background-mode-on':''}
-        title={p.exe} onClick={()=>setRule(p.exe,p.mode==='reduce'?'keep':'reduce')}>
-        {p.mode==='reduce'?'Reduce approved · Undo':'Reduce during games'}
-       </button>
+       <div className="background-process-actions">
+        <button type="button" disabled={busy||!supported} className={p.mode==='reduce'?'background-mode-on':''}
+         title={p.exe} onClick={()=>setRule(p.exe,p.mode==='reduce'?'keep':'reduce')}>
+         {p.mode==='reduce'?'Reduce approved · Undo':'Reduce during games'}
+        </button>
+        <button type="button" disabled={busy||!supported} className="background-manual-close"
+         title="Request WM_CLOSE only after a separate confirmation; no force termination or auto reopen"
+         onClick={()=>requestClose(p.exe)}>Request graceful close</button>
+       </div>
       </div>)}
      </div>
    </>}
@@ -79,6 +94,6 @@ export default function BackgroundBoostPanel({demo}){
    </details>}
    {!!message&&<p className="background-boost-message" role="status"><CheckCircle2 size={15}/>{message}</p>}
    {!!error&&<p className="background-boost-error" role="alert"><TriangleAlert size={15}/>{error}</p>}
-   <p className="background-boost-hint"><ShieldCheck size={14}/> Only when Monster Mode Auto-Boost is enabled and the app is open. Changes are session-scoped; if Windows refuses an operation, the app reports it. App-crash recovery is attempted when you reopen PC Doctor.</p>
+   <p className="background-boost-hint"><ShieldCheck size={14}/> Only when Monster Mode Auto-Boost is enabled and the app is open. Changes are session-scoped; if Windows refuses an operation, the app reports it. App-crash QoS recovery is attempted when you reopen PC Doctor. Manually closed apps are not automatically restarted; unsaved application state cannot be recovered.</p>
  </section>
 }

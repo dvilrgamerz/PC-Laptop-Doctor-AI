@@ -62,6 +62,8 @@ jobs:
           node --check electron/boost-policy.cjs
           node --check electron/background-boost.cjs
           node --check electron/windows-eco-qos.cjs
+          node --check electron/presentmon-bench.cjs
+          node --check electron/game-events.cjs
           node --check electron/space-finder.cjs
           node --check electron/installed-game-roots.cjs
           node --check electron/epic-library.cjs

@@ -23,12 +23,19 @@ const command='cl.exe /nologo /std:c++17 /O2 /W4 /WX /MT /EHsc '+
  '/Fo"'+path.join(out,'boost-helper.obj')+'" '+
  '/Fe"'+path.join(out,'boost-helper.exe')+'" '+
  '"'+path.join(root,'native','boost-helper','main.cpp')+'"'
+const eventWatcher='cl.exe /nologo /std:c++17 /O2 /W4 /WX /MT /EHsc '+
+ '/D_UNICODE /DUNICODE /D_WIN32_WINNT=0x0A00 '+
+ '/Fo"'+path.join(out,'game-events.obj')+'" '+
+ '/Fe"'+path.join(out,'game-events.exe')+'" '+
+ '"'+path.join(root,'native','game-events','main.cpp')+'"'
 const batch=path.join(out,'compile-native-helper.cmd')
 fs.writeFileSync(batch,['@echo off','call "'+vcvars+'" >nul','if errorlevel 1 exit /b 1',
- command,'exit /b %ERRORLEVEL%',''].join('\r\n'),{encoding:'utf8'})
+ command,'if errorlevel 1 exit /b 1',eventWatcher,'exit /b %ERRORLEVEL%',''].join('\r\n'),{encoding:'utf8'})
 console.log('Building local native PC Doctor EcoQoS helper with MSVC...')
 execFileSync('cmd.exe',['/d','/c',path.join('native','build','compile-native-helper.cmd')],
  {cwd:root,stdio:'inherit',windowsHide:true,timeout:120000})
 const exe=path.join(out,'boost-helper.exe')
 if(!fs.existsSync(exe)||fs.statSync(exe).size<20000)throw Error('Native boost helper build failed.')
-console.log('Win32 helper built:',exe)
+const events=path.join(out,'game-events.exe')
+if(!fs.existsSync(events)||fs.statSync(events).size<20000)throw Error('Native WMI game events build failed.')
+console.log('Win32 helper built:',exe,'; process watcher built:',events)

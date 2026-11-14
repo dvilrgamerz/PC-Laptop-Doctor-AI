@@ -6,7 +6,7 @@ const path=require('node:path')
 const {execFile}=require('node:child_process')
 const {promisify}=require('node:util')
 const run=promisify(execFile)
-const OPS=new Set(['inspect','apply','restore','probe'])
+const OPS=new Set(['inspect','apply','restore','probe','request-close'])
 const U32_MAX=4294967295
 const isU32=n=>Number.isSafeInteger(n)&&n>=0&&n<=U32_MAX
 function validate(op,payload){
@@ -16,8 +16,10 @@ function validate(op,payload){
   !/^[a-z]:\\/i.test(payload.exe)||!/[.]exe$/i.test(payload.exe)||
   path.win32.normalize(payload.exe).toLowerCase()!==payload.exe.toLowerCase())
   throw Error('Invalid Windows process identity')
- if(op!=='inspect'&&(!/^[0-9]{1,21}$/.test(String(payload.startTicks||''))||
-  !payload.before||!isU32(payload.before.controlMask)||!isU32(payload.before.stateMask)))
+ if(op!=='inspect'&&!/^[0-9]{1,21}$/.test(String(payload.startTicks||'')))
+  throw Error('Missing validated process creation time')
+ if(['apply','restore','probe'].includes(op)&&(!payload.before||
+  !isU32(payload.before.controlMask)||!isU32(payload.before.stateMask)))
   throw Error('Missing valid QoS snapshot')
  if(op==='restore'&&(!payload.applied||!isU32(payload.applied.controlMask)||
   !isU32(payload.applied.stateMask)))throw Error('Missing applied QoS state')
@@ -45,6 +47,7 @@ function createWindowsEcoQos({platform=process.platform,helperPath=defaultHelper
     if(op==='inspect'&&(!/^[0-9]{1,21}$/.test(result.startTicks)||!isU32(result.controlMask)||!isU32(result.stateMask)))
      throw Error('Invalid native process snapshot')
     if(op==='probe'&&typeof result.same!=='boolean')throw Error('Invalid process-lifetime probe')
+    if(op==='request-close'&&result.requested!==true)throw Error('Native graceful close was not acknowledged')
     if((op==='apply'||op==='restore')&&!result.alreadyOriginal&&
       (!isU32(result.controlMask)||!isU32(result.stateMask)))throw Error('Native QoS confirmation missing')
    }
@@ -52,6 +55,7 @@ function createWindowsEcoQos({platform=process.platform,helperPath=defaultHelper
   }catch(e){return {ok:false,error:'Native EcoQoS unavailable: '+String(e.message||e).slice(0,160)}}
  }
  return {inspect:x=>invoke('inspect',x),apply:x=>invoke('apply',x),
-  restore:x=>invoke('restore',x),probe:x=>invoke('probe',x)}
+  restore:x=>invoke('restore',x),probe:x=>invoke('probe',x),
+  requestClose:x=>invoke('request-close',x)}
 }
 module.exports={createWindowsEcoQos,validate,argsFor,defaultHelperPath}
