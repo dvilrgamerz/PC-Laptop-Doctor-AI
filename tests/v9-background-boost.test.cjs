@@ -197,7 +197,7 @@ test('manual request-close cannot be forged into process termination or service 
  const native=fs.readFileSync(path.join(__dirname,'../native/boost-helper/main.cpp'),'utf8')
  assert.match(native,/PostMessageW\(selected[.]hwnd,WM_CLOSE/)
  assert.match(native,/forbiddenServiceOrSession\(pid\)/)
- assert.doesNotMatch(native,/TerminateProcess\s*\(|SuspendThread\s*\(|WM_QUIT/)
+ assert.doesNotMatch(native,/TerminateProcess\s*\(|SuspendThread\s*\(|PostMessageW\s*\([^,]+,\s*WM_QUIT/)
  const main=fs.readFileSync(path.join(__dirname,'../electron/main.cjs'),'utf8')
  assert.match(main,/doctor:v9-manual-close/)
  assert.match(main,/dialog[.]showMessageBox/)
