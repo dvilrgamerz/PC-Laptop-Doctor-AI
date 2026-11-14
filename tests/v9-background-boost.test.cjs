@@ -127,7 +127,8 @@ test('renderer gets restricted IPC calls; no arbitrary process-termination primi
 
 test('Windows installation bundles the same locally compiled native helper used by the desktop bridge',()=>{
  const pkg=require('../package.json')
- assert.deepEqual(pkg.build.extraResources,[{from:'native/build/boost-helper.exe',to:'bin/pcdoctor-boost-helper.exe'}])
+ assert.ok(pkg.build.extraResources.some(x=>x.from==='native/build/boost-helper.exe'&&x.to==='bin/pcdoctor-boost-helper.exe'))
+ assert.ok(pkg.build.extraResources.some(x=>x.from==='native/build/game-events.exe'&&x.to==='bin/pcdoctor-game-events.exe'))
  assert.match(pkg.scripts['dist:win'],/build:helper/)
  const main=fs.readFileSync(path.join(__dirname,'../electron/main.cjs'),'utf8')
  assert.match(main,/process[.]resourcesPath/)
